@@ -2,7 +2,14 @@
 [*] Dog proxy
     [ ] PatternMatchingEventHander params
     [ ] Observer.schedule params
-    [ ] use_gitignore option, parse_gitignore()
+    [*] use_gitignore option, parse_gitignore()
+        [ ] use_gitignore
+        [x] _parse_gitignore
+        [!] prerequisite:
+            1. The .gitignore file exists and are under the directory where
+               the script is run.
+            2. The .gitignore file is formatted so that each line only
+               contains one pattern, comments using '# comment' form is OK.
     [ ] add handler to the same ObservedWatch
     [ ] create handler
     [ ] schedule handler
