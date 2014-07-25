@@ -1,0 +1,18 @@
+# vim: ft=python
+[*] Dog proxy
+    [ ] PatternMatchingEventHander params
+    [ ] Observer.schedule params
+    [ ] use_gitignore option, parse_gitignore()
+    [ ] add handler to the same ObservedWatch
+    [ ] create handler
+    [ ] schedule handler
+    [x] prototype:
+        dog(command='', patterns=['*'], ignore_patterns=[],
+            ignore_directories=False, path='.', recursive=True,
+            use_gitignore=False)
+        dog('echo hello', ['*.py'], [], False, '.', True, True)
+        dog('echo hello', ['*.py'], use_gitignore=True)
+        dog(command='echo hello', patterns=['*.py'], use_gitignore=True)
+
+[ ] AutoRunTrick(AutoRestartTrick)
+    [ ] context print injection(print -> echo command)
