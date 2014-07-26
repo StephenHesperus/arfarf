@@ -61,3 +61,30 @@ class DogTestCase(unittest.TestCase):
         dog = Dog(path='/dummy/path', recursive=False)
         winfo = dog.watch_info
         self.assertEqual(winfo, ('/dummy/path', False))
+
+
+class WDConfigParserTestCase(unittest.TestCase):
+    """Test wdog module functions."""
+
+    def test__sort(self):
+        import wdconfig
+        from wdog import Dog as dog
+        from wdog import WDConfigParser
+        dogs_mock = (
+            dog(command='echo dog1', path='.', recursive=True),
+            dog(command='echo dog2', path='.', recursive=True),
+            dog(command='echo dog3', path='./dummy', recursive=True),
+            dog(command='echo dog4', path='.', recursive=False),
+        )
+        with patch('wdconfig.dogs', return_value=dogs_mock) as mock:
+            self.assertEqual(wdconfig.dogs, mock)
+            dogs = mock()
+            parser = WDConfigParser(dogs)
+            result = parser._sort()
+            dog_dict = {
+                ('.', True): [dogs[0], dogs[1]],
+                ('./dummy', True): [dogs[2]],
+                ('.', False): [dogs[3]],
+            }
+
+            self.assertEqual(dog_dict, result)

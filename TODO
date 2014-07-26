@@ -27,12 +27,12 @@
             recursive default: traverse to subdirectories
             use_gitignore default: no, if you use Git, set this option
 
-[ ] AutoRunTrick(AutoRestartTrick)
+[ ] AutoRunTrick : AutoRestartTrick
     [ ] context print injection(print -> echo command)
 
-[ ] _parse_wdcofig(Observer, dogs):
-    [ ] sort out dogs
-        [ ] dict: key: (path, recursive), value: dogs
+[ ] ~~_parse_wdcofig(Observer, dogs):~~ WDConfigParser(Dogs)
+    [x] sort out dogs
+        [x] dict: key: (path, recursive), value: dogs
         [x] Dog.watch_info
         [x] Dog.create_handler()
     [ ] schedule handler
