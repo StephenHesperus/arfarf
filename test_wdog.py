@@ -52,3 +52,12 @@ class DogTestCase(unittest.TestCase):
                                  '*.py[cod]', '__pycache__/'],
                 ignore_directories=True
             )
+
+    def test_watch_info_property(self):
+        dog = Dog()
+        winfo = dog.watch_info
+        self.assertEqual(winfo, ('.', True))
+
+        dog = Dog(path='/dummy/path', recursive=False)
+        winfo = dog.watch_info
+        self.assertEqual(winfo, ('/dummy/path', False))
