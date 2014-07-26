@@ -35,5 +35,24 @@
         [x] dict: key: (path, recursive), value: dogs
         [x] Dog.watch_info
         [x] Dog.create_handler()
-    [ ] schedule handler
-    [ ] add handler to the same ObservedWatch
+        [ ] remove duplications
+    [*] schedule handler
+    [*] add handler to the same ObservedWatch
+
+[ ] wdconfig.py
+    [ ] dogs is a tuple of wdog.Dog
+
+====
+
+[ ] about watchdog package:
+    [ ] should document Observer.remove_handler_for_watch() and
+        Observer.unschedule() raise KeyError if handler for watch or watch for
+        observer does not exist
+    [ ] should document Observer.schedule accepts both relative and absolute
+        path
+    [ ] should document ObservedWatch is hashable
+    [ ] should document FileSystemEventHandler is hashable
+        [ ] should document FileSystemEventHandler objects by default are not
+            equal event they are constructed using the same parameters
+    [ ] should document Observer.schedule and Observer.add_handler_for_watch
+        both remove duplications automatically
