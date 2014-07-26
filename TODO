@@ -1,7 +1,7 @@
 # vim: ft=python
-[*] Dog proxy
-    [ ] PatternMatchingEventHander params
-    [ ] Observer.schedule params
+[x] Dog proxy
+    [x] PatternMatchingEventHander params
+    [x] Observer.schedule params
     [x] use_gitignore option, parse_gitignore()
         [x] use_gitignore
         [x] _parse_gitignore
@@ -10,9 +10,7 @@
                the script is run.
             2. The .gitignore file is formatted so that each line only
                contains one pattern, comments using '# comment' form is OK.
-    [ ] add handler to the same ObservedWatch
     [x] create handler
-    [ ] schedule handler
     [x] prototype:
         dog(command='', patterns=['*'], ignore_patterns=[],
             ignore_directories=False, path='.', recursive=True,
@@ -31,3 +29,11 @@
 
 [ ] AutoRunTrick(AutoRestartTrick)
     [ ] context print injection(print -> echo command)
+
+[ ] _parse_wdcofig(Observer, dogs):
+    [ ] sort out dogs
+        [ ] dict: key: (path, recursive), value: dogs
+        [ ] Dog.watch_info
+        [x] Dog.create_handler()
+    [ ] schedule handler
+    [ ] add handler to the same ObservedWatch

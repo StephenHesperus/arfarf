@@ -29,3 +29,5 @@ class Dog(object):
         return cls(command=self._command, patterns=self._patterns,
                    ignore_patterns=self._ignore_patterns,
                    ignore_directories=self._ignore_directories)
+
+    create_hander = _create_handler

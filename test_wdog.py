@@ -52,3 +52,7 @@ class DogTestCase(unittest.TestCase):
                                  '*.py[cod]', '__pycache__/'],
                 ignore_directories=True
             )
+
+    def test_create_handler(self):
+        """This is the public version of _create_handler."""
+        self.assertIs(Dog.create_hander, Dog._create_handler)
