@@ -33,7 +33,7 @@
 [ ] _parse_wdcofig(Observer, dogs):
     [ ] sort out dogs
         [ ] dict: key: (path, recursive), value: dogs
-        [ ] Dog.watch_info
+        [*] Dog.watch_info
         [x] Dog.create_handler()
     [ ] schedule handler
     [ ] add handler to the same ObservedWatch
