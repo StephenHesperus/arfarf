@@ -27,11 +27,11 @@ class DogTestCase(unittest.TestCase):
 
     def test__parse_gitignore(self):
         dog = Dog()
-        m = mock_open(read_data='*.py[cod]\n# comment line\n__pycache__/\n')
-        with patch('builtins.open', m, create=True) as mock:
-            result = dog._parse_gitignore()
+        result = dog._parse_gitignore()
         patterns = ['*.py[cod]', '__pycache__/']
-        mock.assert_called_once_with(os.path.join(os.getcwd(), '.gitignore'))
+        self.gitignore_mock.assert_called_once_with(
+            os.path.join(os.getcwd(), '.gitignore')
+        )
         self.assertEqual(patterns, result)
 
     def test__create_handler(self):
