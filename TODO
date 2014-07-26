@@ -2,8 +2,8 @@
 [*] Dog proxy
     [ ] PatternMatchingEventHander params
     [ ] Observer.schedule params
-    [*] use_gitignore option, parse_gitignore()
-        [ ] use_gitignore
+    [x] use_gitignore option, parse_gitignore()
+        [x] use_gitignore
         [x] _parse_gitignore
         [!] prerequisite:
             1. The .gitignore file exists and are under the directory where
@@ -11,7 +11,7 @@
             2. The .gitignore file is formatted so that each line only
                contains one pattern, comments using '# comment' form is OK.
     [ ] add handler to the same ObservedWatch
-    [ ] create handler
+    [x] create handler
     [ ] schedule handler
     [x] prototype:
         dog(command='', patterns=['*'], ignore_patterns=[],
@@ -20,6 +20,14 @@
         dog('echo hello', ['*.py'], [], False, '.', True, True)
         dog('echo hello', ['*.py'], use_gitignore=True)
         dog(command='echo hello', patterns=['*.py'], use_gitignore=True)
+        explanation:
+            command default: empty, do nothing
+            patterns default: include everything
+            ignore_patterns default: exclude nothing
+            ignore_directories default: no, means monitor directories changes
+            path default: the directory the script is run, that is $PWD
+            recursive default: traverse to subdirectories
+            use_gitignore default: no, if you use Git, set this option
 
 [ ] AutoRunTrick(AutoRestartTrick)
     [ ] context print injection(print -> echo command)

@@ -21,3 +21,11 @@ class Dog(object):
             if not line.startswith('#'):
                 gitignore.append(line.strip())
         return gitignore
+
+    def _create_handler(self, cls):
+        if self._use_gitignore:
+            gitignore = self._parse_gitignore()
+            self._ignore_patterns.extend(gitignore)
+        return cls(command=self._command, patterns=self._patterns,
+                   ignore_patterns=self._ignore_patterns,
+                   ignore_directories=self._ignore_directories)
