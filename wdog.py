@@ -53,3 +53,15 @@ class WDConfigParser(object):
                 dog_dict[wi] = [dog]
 
         return dog_dict
+
+    def schedule_with(self, observer, cls):
+        handler_for_watch = {}
+        for dog in self._dogs:
+            handler = dog.create_handler(cls)
+            watch = observer.schedule(handler, *dog.watch_info)
+            if watch in handler_for_watch:
+                handler_for_watch[watch].add(handler)
+            else:
+                handler_for_watch[watch] = set([handler])
+
+        return handler_for_watch

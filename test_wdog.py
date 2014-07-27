@@ -66,6 +66,33 @@ class DogTestCase(unittest.TestCase):
 class WDConfigParserTestCase(unittest.TestCase):
     """Test wdog module functions."""
 
+    def setUp(self):
+        import wdconfig
+        import watchdog.events
+        from wdog import Dog as dog
+        from wdog import WDConfigParser
+        from unittest.mock import sentinel
+        dogs_mock = (
+            dog(command='echo dog1', path='.', recursive=True),
+            dog(command='echo dog2', path='.', recursive=True),
+            dog(command='echo dog3', path='..', recursive=True),
+            dog(command='echo dog4', path='.', recursive=False),
+        )
+        self.patcher = patch('wdconfig.dogs', return_value=dogs_mock)
+        d_m = self.patcher.start()
+        self.dogs = d_m()
+        self.parser = WDConfigParser(self.dogs)
+        self.hpatcher = patch('watchdog.events.PatternMatchingEventHandler')
+        handler = self.hpatcher.start()
+        # make each handler created is different from the other
+        handler.side_effect = [sentinel.a, sentinel.b, sentinel.c,
+                               sentinel.d] * 2
+        self.HandlerClass = handler
+
+    def tearDown(self):
+        self.patcher.stop()
+        self.hpatcher.stop()
+
     def test__sort(self):
         import wdconfig
         from wdog import Dog as dog
@@ -88,3 +115,37 @@ class WDConfigParserTestCase(unittest.TestCase):
             }
 
             self.assertEqual(dog_dict, result)
+
+    def test_schedule_with(self):
+        import watchdog.events
+        from watchdog.observers import Observer
+        from watchdog.observers.api import ObservedWatch
+        def ow_repr(self):
+            return str((self.path, self.is_recursive))
+        setattr(ObservedWatch, '__repr__', ow_repr)
+        observer = Observer()
+        result = self.parser.schedule_with(
+            observer,
+            watchdog.events.PatternMatchingEventHandler
+        )
+        # expected
+        handlers = []
+        for dog in self.dogs:
+            handler = dog.create_handler(
+                watchdog.events.PatternMatchingEventHandler
+            )
+            handlers.append(handler)
+        watches = []
+        for dog in self.dogs:
+            watch = ObservedWatch(*dog.watch_info)
+            watches.append(watch)
+        handler_for_watch = {
+            watches[0]: set([handlers[0], handlers[1]]),
+            watches[2]: set([handlers[2]]),
+            watches[3]: set([handlers[3]]),
+        }
+
+        self.maxDiff = None
+        # self.fail(result)
+        # self.fail(handler_for_watch)
+        self.assertEqual(result, handler_for_watch)
