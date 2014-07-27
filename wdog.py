@@ -121,3 +121,8 @@ class AutoRunTrick(Trick):
 
     def __hash__(self):
         return hash(self.key)
+
+    def __repr__(self):
+        repr_str = ('<AutoRunTrick: command={}, patterns={}, ignore_patterns={},'
+                'ignore_directories={}>').format(*self.key)
+        return repr_str

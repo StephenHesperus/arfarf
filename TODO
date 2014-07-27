@@ -31,7 +31,7 @@
     [ ] context print injection(print -> echo command)
     [x] override __init__(), start()
     [x] equality
-    [ ] hashable
+    [x] hashable
 
 [x] ~~_parse_wdcofig(Observer, dogs):~~ WDConfigParser(Dogs)
     [x] sort out dogs
@@ -47,6 +47,8 @@
     [ ] dogs is a tuple of wdog.Dog
 
 [ ] fix WDConfigParserTestCase class doc string
+
+[ ] Dog command arg no default, make it positional
 
 ====
 

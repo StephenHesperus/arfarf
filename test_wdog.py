@@ -147,3 +147,9 @@ class AutoRunTrickTestCase(unittest.TestCase):
         import collections
         handler = AutoRunTrick(command='echo hello')
         self.assertTrue(isinstance(handler, collections.Hashable))
+
+    def test___repr__(self):
+        handler = AutoRunTrick(command='echo hello')
+        repr_str = ('<AutoRunTrick: command={}, patterns={}, ignore_patterns={},'
+                'ignore_directories={}>').format(*handler.key)
+        self.assertEqual(repr_str, repr(handler))
