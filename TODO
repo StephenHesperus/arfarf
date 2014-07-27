@@ -38,7 +38,7 @@
         [ ] remove duplications
     [x] schedule handler
     [-] add handler to the same ObservedWatch
-    [*] refactor: remove unused _sort method
+    [x] refactor: remove unused _sort method
 
 [ ] wdconfig.py
     [ ] dogs is a tuple of wdog.Dog

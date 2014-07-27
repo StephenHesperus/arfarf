@@ -1,8 +1,13 @@
 import os
 import unittest
-from unittest.mock import mock_open, patch
+from unittest.mock import mock_open, patch, sentinel
 
-from wdog import Dog
+import watchdog.events
+from watchdog.observers import Observer
+from watchdog.observers.api import ObservedWatch
+
+import wdconfig
+from wdog import Dog, WDConfigParser
 
 
 class DogTestCase(unittest.TestCase):
@@ -67,11 +72,7 @@ class WDConfigParserTestCase(unittest.TestCase):
     """Test wdog module functions."""
 
     def setUp(self):
-        import wdconfig
-        import watchdog.events
         from wdog import Dog as dog
-        from wdog import WDConfigParser
-        from unittest.mock import sentinel
         dogs_mock = (
             dog(command='echo dog1', path='.', recursive=True),
             dog(command='echo dog2', path='.', recursive=True),
@@ -93,33 +94,7 @@ class WDConfigParserTestCase(unittest.TestCase):
         self.patcher.stop()
         self.hpatcher.stop()
 
-    def test__sort(self):
-        import wdconfig
-        from wdog import Dog as dog
-        from wdog import WDConfigParser
-        dogs_mock = (
-            dog(command='echo dog1', path='.', recursive=True),
-            dog(command='echo dog2', path='.', recursive=True),
-            dog(command='echo dog3', path='./dummy', recursive=True),
-            dog(command='echo dog4', path='.', recursive=False),
-        )
-        with patch('wdconfig.dogs', return_value=dogs_mock) as mock:
-            self.assertEqual(wdconfig.dogs, mock)
-            dogs = mock()
-            parser = WDConfigParser(dogs)
-            result = parser._sort()
-            dog_dict = {
-                ('.', True): [dogs[0], dogs[1]],
-                ('./dummy', True): [dogs[2]],
-                ('.', False): [dogs[3]],
-            }
-
-            self.assertEqual(dog_dict, result)
-
     def test_schedule_with(self):
-        import watchdog.events
-        from watchdog.observers import Observer
-        from watchdog.observers.api import ObservedWatch
         def ow_repr(self):
             return str((self.path, self.is_recursive))
         setattr(ObservedWatch, '__repr__', ow_repr)

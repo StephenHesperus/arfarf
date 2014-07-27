@@ -43,17 +43,6 @@ class WDConfigParser(object):
     def __init__(self, dogs):
         self._dogs = dogs
 
-    def _sort(self):
-        dog_dict = {}
-        for dog in self._dogs:
-            wi = dog.watch_info
-            if wi in dog_dict:
-                dog_dict[wi].append(dog)
-            else:
-                dog_dict[wi] = [dog]
-
-        return dog_dict
-
     def schedule_with(self, observer, cls):
         handler_for_watch = {}
         for dog in self._dogs:
