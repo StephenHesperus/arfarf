@@ -142,3 +142,8 @@ class AutoRunTrickTestCase(unittest.TestCase):
         handler2 = AutoRunTrick(command='echo hello')
 
         self.assertEqual(handler1, handler2)
+
+    def test_hashable(self):
+        import collections
+        handler = AutoRunTrick(command='echo hello')
+        self.assertTrue(isinstance(handler, collections.Hashable))

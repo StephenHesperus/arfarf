@@ -118,3 +118,6 @@ class AutoRunTrick(Trick):
 
     def __ne__(self, value):
         return not self.__eq__(value)
+
+    def __hash__(self):
+        return hash(self.key)
