@@ -1,5 +1,7 @@
 import os
 import signal
+import subprocess
+import time
 
 from watchdog.tricks import Trick
 
@@ -76,3 +78,32 @@ class AutoRunTrick(Trick):
     @property
     def command(self):
         return self._command
+
+    def _start(self):
+        self._process = subprocess.Popen(self._command, shell=True,
+                                         start_new_session=True)
+
+    def _stop(self):
+        if self._process is None:
+            return
+        try:
+            os.killpg(os.getpgid(self._process.pid), self._stop_signal)
+        except OSError:
+            # Process is already gone.
+            pass
+        else:
+            kill_time = time.time() + self._kill_after
+            while time.time() < kill_time:
+                if self._process.poll() is not None:
+                    break
+                time.sleep(0.25)
+            else:
+                try:
+                    os.killpg(os.getpgid(self._process.pid, signal.SIGKILL))
+                except OSError:
+                    pass
+        self._process = None
+
+    def on_any_event(self, event):
+        self.stop()
+        self.start()
