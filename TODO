@@ -27,21 +27,24 @@
             recursive default: traverse to subdirectories
             use_gitignore default: no, if you use Git, set this option
 
-[ ] AutoRunTrick : AutoRestartTrick
+[*] AutoRunTrick : AutoRestartTrick
     [ ] context print injection(print -> echo command)
+    [x] override __init__(), start()
 
-[ ] ~~_parse_wdcofig(Observer, dogs):~~ WDConfigParser(Dogs)
+[x] ~~_parse_wdcofig(Observer, dogs):~~ WDConfigParser(Dogs)
     [x] sort out dogs
         [x] dict: key: (path, recursive), value: dogs
         [x] Dog.watch_info
         [x] Dog.create_handler()
-        [ ] remove duplications
+        [x] remove duplications
     [x] schedule handler
     [-] add handler to the same ObservedWatch
     [x] refactor: remove unused _sort method
 
 [ ] wdconfig.py
     [ ] dogs is a tuple of wdog.Dog
+
+[ ] fix WDConfigParserTestCase class doc string
 
 ====
 

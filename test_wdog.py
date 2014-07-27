@@ -7,7 +7,7 @@ from watchdog.observers import Observer
 from watchdog.observers.api import ObservedWatch
 
 import wdconfig
-from wdog import Dog, WDConfigParser
+from wdog import Dog, WDConfigParser, AutoRunTrick
 
 
 class DogTestCase(unittest.TestCase):
@@ -124,3 +124,15 @@ class WDConfigParserTestCase(unittest.TestCase):
         # self.fail(result)
         # self.fail(handler_for_watch)
         self.assertEqual(result, handler_for_watch)
+
+
+class AutoRunTrickTestCase(unittest.TestCase):
+    """
+    The only difference between AutoRunTrick and AutoRestartTrick is the way
+    they handle command parsing and execution. So the this test case only
+    focus on it.
+    """
+
+    def test_command_property(self):
+        handler = AutoRunTrick(command='echo hello')
+        self.assertEqual('echo hello', handler.command)

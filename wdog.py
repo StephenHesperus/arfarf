@@ -1,4 +1,7 @@
 import os
+import signal
+
+from watchdog.tricks import Trick
 
 
 class Dog(object):
@@ -54,3 +57,22 @@ class WDConfigParser(object):
                 handler_for_watch[watch] = set([handler])
 
         return handler_for_watch
+
+
+class AutoRunTrick(Trick):
+    """
+    A variant of AutoRestartTrick.
+    """
+
+    def __init__(self, command='', patterns=['*'], ignore_patterns=[],
+                 ignore_directories=False, stop_signal=signal.SIGINT,
+                 kill_after=10):
+        super().__init__(patterns, ignore_patterns, ignore_directories)
+        self._command = command
+        self._stop_signal = stop_signal
+        self._kill_after = kill_after
+        self._process = None
+
+    @property
+    def command(self):
+        return self._command
