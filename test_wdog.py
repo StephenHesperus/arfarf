@@ -27,11 +27,15 @@ class DogTestCase(unittest.TestCase):
             dog('echo hello', ['*.py'], [], False, '.', True, True)
             dog('echo hello', ['*.py'], use_gitignore=True)
             dog(patterns=['*.py'], command='echo hello', use_gitignore=True)
+            dog('echo hello')
         except:
             self.fail(__doc__)
 
+        with self.assertRaises(Exception):
+            dog()
+
     def test__parse_gitignore(self):
-        dog = Dog()
+        dog = Dog(command='echo hello')
         result = dog._parse_gitignore()
         patterns = ['*.py[cod]', '__pycache__/']
         self.gitignore_mock.assert_called_once_with(
@@ -59,11 +63,11 @@ class DogTestCase(unittest.TestCase):
             )
 
     def test_watch_info_property(self):
-        dog = Dog()
+        dog = Dog(command='echo hello')
         winfo = dog.watch_info
         self.assertEqual(winfo, ('.', True))
 
-        dog = Dog(path='/dummy/path', recursive=False)
+        dog = Dog(command='echo hello', path='/dummy/path', recursive=False)
         winfo = dog.watch_info
         self.assertEqual(winfo, ('/dummy/path', False))
 
@@ -152,3 +156,11 @@ class AutoRunTrickTestCase(unittest.TestCase):
         repr_str = ('<AutoRunTrick: command={}, patterns={}, ignore_patterns={},'
                 'ignore_directories={}>').format(*handler.key)
         self.assertEqual(repr_str, repr(handler))
+
+    def test_command_is_positional_arg(self):
+        with self.assertRaises(TypeError):
+            handler = AutoRunTrick()
+        try:
+            handler = AutoRunTrick('echo hello')
+        except:
+            self.fail('"command" should be a positional argument.')

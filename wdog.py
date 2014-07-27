@@ -7,7 +7,7 @@ from watchdog.tricks import Trick
 
 
 class Dog(object):
-    def __init__(self, command='', patterns=['*'], ignore_patterns=[],
+    def __init__(self, command, patterns=['*'], ignore_patterns=[],
                  ignore_directories=False, path='.', recursive=True,
                  use_gitignore=False):
         self._command = command
@@ -66,7 +66,7 @@ class AutoRunTrick(Trick):
     A variant of AutoRestartTrick.
     """
 
-    def __init__(self, command='', patterns=['*'], ignore_patterns=[],
+    def __init__(self, command, patterns=['*'], ignore_patterns=[],
                  ignore_directories=False, stop_signal=signal.SIGINT,
                  kill_after=10):
         super().__init__(patterns, ignore_patterns, ignore_directories)

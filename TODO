@@ -49,7 +49,7 @@
 
 [x] fix WDConfigParserTestCase class doc string
 
-[ ] Dog command arg no default, make it positional
+[x] Dog, AutoRunTrick command arg no default, make it positional
 
 ====
 
