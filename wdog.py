@@ -107,3 +107,14 @@ class AutoRunTrick(Trick):
     def on_any_event(self, event):
         self.stop()
         self.start()
+
+    @property
+    def key(self):
+        return (self.command, self.patterns, self.ignore_patterns,
+                self.ignore_directories)
+
+    def __eq__(self, value):
+        return isinstance(value, self.__class__) and self.key == value.key
+
+    def __ne__(self, value):
+        return not self.__eq__(value)

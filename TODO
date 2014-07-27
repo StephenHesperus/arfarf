@@ -30,6 +30,8 @@
 [*] AutoRunTrick : AutoRestartTrick
     [ ] context print injection(print -> echo command)
     [x] override __init__(), start()
+    [x] equality
+    [ ] hashable
 
 [x] ~~_parse_wdcofig(Observer, dogs):~~ WDConfigParser(Dogs)
     [x] sort out dogs

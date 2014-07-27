@@ -136,3 +136,9 @@ class AutoRunTrickTestCase(unittest.TestCase):
     def test_command_property(self):
         handler = AutoRunTrick(command='echo hello')
         self.assertEqual('echo hello', handler.command)
+
+    def test_equality(self):
+        handler1 = AutoRunTrick(command='echo hello')
+        handler2 = AutoRunTrick(command='echo hello')
+
+        self.assertEqual(handler1, handler2)
