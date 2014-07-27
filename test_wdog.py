@@ -69,7 +69,6 @@ class DogTestCase(unittest.TestCase):
 
 
 class WDConfigParserTestCase(unittest.TestCase):
-    """Test wdog module functions."""
 
     def setUp(self):
         from wdog import Dog as dog

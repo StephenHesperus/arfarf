@@ -32,6 +32,7 @@
     [x] override __init__(), start()
     [x] equality
     [x] hashable
+    [x] __repr__
 
 [x] ~~_parse_wdcofig(Observer, dogs):~~ WDConfigParser(Dogs)
     [x] sort out dogs
@@ -46,7 +47,7 @@
 [ ] wdconfig.py
     [ ] dogs is a tuple of wdog.Dog
 
-[ ] fix WDConfigParserTestCase class doc string
+[x] fix WDConfigParserTestCase class doc string
 
 [ ] Dog command arg no default, make it positional
 
