@@ -79,11 +79,11 @@ class AutoRunTrick(Trick):
     def command(self):
         return self._command
 
-    def _start(self):
+    def start(self):
         self._process = subprocess.Popen(self._command, shell=True,
                                          start_new_session=True)
 
-    def _stop(self):
+    def stop(self):
         if self._process is None:
             return
         try:

@@ -51,6 +51,11 @@
 
 [x] Dog, AutoRunTrick command arg no default, make it positional
 
+[*] main
+    [ ] after schedule handlers, start the handler
+    [ ] after observer stop, stop the handler
+    [x] expose AutoRunTrick start(), stop()
+
 ====
 
 [ ] about watchdog package:
