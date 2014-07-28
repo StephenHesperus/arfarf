@@ -110,7 +110,8 @@ class AutoRunTrick(Trick):
 
     @property
     def key(self):
-        return (self.command, self.patterns, self.ignore_patterns,
+        return (self.command,
+                tuple(self.patterns), tuple(self.ignore_patterns),
                 self.ignore_directories)
 
     def __eq__(self, value):
@@ -126,3 +127,34 @@ class AutoRunTrick(Trick):
         repr_str = ('<AutoRunTrick: command={}, patterns={}, ignore_patterns={},'
                 'ignore_directories={}>').format(*self.key)
         return repr_str
+
+
+def main(observer, dogs):
+    """Script entry point."""
+
+    parser = WDConfigParser(dogs)
+    handler_for_watch = parser.schedule_with(observer, AutoRunTrick)
+    handlers = set.union(*tuple(handler_for_watch.values()))
+
+    for handler in handlers:
+        handler.start()
+    observer.start()
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        observer.stop()
+    observer.join()
+    for handler in handlers:
+        handler.stop()
+
+
+if __name__ == '__main__':
+    from watchdog.observers.polling import PollingObserver
+    from wdconfig import dogs
+
+    # The reason to use PollingObserver() is it's os-independent
+    # and the default Observer() generates two identical modified event when
+    # modifying a file.
+    observer = PollingObserver()
+    main(observer, dogs)

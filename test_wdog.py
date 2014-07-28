@@ -1,4 +1,6 @@
 import os
+import subprocess
+import signal
 import unittest
 from unittest.mock import mock_open, patch, sentinel
 
@@ -164,3 +166,18 @@ class AutoRunTrickTestCase(unittest.TestCase):
             handler = AutoRunTrick('echo hello')
         except:
             self.fail('"command" should be a positional argument.')
+
+
+class MainTestCase(unittest.TestCase):
+
+    def test_main(self):
+        from watchdog.observers import Observer
+        try:
+            p = subprocess.Popen('python wdog.py', shell=True,
+                             start_new_session=True)
+            raise KeyboardInterrupt
+            outs, errs = p.communicate()
+        except KeyboardInterrupt:
+            pass
+        except:
+            self.fail('main() should work')

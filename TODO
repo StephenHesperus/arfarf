@@ -27,7 +27,7 @@
             recursive default: traverse to subdirectories
             use_gitignore default: no, if you use Git, set this option
 
-[*] AutoRunTrick : AutoRestartTrick
+[ ] AutoRunTrick : AutoRestartTrick
     [ ] context print injection(print -> echo command)
     [x] override __init__(), start()
     [x] equality
@@ -51,11 +51,14 @@
 
 [x] Dog, AutoRunTrick command arg no default, make it positional
 
-[*] main
-    [ ] after schedule handlers, start the handler
-    [ ] after observer stop, stop the handler
+[x] main
+    [x] after schedule handlers, start the handler
+    [x] after observer stop, stop the handler
     [x] expose AutoRunTrick start(), stop()
 
+
+[-] change all Dog keyword arguments default value to tuple
+    [x] or change the list param to tuple when hashing
 ====
 
 [ ] about watchdog package:
@@ -70,3 +73,5 @@
             equal event they are constructed using the same parameters
     [ ] should document Observer.schedule and Observer.add_handler_for_watch
         both remove duplications automatically
+    [ ] problem: generate two identical modified event in a row when modifying
+        a file
