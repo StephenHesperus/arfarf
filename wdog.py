@@ -1,3 +1,15 @@
+#!/usr/bin/env python3
+
+"""
+A script to run commands upon file system events.
+
+Usage
+=====
+Recommanded: Run this script under your project root, this is mandatory if you
+set the ``use_gitignore`` option of a dog in the wdconfig.py file.
+"""
+
+
 import os
 import signal
 import subprocess
@@ -153,8 +165,7 @@ if __name__ == '__main__':
     from watchdog.observers.polling import PollingObserver
     from wdconfig import dogs
 
-    # The reason to use PollingObserver() is it's os-independent
-    # and the default Observer() generates two identical modified event when
-    # modifying a file.
+    # The reason to use PollingObserver() is it's os-independent. And it's
+    # more reliable.
     observer = PollingObserver()
     main(observer, dogs)
