@@ -59,6 +59,10 @@
 
 [-] change all Dog keyword arguments default value to tuple
     [x] or change the list param to tuple when hashing
+
+[ ] use tempfile to test wdog.py
+
+[ ] use defaultdict() to refactor WDConfigParser.schedule_with()
 ====
 
 [ ] about watchdog package:

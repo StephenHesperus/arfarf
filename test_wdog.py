@@ -167,6 +167,12 @@ class AutoRunTrickTestCase(unittest.TestCase):
         except:
             self.fail('"command" should be a positional argument.')
 
+    def test_start(self):
+        handler = AutoRunTrick('echo hello')
+        handler.start(subprocess.PIPE)
+        outs, errs = handler._process.communicate()
+        self.assertEqual('hello\n', outs.decode())
+
 
 class MainTestCase(unittest.TestCase):
 
