@@ -138,13 +138,21 @@ class AutoRunTrickTestCase(unittest.TestCase):
     focus on it.
     """
 
+    def test_command_is_positional_arg(self):
+        with self.assertRaises(TypeError):
+            handler = AutoRunTrick()
+        try:
+            handler = AutoRunTrick('echo hello')
+        except:
+            self.fail('"command" should be a positional argument.')
+
     def test_command_property(self):
         handler = AutoRunTrick(command='echo hello')
         self.assertEqual('echo hello', handler.command)
 
     def test_command_default(self):
         handler = AutoRunTrick(command='')
-        expected = ('echo ${event_object} "${event_src_path}" is '
+        expected = ('echo ${event_object} ${event_src_path} is '
                     '${event_type}${if_moved}')
         self.assertEqual(expected, handler.command)
 
@@ -159,7 +167,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         path = '/source/path'
         event = FileCreatedEvent(path)
         command = handler._substitute_command(event)
-        t = Template('echo ${event_object} "${event_src_path}" is '
+        t = Template('echo ${event_object} ${event_src_path} is '
                      '${event_type}${if_moved}')
         created = {'event_object': 'file', 'event_src_path': path,
                    'event_type': 'created', 'if_moved': ''}
@@ -205,14 +213,6 @@ class AutoRunTrickTestCase(unittest.TestCase):
         repr_str = ('<AutoRunTrick: command={}, patterns={}, ignore_patterns={},'
                 'ignore_directories={}>').format(*handler.key)
         self.assertEqual(repr_str, repr(handler))
-
-    def test_command_is_positional_arg(self):
-        with self.assertRaises(TypeError):
-            handler = AutoRunTrick()
-        try:
-            handler = AutoRunTrick('echo hello')
-        except:
-            self.fail('"command" should be a positional argument.')
 
     def test_start(self):
         handler = AutoRunTrick('echo hello')

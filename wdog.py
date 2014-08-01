@@ -83,7 +83,7 @@ class AutoRunTrick(Trick):
                  ignore_directories=False, stop_signal=signal.SIGINT,
                  kill_after=10):
         super().__init__(patterns, ignore_patterns, ignore_directories)
-        command_default = ('echo ${event_object} "${event_src_path}" is '
+        command_default = ('echo ${event_object} ${event_src_path} is '
                     '${event_type}${if_moved}')
         self._command = command if command else command_default
         self._stop_signal = stop_signal
