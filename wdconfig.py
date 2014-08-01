@@ -30,9 +30,9 @@ from wdog import Dog as dog
 dogs = (
     # examples
     ## this dog shows the default values for each argument
-    # dog(command='', patterns=['*'], ignore_patterns=[],
-    #     ignore_directories=False, path='.', recursive=True,
-    #     use_gitignore=False),
+    dog(command='', patterns=['*'], ignore_patterns=[],
+        ignore_directories=False, path='.', recursive=True,
+        use_gitignore=False),
 
     ## this dog shows the same default values without using keywords
     # dog('echo hello', ['*.py'], [], False, '.', True, True),

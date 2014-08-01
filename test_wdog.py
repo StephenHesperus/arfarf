@@ -230,18 +230,10 @@ class AutoRunTrickTestCase(unittest.TestCase):
         expected = 'directory /source/path is moved to /dest/path\n'
         self.assertEqual(expected, outs.decode())
 
+    def test_start_with_command_default_and_no_event(self):
+        from watchdog.events import DirMovedEvent
 
-class MainTestCase(unittest.TestCase):
-
-    @unittest.skip('WIP')
-    def test_main(self):
-        from watchdog.observers import Observer
-        try:
-            p = subprocess.Popen('python wdog.py', shell=True,
-                             start_new_session=True)
-            raise KeyboardInterrupt
-            outs, errs = p.communicate()
-        except KeyboardInterrupt:
-            pass
-        except:
-            self.fail('main() should work')
+        handler = AutoRunTrick('')
+        handler.start(subprocess.PIPE)
+        outs, errs = handler._process.communicate()
+        self.assertEqual('', outs.decode())

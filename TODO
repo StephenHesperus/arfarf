@@ -33,6 +33,7 @@
     [x] equality
     [x] hashable
     [x] __repr__
+    [x] start() test
 
 [x] ~~_parse_wdcofig(Observer, dogs):~~ WDConfigParser(Dogs)
     [x] sort out dogs
@@ -60,12 +61,13 @@
 [-] change all Dog keyword arguments default value to tuple
     [x] or change the list param to tuple when hashing
 
-[ ] use tempfile to test wdog.py
+[-] use tempfile to test wdog.py
 
 [x] use defaultdict() to refactor WDConfigParser.schedule_with()
 
 [x] add event_src_path, dest path, event type environment variables
     [x] if command is '', use a default log command
+        [x] expose event related shell environment variables
     [x] refactor tests, default command
 
 [ ] remove wdconfig.py default dog entry

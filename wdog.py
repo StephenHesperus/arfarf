@@ -83,14 +83,19 @@ class AutoRunTrick(Trick):
                  ignore_directories=False, stop_signal=signal.SIGINT,
                  kill_after=10):
         super().__init__(patterns, ignore_patterns, ignore_directories)
-        command_default = ('echo ${event_object} ${event_src_path} is '
+        self._command_default = ('echo ${event_object} ${event_src_path} is '
                     '${event_type}${if_moved}')
-        self._command = command if command else command_default
+        self._command = command if command else self._command_default
         self._stop_signal = stop_signal
         self._kill_after = kill_after
         self._process = None
 
     def _substitute_command(self, event):
+        if event is None:
+            c = self._command if self._command != self._command_default else \
+                ''
+            return c
+
         dest = event.dest_path if hasattr(event, 'dest_path') else ''
         if_moved = ' to "%s"' % dest if dest else ''
         context = {
@@ -108,7 +113,7 @@ class AutoRunTrick(Trick):
         return self._command
 
     def start(self, out=None, event=None):
-        command = self._substitute_command(event) if event else self._command
+        command = self._substitute_command(event)
         self._process = subprocess.Popen(command, shell=True,
                                          start_new_session=True, stdout=out)
 
