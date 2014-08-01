@@ -16,6 +16,7 @@ import subprocess
 import time
 
 from collections import defaultdict
+from string import Template
 
 from watchdog.tricks import Trick
 
@@ -82,17 +83,33 @@ class AutoRunTrick(Trick):
                  ignore_directories=False, stop_signal=signal.SIGINT,
                  kill_after=10):
         super().__init__(patterns, ignore_patterns, ignore_directories)
-        self._command = command
+        command_default = ('echo ${event_object} "${event_src_path}" is '
+                    '${event_type}${if_moved}')
+        self._command = command if command else command_default
         self._stop_signal = stop_signal
         self._kill_after = kill_after
         self._process = None
+
+    def _substitute_command(self, event):
+        dest = event.dest_path if hasattr(event, 'dest_path') else ''
+        if_moved = ' to "%s"' % dest if dest else ''
+        context = {
+            'event_object': 'directory' if event.is_directory else 'file',
+            'event_src_path': event.src_path,
+            'event_type': event.event_type,
+            'event_dest_path': dest,
+            'if_moved': if_moved,
+        }
+        command = Template(self._command).safe_substitute(**context)
+        return command
 
     @property
     def command(self):
         return self._command
 
-    def start(self, out=None):
-        self._process = subprocess.Popen(self._command, shell=True,
+    def start(self, out=None, event=None):
+        command = self._substitute_command(event) if event else self._command
+        self._process = subprocess.Popen(command, shell=True,
                                          start_new_session=True, stdout=out)
 
     def stop(self):

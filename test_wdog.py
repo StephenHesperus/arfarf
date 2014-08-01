@@ -142,6 +142,53 @@ class AutoRunTrickTestCase(unittest.TestCase):
         handler = AutoRunTrick(command='echo hello')
         self.assertEqual('echo hello', handler.command)
 
+    def test_command_default(self):
+        handler = AutoRunTrick(command='')
+        expected = ('echo ${event_object} "${event_src_path}" is '
+                    '${event_type}${if_moved}')
+        self.assertEqual(expected, handler.command)
+
+        handler = AutoRunTrick(command='echo hello')
+        self.assertEqual('echo hello', handler.command)
+
+    def test_command_default_substitution(self):
+        from string import Template
+        from watchdog.events import FileCreatedEvent, DirMovedEvent
+
+        handler = AutoRunTrick(command='')
+        path = '/source/path'
+        event = FileCreatedEvent(path)
+        command = handler._substitute_command(event)
+        t = Template('echo ${event_object} "${event_src_path}" is '
+                     '${event_type}${if_moved}')
+        created = {'event_object': 'file', 'event_src_path': path,
+                   'event_type': 'created', 'if_moved': ''}
+        expected = t.safe_substitute(**created)
+        self.assertEqual(expected, command)
+
+        # directory moved event
+        dest = '/dest/path'
+        event = DirMovedEvent(path, dest)
+        command = handler._substitute_command(event)
+        moved = {'event_object': 'directory', 'event_src_path': path,
+                   'event_type': 'moved', 'if_moved': ' to "%s"' % dest}
+        expected = t.safe_substitute(**moved)
+        self.assertEqual(expected, command)
+
+    def test_command_shell_environment_variables(self):
+        from string import Template
+        from watchdog.events import DirMovedEvent
+
+        command = 'echo ${event_dest_path}'
+        handler = AutoRunTrick(command)
+        path = '/source/path'
+        dest = '/dest/path'
+        event = DirMovedEvent(path, dest)
+        command = handler._substitute_command(event)
+        context = {'event_dest_path': dest}
+        expected = Template(command).safe_substitute(**context)
+        self.assertEqual(expected, command)
+
     def test_equality(self):
         handler1 = AutoRunTrick(command='echo hello')
         handler2 = AutoRunTrick(command='echo hello')
@@ -173,9 +220,20 @@ class AutoRunTrickTestCase(unittest.TestCase):
         outs, errs = handler._process.communicate()
         self.assertEqual('hello\n', outs.decode())
 
+    def test_start_with_event(self):
+        from watchdog.events import DirMovedEvent
+
+        handler = AutoRunTrick('')
+        event = DirMovedEvent('/source/path', '/dest/path')
+        handler.start(subprocess.PIPE, event)
+        outs, errs = handler._process.communicate()
+        expected = 'directory /source/path is moved to /dest/path\n'
+        self.assertEqual(expected, outs.decode())
+
 
 class MainTestCase(unittest.TestCase):
 
+    @unittest.skip('WIP')
     def test_main(self):
         from watchdog.observers import Observer
         try:

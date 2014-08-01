@@ -63,6 +63,14 @@
 [ ] use tempfile to test wdog.py
 
 [x] use defaultdict() to refactor WDConfigParser.schedule_with()
+
+[x] add event_src_path, dest path, event type environment variables
+    [x] if command is '', use a default log command
+    [ ] refactor tests
+
+[ ] remove wdconfig.py default dog entry
+
+
 ====
 
 [ ] about watchdog package:
@@ -79,3 +87,6 @@
         both remove duplications automatically
     [ ] problem: generate two identical modified event in a row when modifying
         a file
+
+[ ] nosetests
+    [ ] @unittest.expectedFailure RuntimeWarning
