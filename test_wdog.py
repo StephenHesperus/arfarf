@@ -237,3 +237,20 @@ class AutoRunTrickTestCase(unittest.TestCase):
         handler.start(subprocess.PIPE)
         outs, errs = handler._process.communicate()
         self.assertEqual('', outs.decode())
+
+    def test_stop(self):
+        handler = AutoRunTrick('echo hello')
+        handler.start(subprocess.PIPE)
+        handler.stop()
+        self.assertIs(handler._process, None)
+
+    @unittest.skip('WIP')
+    def test_on_any_event(self):
+        from watchdog.events import DirMovedEvent
+
+        handler = AutoRunTrick('')
+        event = DirMovedEvent('/source/path', '/dest/path')
+        handler.start()
+        handler.on_any_event(event)
+        handler.stop()
+        expected = 'directory /source/path is moved to /dest/path\n'

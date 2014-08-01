@@ -33,7 +33,8 @@
     [x] equality
     [x] hashable
     [x] __repr__
-    [x] start() test
+    [x] start() tests
+    [x] stop() tests
 
 [x] ~~_parse_wdcofig(Observer, dogs):~~ WDConfigParser(Dogs)
     [x] sort out dogs
@@ -71,6 +72,8 @@
     [x] refactor tests, default command
 
 [ ] remove wdconfig.py default dog entry
+
+[ ] how to mock subprocess direct output
 
 
 ====
