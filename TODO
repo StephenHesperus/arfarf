@@ -62,7 +62,7 @@
 
 [ ] use tempfile to test wdog.py
 
-[ ] use defaultdict() to refactor WDConfigParser.schedule_with()
+[x] use defaultdict() to refactor WDConfigParser.schedule_with()
 ====
 
 [ ] about watchdog package:

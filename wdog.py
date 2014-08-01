@@ -15,6 +15,8 @@ import signal
 import subprocess
 import time
 
+from collections import defaultdict
+
 from watchdog.tricks import Trick
 
 
@@ -61,14 +63,12 @@ class WDConfigParser(object):
         self._dogs = dogs
 
     def schedule_with(self, observer, cls):
-        handler_for_watch = {}
+        handler_for_watch = defaultdict(set)
         for dog in self._dogs:
             handler = dog.create_handler(cls)
             watch = observer.schedule(handler, *dog.watch_info)
-            if watch in handler_for_watch:
-                handler_for_watch[watch].add(handler)
-            else:
-                handler_for_watch[watch] = set([handler])
+            handler_for_watch[watch].add(handler)
+        handler_for_watch = dict(handler_for_watch)
 
         return handler_for_watch
 
