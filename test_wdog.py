@@ -260,6 +260,15 @@ class MainEntryTestCase(unittest.TestCase):
         except:
             self.fail('wdog.main() should work without args.')
 
+    def test__create_main_argparser_without_args(self):
+        import wdog
+
+        parser = wdog._create_main_argparser()
+        try:
+            parser.parse_args([])
+        except:
+            self.fail('_create_main_argparser() should work without args.')
+
 
 class FunctionalTestCase(unittest.TestCase):
 

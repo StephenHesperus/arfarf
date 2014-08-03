@@ -14,6 +14,7 @@ import os
 import signal
 import subprocess
 import time
+import argparse
 
 from collections import defaultdict
 from string import Template
@@ -161,6 +162,11 @@ class AutoRunTrick(Trick):
         repr_str = ('<AutoRunTrick: command={}, patterns={}, ignore_patterns={},'
                 'ignore_directories={}>').format(*self.key)
         return repr_str
+
+
+def _create_main_argparser():
+    parser = argparse.ArgumentParser()
+    return parser
 
 
 def main():
