@@ -247,7 +247,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
 
 class MainEntryTestCase(unittest.TestCase):
 
-    def test_main_with_empty_arglist(self):
+    def test_main_with_no_arg(self):
         import multiprocessing
         import wdog
 
@@ -256,6 +256,20 @@ class MainEntryTestCase(unittest.TestCase):
         try:
             # Let wdog.main() run for 0.01 sec.
             p.join(0.01)
+            p.terminate()
+        except:
+            self.fail('wdog.main() should work without args.')
+
+    def test_main_with_config_file_option(self):
+        import multiprocessing
+        import wdog
+
+        c = ['-c', 'hello.py']
+        p = multiprocessing.Process(target=wdog.main, args=(c,))
+        p.start()
+        try:
+            # Let wdog.main() run for 0.1 sec.
+            p.join(0.1)
             p.terminate()
         except:
             self.fail('wdog.main() should work without args.')

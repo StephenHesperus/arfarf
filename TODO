@@ -5,11 +5,13 @@
     [x] use_gitignore option, parse_gitignore()
         [x] use_gitignore
         [x] _parse_gitignore
-        [!] prerequisite:
+        [-] prerequisite:
             1. The .gitignore file exists and are under the directory where
                the script is run.
             2. The .gitignore file is formatted so that each line only
                contains one pattern, comments using '# comment' form is OK.
+        [ ] parse gitignore only once
+            [ ] gitignore support csv values, since it's a cheap operation now
     [x] create handler
     [x] prototype:
         dog(command='', patterns=['*'], ignore_patterns=[],
@@ -76,6 +78,7 @@
             [ ] the name of the file is not significant
         [x] use --gitignore option to specify a .gitignore file
             [ ] the name of the file is not significant
+    [x] use args default value None, that is, from command line
 
 [x] use defaultdict() to refactor WDConfigParser.schedule_with()
 

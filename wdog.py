@@ -175,7 +175,7 @@ def _create_main_argparser():
     return parser
 
 
-def main():
+def main(args=None):
     """Script entry point."""
     from watchdog.observers.polling import PollingObserver
     from wdconfig import dogs
@@ -202,4 +202,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(args)
