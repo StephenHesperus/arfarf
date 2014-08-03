@@ -166,6 +166,9 @@ class AutoRunTrick(Trick):
 
 def _create_main_argparser():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--config-file', '-c', dest='config',
+                        help=('specify a config file to provide dogs,'
+                              'the format should be the same as wdconfig.py'))
     return parser
 
 

@@ -269,6 +269,17 @@ class MainEntryTestCase(unittest.TestCase):
         except:
             self.fail('_create_main_argparser() should work without args.')
 
+    def test__create_main_argparser_config_option(self):
+        import wdog
+
+        parser = wdog._create_main_argparser()
+        try:
+            parser.parse_args(['--config-file', 'dogs.py'])
+            parser.parse_args(['-c', 'dogs.py'])
+        except SystemExit:
+            self.fail('_create_main_argparser() should work '
+                      'with --config-file/-c option.')
+
 
 class FunctionalTestCase(unittest.TestCase):
 

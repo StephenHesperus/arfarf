@@ -74,7 +74,7 @@
 [*] main()
     [*] _create_main_argparser()
         [x] empty arg list
-        [*] use --config-file option to specify a wdconfig.py file
+        [x] use --config-file option to specify a wdconfig.py file
             [ ] the name of the file is not significant
 
 [x] use defaultdict() to refactor WDConfigParser.schedule_with()
