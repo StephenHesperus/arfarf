@@ -272,7 +272,21 @@ class MainEntryTestCase(unittest.TestCase):
             p.join(0.1)
             p.terminate()
         except:
-            self.fail('wdog.main() should work without args.')
+            self.fail('wdog.main() should work with --config-file/-c option.')
+
+    def test_main_with_gitignore_option(self):
+        import multiprocessing
+        import wdog
+
+        c = ['-g', '.gitignore']
+        p = multiprocessing.Process(target=wdog.main, args=(c,))
+        p.start()
+        try:
+            # Let wdog.main() run for 0.1 sec.
+            p.join(0.1)
+            p.terminate()
+        except:
+            self.fail('wdog.main() should work with --gitignore/-g option.')
 
     def test__create_main_argparser_without_args(self):
         import wdog

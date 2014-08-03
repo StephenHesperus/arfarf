@@ -79,6 +79,7 @@
         [x] use --gitignore option to specify a .gitignore file
             [ ] the name of the file is not significant
     [x] use args default value None, that is, from command line
+    [x] use arglist
 
 [x] use defaultdict() to refactor WDConfigParser.schedule_with()
 
