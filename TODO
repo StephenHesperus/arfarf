@@ -62,7 +62,12 @@
 [-] change all Dog keyword arguments default value to tuple
     [x] or change the list param to tuple when hashing
 
-[-] use tempfile to test wdog.py
+[ ] use tempfile to test wdog.py
+    [*] use shell redirect to test logfile
+    [ ] use multiprocessing to start wdog.py
+        [ ] use wdog main()
+        [ ] use mock dogs
+        [ ] change to tempdir and change back after the test
 
 [x] use defaultdict() to refactor WDConfigParser.schedule_with()
 
@@ -73,7 +78,7 @@
 
 [ ] remove wdconfig.py default dog entry
 
-[ ] how to mock subprocess direct output
+[?] how to mock subprocess direct output
 
 
 ====

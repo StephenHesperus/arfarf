@@ -244,13 +244,20 @@ class AutoRunTrickTestCase(unittest.TestCase):
         handler.stop()
         self.assertIs(handler._process, None)
 
-    @unittest.skip('WIP')
-    def test_on_any_event(self):
-        from watchdog.events import DirMovedEvent
 
-        handler = AutoRunTrick('')
-        event = DirMovedEvent('/source/path', '/dest/path')
-        handler.start()
-        handler.on_any_event(event)
-        handler.stop()
-        expected = 'directory /source/path is moved to /dest/path\n'
+class FunctionalTestCase(unittest.TestCase):
+
+    def test_wdog_script_execution(self):
+        from tempfile import NamedTemporaryFile
+
+        with NamedTemporaryFile(mode='w+b') as t:
+            p = subprocess.Popen('python3 wdog.py > %s' % t.name, shell=True,
+                                 start_new_session=True)
+            try:
+                # Wait for the write operation to finish
+                p.wait(1)
+            except subprocess.TimeoutExpired:
+                os.killpg(os.getpgid(p.pid), signal.SIGINT)
+
+            t.seek(0)
+            self.assertEqual(t.read(), b'hello world\n')

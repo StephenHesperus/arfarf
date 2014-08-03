@@ -30,7 +30,7 @@ from wdog import Dog as dog
 dogs = (
     # examples
     ## this dog shows the default values for each argument
-    dog(command='', patterns=['*'], ignore_patterns=[],
+    dog(command='echo hello world', patterns=['*'], ignore_patterns=[],
         ignore_directories=False, path='.', recursive=True,
         use_gitignore=False),
 
