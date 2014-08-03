@@ -163,8 +163,14 @@ class AutoRunTrick(Trick):
         return repr_str
 
 
-def main(observer, dogs):
+def main():
     """Script entry point."""
+    from watchdog.observers.polling import PollingObserver
+    from wdconfig import dogs
+
+    # The reason to use PollingObserver() is it's os-independent. And it's
+    # more reliable.
+    observer = PollingObserver()
 
     parser = WDConfigParser(dogs)
     handler_for_watch = parser.schedule_with(observer, AutoRunTrick)
@@ -184,10 +190,4 @@ def main(observer, dogs):
 
 
 if __name__ == '__main__':
-    from watchdog.observers.polling import PollingObserver
-    from wdconfig import dogs
-
-    # The reason to use PollingObserver() is it's os-independent. And it's
-    # more reliable.
-    observer = PollingObserver()
-    main(observer, dogs)
+    main()

@@ -63,11 +63,18 @@
     [x] or change the list param to tuple when hashing
 
 [ ] use tempfile to test wdog.py
-    [*] use shell redirect to test logfile
-    [ ] use multiprocessing to start wdog.py
+    [x] use shell redirect to test logfile
+    [*] change to tempdir and change back after the test
+    [-] use multiprocessing to start wdog.py
         [ ] use wdog main()
         [ ] use mock dogs
-        [ ] change to tempdir and change back after the test
+
+[*] use --config-file option to specify a wdconfig.py file
+    [ ] the name of the file is not significant
+[ ] use --gitignore option to specify a .gitignore file
+    [ ] the name of the file is not significant
+[*] main()
+    [x] empty arg list
 
 [x] use defaultdict() to refactor WDConfigParser.schedule_with()
 
@@ -79,6 +86,8 @@
 [ ] remove wdconfig.py default dog entry
 
 [?] how to mock subprocess direct output
+
+[ ] add double quotes to default command output
 
 
 ====

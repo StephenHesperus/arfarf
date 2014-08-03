@@ -245,19 +245,45 @@ class AutoRunTrickTestCase(unittest.TestCase):
         self.assertIs(handler._process, None)
 
 
+class MainEntryTestCase(unittest.TestCase):
+
+    def test_main_with_empty_arglist(self):
+        import multiprocessing
+        import wdog
+
+        p = multiprocessing.Process(target=wdog.main)
+        p.start()
+        try:
+            # Let wdog.main() run for 0.01 sec.
+            p.join(0.01)
+            p.terminate()
+        except:
+            self.fail('wdog.main() should work without args.')
+
+
 class FunctionalTestCase(unittest.TestCase):
 
+    @unittest.skip('WIP')
     def test_wdog_script_execution(self):
-        from tempfile import NamedTemporaryFile
+        from tempfile import NamedTemporaryFile, TemporaryDirectory
+
+        # Entry temporary directory.
+        # td = TemporaryDirectory()
+        # pwd = os.getcwd()
+        # os.chdir(td.name)
 
         with NamedTemporaryFile(mode='w+b') as t:
             p = subprocess.Popen('python3 wdog.py > %s' % t.name, shell=True,
                                  start_new_session=True)
             try:
-                # Wait for the write operation to finish
+                # Wait for the write operation to finish.
                 p.wait(1)
             except subprocess.TimeoutExpired:
                 os.killpg(os.getpgid(p.pid), signal.SIGINT)
 
             t.seek(0)
             self.assertEqual(t.read(), b'hello world\n')
+
+        # Exit temporary directory.
+        # os.chdir(pwd)
+        # td.cleanup()
