@@ -280,6 +280,17 @@ class MainEntryTestCase(unittest.TestCase):
             self.fail('_create_main_argparser() should work '
                       'with --config-file/-c option.')
 
+    def test__create_main_argparser_gitignore_option(self):
+        import wdog
+
+        parser = wdog._create_main_argparser()
+        try:
+            parser.parse_args(['--gitignore', '.gitignore'])
+            parser.parse_args(['-g', '.gitignore'])
+        except SystemExit:
+            self.fail('_create_main_argparser() should work '
+                      'with --gitignore/-g option.')
+
 
 class FunctionalTestCase(unittest.TestCase):
 

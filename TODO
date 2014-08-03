@@ -69,12 +69,12 @@
         [ ] use wdog main()
         [ ] use mock dogs
 
-[ ] use --gitignore option to specify a .gitignore file
-    [ ] the name of the file is not significant
 [*] main()
     [*] _create_main_argparser()
         [x] empty arg list
         [x] use --config-file option to specify a wdconfig.py file
+            [ ] the name of the file is not significant
+        [x] use --gitignore option to specify a .gitignore file
             [ ] the name of the file is not significant
 
 [x] use defaultdict() to refactor WDConfigParser.schedule_with()

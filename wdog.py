@@ -169,6 +169,9 @@ def _create_main_argparser():
     parser.add_argument('--config-file', '-c', dest='config',
                         help=('specify a config file to provide dogs,'
                               'the format should be the same as wdconfig.py'))
+    parser.add_argument('--gitignore', '-g', dest='gitignore',
+                        help=('specify a .gitignore file to provide patterns'
+                              'to ignore'))
     return parser
 
 
