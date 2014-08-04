@@ -23,6 +23,9 @@ from watchdog.tricks import Trick
 
 
 class Dog(object):
+
+    _gitignore = None
+
     def __init__(self, command, patterns=['*'], ignore_patterns=[],
                  ignore_directories=False, path='.', recursive=True,
                  use_gitignore=False):
@@ -34,7 +37,12 @@ class Dog(object):
         self._recursive = recursive
         self._use_gitignore = use_gitignore
 
-    def _parse_gitignore(self):
+    def __del__(self):
+        # Clear _gitignore state when Dog class is deleted.
+        type(self)._gitignore = None
+
+    @staticmethod
+    def _parse_gitignore():
         with open(os.path.join(os.getcwd(), '.gitignore')) as f:
             lines = f.readlines()
         gitignore = []
@@ -43,11 +51,12 @@ class Dog(object):
                 gitignore.append(line.strip())
         return gitignore
 
-    def create_handler(self, cls):
+    def create_handler(self, trick_cls):
         if self._use_gitignore:
-            gitignore = self._parse_gitignore()
-            self._ignore_patterns.extend(gitignore)
-        return cls(command=self._command, patterns=self._patterns,
+            if type(self)._gitignore is None:
+                type(self)._gitignore = self._parse_gitignore()
+            self._ignore_patterns.extend(type(self)._gitignore)
+        return trick_cls(command=self._command, patterns=self._patterns,
                    ignore_patterns=self._ignore_patterns,
                    ignore_directories=self._ignore_directories)
 

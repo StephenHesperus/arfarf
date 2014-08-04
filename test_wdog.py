@@ -79,8 +79,10 @@ class WDConfigParserTestCase(unittest.TestCase):
     def setUp(self):
         from wdog import Dog as dog
         dogs_mock = (
-            dog(command='echo dog1', path='.', recursive=True),
-            dog(command='echo dog2', path='.', recursive=True),
+            dog(command='echo dog1', path='.', recursive=True,
+                use_gitignore=True),
+            dog(command='echo dog2', path='.', recursive=True,
+                use_gitignore=True),
             dog(command='echo dog3', path='..', recursive=True),
             dog(command='echo dog4', path='.', recursive=False),
         )
@@ -100,6 +102,7 @@ class WDConfigParserTestCase(unittest.TestCase):
         self.hpatcher.stop()
 
     def test_schedule_with(self):
+        # This provides more readable traceback message for ObservedWatch.
         def ow_repr(self):
             return str((self.path, self.is_recursive))
         setattr(ObservedWatch, '__repr__', ow_repr)
@@ -129,6 +132,16 @@ class WDConfigParserTestCase(unittest.TestCase):
         # self.fail(result)
         # self.fail(handler_for_watch)
         self.assertEqual(result, handler_for_watch)
+
+    def test__parse_gitignore_called_at_most_once_in_create_handler(self):
+        with patch.object(Dog, '_parse_gitignore') as mg:
+            observer = Observer()
+            self.parser.schedule_with(
+                observer,
+                watchdog.events.PatternMatchingEventHandler
+            )
+            self.assertIs(Dog._parse_gitignore, mg)
+        mg.assert_called_once_with()
 
 
 class AutoRunTrickTestCase(unittest.TestCase):
