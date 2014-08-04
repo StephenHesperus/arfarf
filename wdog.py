@@ -47,8 +47,22 @@ class Dog(object):
             lines = f.readlines()
         gitignore = []
         for line in lines:
-            if not line.startswith('#'):
-                gitignore.append(line.strip())
+            # drop comment lines
+            if line.startswith('#'):
+                continue
+            # drop blank lines
+            elif line.startswith('\n'):
+                continue
+            # patterns starting with a '!' is not supported
+            # but "\!" to escape '!' is supported
+            elif line.startswith('!'):
+                continue
+            else:
+                p = line.strip()
+                # support escape trailing space with a backslash
+                if p.endswith('\\'):
+                    p += ' '
+            gitignore.append(p)
         return gitignore
 
     def create_handler(self, trick_cls):

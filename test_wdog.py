@@ -15,7 +15,20 @@ from wdog import Dog, WDConfigParser, AutoRunTrick
 class DogTestCase(unittest.TestCase):
 
     def setUp(self):
-        m = mock_open(read_data='*.py[cod]\n# comment line\n__pycache__/\n')
+        m = mock_open(
+            read_data=(
+                '\n'
+                '# comment line\n'
+                '!not_supported\n'
+                "\#hash\n"
+                "\!bang!\n"
+                "trailing\ \n"
+                '*.py[cod]\n'
+                '__pycache__/\n'
+            )
+        )
+        self.patterns = ["\#hash", "\!bang!", "trailing\ ",
+                         '*.py[cod]', '__pycache__/']
         self.patcher = patch('builtins.open', m, create=True)
         self.gitignore_mock = self.patcher.start()
 
@@ -39,11 +52,10 @@ class DogTestCase(unittest.TestCase):
     def test__parse_gitignore(self):
         dog = Dog(command='echo hello')
         result = dog._parse_gitignore()
-        patterns = ['*.py[cod]', '__pycache__/']
         self.gitignore_mock.assert_called_once_with(
             os.path.join(os.getcwd(), '.gitignore')
         )
-        self.assertEqual(patterns, result)
+        self.assertEqual(self.patterns, result)
 
     def test_create_handler(self):
         import watchdog.events
@@ -59,8 +71,7 @@ class DogTestCase(unittest.TestCase):
             MockClass.assert_called_once_with(
                 command='echo hello',
                 patterns=['*.py'],
-                ignore_patterns=['more_ipattern',
-                                 '*.py[cod]', '__pycache__/'],
+                ignore_patterns=['more_ipattern'] + self.patterns,
                 ignore_directories=True
             )
 

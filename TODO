@@ -11,7 +11,22 @@
             2. The .gitignore file is formatted so that each line only
                contains one pattern, comments using '# comment' form is OK.
         [x] parse gitignore only once
-            [ ] gitignore support csv values, since it's a cheap operation now
+            [!] when trying to access a class attribute, it should be a
+                classmethod
+            [-] gitignore support csv values, since it's a cheap operation now
+                [!] support clean .gitignore format, that is, like
+                    https://github.com/github/gitignore, or
+                    https://github.com/joeblau/gitignore, or
+                    should I say, __line based patterns__
+                [x] 1. blank line
+                [x] 2. comment line starting with '#'
+                [x] 3. '\#' to escape a '#' character
+                [x] 4. '\ ' to escape a ' ' character
+                [x] 5. '\!' to escape a '!' character
+                [-] 6. '!' to include a previous pattern
+                    [!] this won't make any sense to ignore_patterns, to
+                        include those patterns, specify it in patterns
+            [ ] raise exception when file not found
     [x] create handler
     [x] prototype:
         dog(command='', patterns=['*'], ignore_patterns=[],
