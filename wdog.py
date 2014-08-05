@@ -207,9 +207,14 @@ def main(args=None):
     args = parser.parse_args(args)
 
     if args.config is not None:
+        import sys
         import importlib
-        m = args.config.rsplit('.py')[0]
-        m = importlib.import_module(m)
+
+        mpath = os.path.dirname(args.config)
+        sys.path.insert(0, mpath)
+        mbase = os.path.basename(args.config)
+        mname = os.path.splitext(mbase)[0]
+        m = importlib.import_module(mname)
         dogs = m.dogs
     else:
         from wdconfig import dogs

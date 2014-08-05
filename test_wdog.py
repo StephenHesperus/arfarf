@@ -314,7 +314,7 @@ class FunctionalTestCase(unittest.TestCase):
 
         # Entry temporary directory.
         td = TemporaryDirectory()
-        pwd = os.getcwd()
+        oldwd = os.getcwd()
         os.chdir(td.name)
 
         # Redirect command output to temporary file.
@@ -322,15 +322,15 @@ class FunctionalTestCase(unittest.TestCase):
             import shutil
 
             # Fixtures set up.
-            wdogpy = os.path.join(pwd, 'wdog.py')
-            fixture_wdconfigpy = os.path.join(pwd, 'fixture_wdconfig.py')
-            fixture_gitignore = os.path.join(pwd, 'fixture_gitignore')
-            shutil.copy(wdogpy, '.')
-            shutil.copy(fixture_wdconfigpy, '.')
-            shutil.copy(fixture_gitignore, '.')
+            wdogpy = os.path.join(oldwd, 'wdog.py')
+            fixture_wdconfigpy = os.path.join(oldwd, 'fixture_wdconfig.py')
+            fixture_gitignore = os.path.join(oldwd, 'fixture_gitignore')
 
-            cmd = ('python3 wdog.py -c fixture_wdconfig.py'
-                   ' -g fixture_gitignore > %s') % t.name
+            cmd = 'python3 {} -c {} -g {} > {}'.format(wdogpy,
+                                                       fixture_wdconfigpy,
+                                                       fixture_gitignore,
+                                                       t.name)
+
             p = subprocess.Popen(cmd, shell=True, start_new_session=True)
 
             # Test file system events.
@@ -347,5 +347,5 @@ class FunctionalTestCase(unittest.TestCase):
             self.assertEqual(result, expected)
 
         # Exit temporary directory.
-        os.chdir(pwd)
+        os.chdir(oldwd)
         td.cleanup()
