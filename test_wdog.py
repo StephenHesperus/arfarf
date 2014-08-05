@@ -1,6 +1,8 @@
 import argparse
 from argparse import Namespace
 import os
+import sys
+from io import StringIO
 import subprocess
 import signal
 import unittest
@@ -270,63 +272,6 @@ class AutoRunTrickTestCase(unittest.TestCase):
         handler.stop()
         self.assertIs(handler._process, None)
 
-# MainEntryTestCase fixture
-class ArgumentParserError(Exception):
-
-    def __init__(self, message, stdout=None, stderr=None, error_code=None):
-        Exception.__init__(self, message, stdout, stderr)
-        self.message = message
-        self.stdout = stdout
-        self.stderr = stderr
-        self.error_code = error_code
-
-
-def stderr_to_parser_error(parse_args, *args, **kwargs):
-    # if this is being called recursively and stderr or stdout is already being
-    # redirected, simply call the function and let the enclosing function
-    # catch the exception
-    if isinstance(sys.stderr, StringIO) or isinstance(sys.stdout, StringIO):
-        return parse_args(*args, **kwargs)
-
-    # if this is not being called recursively, redirect stderr and
-    # use it as the ArgumentParserError message
-    old_stdout = sys.stdout
-    old_stderr = sys.stderr
-    sys.stdout = StringIO()
-    sys.stderr = StringIO()
-    try:
-        try:
-            result = parse_args(*args, **kwargs)
-            for key in list(vars(result)):
-                if getattr(result, key) is sys.stdout:
-                    setattr(result, key, old_stdout)
-                if getattr(result, key) is sys.stderr:
-                    setattr(result, key, old_stderr)
-            return result
-        except SystemExit:
-            code = sys.exc_info()[1].code
-            stdout = sys.stdout.getvalue()
-            stderr = sys.stderr.getvalue()
-            raise ArgumentParserError("SystemExit", stdout, stderr, code)
-    finally:
-        sys.stdout = old_stdout
-        sys.stderr = old_stderr
-
-
-class ErrorRaisingArgumentParser(argparse.ArgumentParser):
-
-    def parse_args(self, *args, **kwargs):
-        parse_args = super(ErrorRaisingArgumentParser, self).parse_args
-        return stderr_to_parser_error(parse_args, *args, **kwargs)
-
-    def exit(self, *args, **kwargs):
-        exit = super(ErrorRaisingArgumentParser, self).exit
-        return stderr_to_parser_error(exit, *args, **kwargs)
-
-    def error(self, *args, **kwargs):
-        error = super(ErrorRaisingArgumentParser, self).error
-        return stderr_to_parser_error(error, *args, **kwargs)
-
 
 class MainEntryTestCase(unittest.TestCase):
 
@@ -338,95 +283,28 @@ class MainEntryTestCase(unittest.TestCase):
         result = self.parser.parse_args([])
         self.assertEqual(Namespace(config=None, gitignore=None), result)
 
-    def test__create_main_argparser_config_option(self):
+    def test__create_main_argparser_with_config_option(self):
         lresult = self.parser.parse_args(['--config-file', 'dogs.py'])
         sresult = self.parser.parse_args(['-c', 'dogs.py'])
         self.assertEqual(lresult, sresult)
         self.assertEqual(lresult, Namespace(config='dogs.py', gitignore=None))
 
-    def test__create_main_argparser_gitignore_option(self):
+    def test__create_main_argparser_with_gitignore_option(self):
         lresult = self.parser.parse_args(['--gitignore', '.gitignore'])
         sresult = self.parser.parse_args(['-g', '.gitignore'])
         self.assertEqual(lresult, sresult)
         self.assertEqual(lresult,
                          Namespace(config=None, gitignore='.gitignore'))
 
-    @unittest.skip('WIP NOW')
     def test__create_main_argparser_with_unknown_option(self):
-        # with self.assertRaises(SystemExit):
-            # self.parser.parse_args(['--unknown-option', 'unknown-option'])
-        import wdog
-        with patch('argparse.ArgumentParser', ErrorRaisingArgumentParser) \
-                as P:
-            parser = wdog._create_main_argparser()
-            with self.assertRaises(ArgumentParserError):
-                parser.parse_args(['--unknown-option', 'unknown-option'])
+        def error(self, *args, **kwargs):
+            raise SystemExit
 
-    @unittest.skip('WIP')
-    def test_main_with_no_arg(self):
-        import multiprocessing
-        import wdog
-
-        p = multiprocessing.Process(target=wdog.main)
-        p.start()
-        try:
-            # Let wdog.main() run for 0.01 sec.
-            p.join(0.01)
-            p.terminate()
-        except:
-            self.fail('wdog.main() should work without args.')
-
-    @unittest.skip('WIP')
-    def test_main_with_config_file_option(self):
-        import multiprocessing
-        import wdog
-
-        c = ['-c', 'hello.py']
-        p = multiprocessing.Process(target=wdog.main, args=(c,))
-        p.start()
-        try:
-            # Let wdog.main() run for 0.1 sec.
-            p.join(0.1)
-            p.terminate()
-        except:
-            self.fail('wdog.main() should work with --config-file/-c option.')
-
-    @unittest.skip('WIP')
-    def test_main_with_gitignore_option(self):
-        import multiprocessing
-        import wdog
-
-        c = ['-g', '.gitignore']
-        p = multiprocessing.Process(target=wdog.main, args=(c,))
-        p.start()
-        try:
-            # Let wdog.main() run for 0.1 sec.
-            p.join(0.1)
-            p.terminate()
-        except:
-            self.fail('wdog.main() should work with --gitignore/-g option.')
-
-    @unittest.skip('WIP')
-    def test_main_with_unknown_option(self):
-        import multiprocessing
-        import wdog
-
-        c = ['--unknown-option', 'unknown-option']
-        p = multiprocessing.Process(target=wdog.main, args=(c,))
-        p.start()
-        # wait for 1 sec
-        for _ in range(10):
-            p.join(0.1)
-            if not p.is_alive():
-                self.assertEqual(p.exitcode,
-                                 2, # SystemExit 2 when unknown option
-                                 'wdog.main() should not work '
-                                 'with --unknown-optiong option.')
-                break
-        else:
-            p.terminate()
-            self.fail('wdog.main() should not work '
-                      'with --unknown-optiong option.')
+        with patch.object(argparse.ArgumentParser, 'error', new=error) as m:
+            self.assertIs(argparse.ArgumentParser.error, m)
+            args = ['--unknown-option', 'unknown-option']
+            with self.assertRaises(SystemExit):
+                self.parser.parse_args(args)
 
 
 class FunctionalTestCase(unittest.TestCase):
