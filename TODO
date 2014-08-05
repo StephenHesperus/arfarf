@@ -97,7 +97,8 @@
         [x] tests
     [x] use args default value None, that is, from command line
     [x] use arglist
-    [*] test can use --config-file/-c option
+    [x] test can use --config-file/-c, --gitignore/-g option
+    [*] test file system events
 
 [x] use defaultdict() to refactor WDConfigParser.schedule_with()
 
@@ -111,6 +112,10 @@
 [?] how to mock subprocess direct output
 
 [ ] add double quotes to default command output
+
+[ ] add use_gitignore default option to wdconfig.py so it can be set to True
+    [ ] dog use_gitignore keyword argument overrides the default option
+    [ ] add command line option to set this
 
 
 ====

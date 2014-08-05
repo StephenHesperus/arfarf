@@ -309,7 +309,7 @@ class MainEntryTestCase(unittest.TestCase):
 
 class FunctionalTestCase(unittest.TestCase):
 
-    def test_wdog_config_file_option(self):
+    def test_wdog_script_execution(self):
         from tempfile import NamedTemporaryFile, TemporaryDirectory
 
         # Entry temporary directory.
@@ -317,22 +317,34 @@ class FunctionalTestCase(unittest.TestCase):
         pwd = os.getcwd()
         os.chdir(td.name)
 
+        # Redirect command output to temporary file.
         with NamedTemporaryFile(mode='w+b') as t:
             import shutil
+
+            # Fixtures set up.
             wdogpy = os.path.join(pwd, 'wdog.py')
             fixture_wdconfigpy = os.path.join(pwd, 'fixture_wdconfig.py')
+            fixture_gitignore = os.path.join(pwd, 'fixture_gitignore')
             shutil.copy(wdogpy, '.')
             shutil.copy(fixture_wdconfigpy, '.')
-            cmd = 'python3 wdog.py -c fixture_wdconfig.py > %s' % t.name
+            shutil.copy(fixture_gitignore, '.')
+
+            cmd = ('python3 wdog.py -c fixture_wdconfig.py'
+                   ' -g fixture_gitignore > %s') % t.name
             p = subprocess.Popen(cmd, shell=True, start_new_session=True)
+
+            # Test file system events.
+
             try:
-                # Wait for the write operation to finish.
+                # Wait for the redirect operation to finish.
                 p.wait(1)
             except subprocess.TimeoutExpired:
                 os.killpg(os.getpgid(p.pid), signal.SIGINT)
 
             t.seek(0)
-            self.assertEqual(t.read(), b'hello world\n')
+            result = set(t.read().split(b'\n'))
+            expected = set(b'hello world\nnice to meet you\n'.split(b'\n'))
+            self.assertEqual(result, expected)
 
         # Exit temporary directory.
         os.chdir(pwd)

@@ -25,6 +25,7 @@ from watchdog.tricks import Trick
 class Dog(object):
 
     _gitignore = None
+    _gitignore_path = os.path.join(os.getcwd(), '.gitignore')
 
     def __init__(self, command, patterns=['*'], ignore_patterns=[],
                  ignore_directories=False, path='.', recursive=True,
@@ -41,9 +42,13 @@ class Dog(object):
         # Clear _gitignore state when Dog class is deleted.
         type(self)._gitignore = None
 
-    @staticmethod
-    def _parse_gitignore():
-        with open(os.path.join(os.getcwd(), '.gitignore')) as f:
+    @classmethod
+    def set_gitignore_path(cls, path):
+        cls._gitignore_path = path
+
+    @classmethod
+    def _parse_gitignore(cls):
+        with open(cls._gitignore_path) as f:
             lines = f.readlines()
         gitignore = []
         for line in lines:
@@ -208,6 +213,10 @@ def main(args=None):
         dogs = m.dogs
     else:
         from wdconfig import dogs
+
+    if args.gitignore is not None:
+        gitignore_path = os.path.join(os.getcwd(), args.gitignore)
+        Dog.set_gitignore_path(gitignore_path)
 
     # The reason to use PollingObserver() is it's os-independent. And it's
     # more reliable.
