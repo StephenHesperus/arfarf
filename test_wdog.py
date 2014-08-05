@@ -1,3 +1,5 @@
+import argparse
+from argparse import Namespace
 import os
 import subprocess
 import signal
@@ -268,12 +270,97 @@ class AutoRunTrickTestCase(unittest.TestCase):
         handler.stop()
         self.assertIs(handler._process, None)
 
+# MainEntryTestCase fixture
+class ArgumentParserError(Exception):
+
+    def __init__(self, message, stdout=None, stderr=None, error_code=None):
+        Exception.__init__(self, message, stdout, stderr)
+        self.message = message
+        self.stdout = stdout
+        self.stderr = stderr
+        self.error_code = error_code
+
+
+def stderr_to_parser_error(parse_args, *args, **kwargs):
+    # if this is being called recursively and stderr or stdout is already being
+    # redirected, simply call the function and let the enclosing function
+    # catch the exception
+    if isinstance(sys.stderr, StringIO) or isinstance(sys.stdout, StringIO):
+        return parse_args(*args, **kwargs)
+
+    # if this is not being called recursively, redirect stderr and
+    # use it as the ArgumentParserError message
+    old_stdout = sys.stdout
+    old_stderr = sys.stderr
+    sys.stdout = StringIO()
+    sys.stderr = StringIO()
+    try:
+        try:
+            result = parse_args(*args, **kwargs)
+            for key in list(vars(result)):
+                if getattr(result, key) is sys.stdout:
+                    setattr(result, key, old_stdout)
+                if getattr(result, key) is sys.stderr:
+                    setattr(result, key, old_stderr)
+            return result
+        except SystemExit:
+            code = sys.exc_info()[1].code
+            stdout = sys.stdout.getvalue()
+            stderr = sys.stderr.getvalue()
+            raise ArgumentParserError("SystemExit", stdout, stderr, code)
+    finally:
+        sys.stdout = old_stdout
+        sys.stderr = old_stderr
+
+
+class ErrorRaisingArgumentParser(argparse.ArgumentParser):
+
+    def parse_args(self, *args, **kwargs):
+        parse_args = super(ErrorRaisingArgumentParser, self).parse_args
+        return stderr_to_parser_error(parse_args, *args, **kwargs)
+
+    def exit(self, *args, **kwargs):
+        exit = super(ErrorRaisingArgumentParser, self).exit
+        return stderr_to_parser_error(exit, *args, **kwargs)
+
+    def error(self, *args, **kwargs):
+        error = super(ErrorRaisingArgumentParser, self).error
+        return stderr_to_parser_error(error, *args, **kwargs)
+
 
 class MainEntryTestCase(unittest.TestCase):
 
     def setUp(self):
         import wdog
         self.parser = wdog._create_main_argparser()
+
+    def test__create_main_argparser_without_args(self):
+        result = self.parser.parse_args([])
+        self.assertEqual(Namespace(config=None, gitignore=None), result)
+
+    def test__create_main_argparser_config_option(self):
+        lresult = self.parser.parse_args(['--config-file', 'dogs.py'])
+        sresult = self.parser.parse_args(['-c', 'dogs.py'])
+        self.assertEqual(lresult, sresult)
+        self.assertEqual(lresult, Namespace(config='dogs.py', gitignore=None))
+
+    def test__create_main_argparser_gitignore_option(self):
+        lresult = self.parser.parse_args(['--gitignore', '.gitignore'])
+        sresult = self.parser.parse_args(['-g', '.gitignore'])
+        self.assertEqual(lresult, sresult)
+        self.assertEqual(lresult,
+                         Namespace(config=None, gitignore='.gitignore'))
+
+    @unittest.skip('WIP NOW')
+    def test__create_main_argparser_with_unknown_option(self):
+        # with self.assertRaises(SystemExit):
+            # self.parser.parse_args(['--unknown-option', 'unknown-option'])
+        import wdog
+        with patch('argparse.ArgumentParser', ErrorRaisingArgumentParser) \
+                as P:
+            parser = wdog._create_main_argparser()
+            with self.assertRaises(ArgumentParserError):
+                parser.parse_args(['--unknown-option', 'unknown-option'])
 
     @unittest.skip('WIP')
     def test_main_with_no_arg(self):
@@ -340,32 +427,6 @@ class MainEntryTestCase(unittest.TestCase):
             p.terminate()
             self.fail('wdog.main() should not work '
                       'with --unknown-optiong option.')
-
-    def test__create_main_argparser_without_args(self):
-        try:
-            self.parser.parse_args([])
-        except SystemExit:
-            self.fail('_create_main_argparser() should work without args.')
-
-    def test__create_main_argparser_config_option(self):
-        try:
-            self.parser.parse_args(['--config-file', 'dogs.py'])
-            self.parser.parse_args(['-c', 'dogs.py'])
-        except SystemExit:
-            self.fail('_create_main_argparser() should work '
-                      'with --config-file/-c option.')
-
-    def test__create_main_argparser_gitignore_option(self):
-        try:
-            self.parser.parse_args(['--gitignore', '.gitignore'])
-            self.parser.parse_args(['-g', '.gitignore'])
-        except SystemExit:
-            self.fail('_create_main_argparser() should work '
-                      'with --gitignore/-g option.')
-
-    def test__create_main_argparser_with_unknown_option(self):
-        with self.assertRaises(SystemExit):
-            self.parser.parse_args(['--unknown-option', 'unknown-option'])
 
 
 class FunctionalTestCase(unittest.TestCase):
