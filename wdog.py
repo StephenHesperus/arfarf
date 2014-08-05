@@ -194,8 +194,9 @@ def _create_main_argparser():
     return parser
 
 
-def main(args=None):
+def main(arglist=None):
     """Script entry point."""
+
     from watchdog.observers.polling import PollingObserver
     from wdconfig import dogs
 

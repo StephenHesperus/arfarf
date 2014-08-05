@@ -93,6 +93,7 @@
             [ ] the name of the file is not significant
         [x] use --gitignore option to specify a .gitignore file
             [ ] the name of the file is not significant
+        [*] use subclass of ArgumentParser to test, mock exception
     [x] use args default value None, that is, from command line
     [x] use arglist
 

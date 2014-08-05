@@ -271,6 +271,11 @@ class AutoRunTrickTestCase(unittest.TestCase):
 
 class MainEntryTestCase(unittest.TestCase):
 
+    def setUp(self):
+        import wdog
+        self.parser = wdog._create_main_argparser()
+
+    @unittest.skip('WIP')
     def test_main_with_no_arg(self):
         import multiprocessing
         import wdog
@@ -284,6 +289,7 @@ class MainEntryTestCase(unittest.TestCase):
         except:
             self.fail('wdog.main() should work without args.')
 
+    @unittest.skip('WIP')
     def test_main_with_config_file_option(self):
         import multiprocessing
         import wdog
@@ -298,6 +304,7 @@ class MainEntryTestCase(unittest.TestCase):
         except:
             self.fail('wdog.main() should work with --config-file/-c option.')
 
+    @unittest.skip('WIP')
     def test_main_with_gitignore_option(self):
         import multiprocessing
         import wdog
@@ -312,36 +319,53 @@ class MainEntryTestCase(unittest.TestCase):
         except:
             self.fail('wdog.main() should work with --gitignore/-g option.')
 
-    def test__create_main_argparser_without_args(self):
+    @unittest.skip('WIP')
+    def test_main_with_unknown_option(self):
+        import multiprocessing
         import wdog
 
-        parser = wdog._create_main_argparser()
+        c = ['--unknown-option', 'unknown-option']
+        p = multiprocessing.Process(target=wdog.main, args=(c,))
+        p.start()
+        # wait for 1 sec
+        for _ in range(10):
+            p.join(0.1)
+            if not p.is_alive():
+                self.assertEqual(p.exitcode,
+                                 2, # SystemExit 2 when unknown option
+                                 'wdog.main() should not work '
+                                 'with --unknown-optiong option.')
+                break
+        else:
+            p.terminate()
+            self.fail('wdog.main() should not work '
+                      'with --unknown-optiong option.')
+
+    def test__create_main_argparser_without_args(self):
         try:
-            parser.parse_args([])
-        except:
+            self.parser.parse_args([])
+        except SystemExit:
             self.fail('_create_main_argparser() should work without args.')
 
     def test__create_main_argparser_config_option(self):
-        import wdog
-
-        parser = wdog._create_main_argparser()
         try:
-            parser.parse_args(['--config-file', 'dogs.py'])
-            parser.parse_args(['-c', 'dogs.py'])
+            self.parser.parse_args(['--config-file', 'dogs.py'])
+            self.parser.parse_args(['-c', 'dogs.py'])
         except SystemExit:
             self.fail('_create_main_argparser() should work '
                       'with --config-file/-c option.')
 
     def test__create_main_argparser_gitignore_option(self):
-        import wdog
-
-        parser = wdog._create_main_argparser()
         try:
-            parser.parse_args(['--gitignore', '.gitignore'])
-            parser.parse_args(['-g', '.gitignore'])
+            self.parser.parse_args(['--gitignore', '.gitignore'])
+            self.parser.parse_args(['-g', '.gitignore'])
         except SystemExit:
             self.fail('_create_main_argparser() should work '
                       'with --gitignore/-g option.')
+
+    def test__create_main_argparser_with_unknown_option(self):
+        with self.assertRaises(SystemExit):
+            self.parser.parse_args(['--unknown-option', 'unknown-option'])
 
 
 class FunctionalTestCase(unittest.TestCase):
