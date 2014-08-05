@@ -194,11 +194,20 @@ def _create_main_argparser():
     return parser
 
 
-def main(arglist=None):
+def main(args=None):
     """Script entry point."""
-
     from watchdog.observers.polling import PollingObserver
-    from wdconfig import dogs
+
+    parser = _create_main_argparser()
+    args = parser.parse_args(args)
+
+    if args.config is not None:
+        import importlib
+        m = args.config.rsplit('.py')[0]
+        m = importlib.import_module(m)
+        dogs = m.dogs
+    else:
+        from wdconfig import dogs
 
     # The reason to use PollingObserver() is it's os-independent. And it's
     # more reliable.
@@ -222,4 +231,4 @@ def main(arglist=None):
 
 
 if __name__ == '__main__':
-    main(args)
+    main()

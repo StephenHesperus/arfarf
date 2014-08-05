@@ -309,18 +309,22 @@ class MainEntryTestCase(unittest.TestCase):
 
 class FunctionalTestCase(unittest.TestCase):
 
-    @unittest.skip('WIP')
-    def test_wdog_script_execution(self):
+    def test_wdog_config_file_option(self):
         from tempfile import NamedTemporaryFile, TemporaryDirectory
 
         # Entry temporary directory.
-        # td = TemporaryDirectory()
-        # pwd = os.getcwd()
-        # os.chdir(td.name)
+        td = TemporaryDirectory()
+        pwd = os.getcwd()
+        os.chdir(td.name)
 
         with NamedTemporaryFile(mode='w+b') as t:
-            p = subprocess.Popen('python3 wdog.py > %s' % t.name, shell=True,
-                                 start_new_session=True)
+            import shutil
+            wdogpy = os.path.join(pwd, 'wdog.py')
+            fixture_wdconfigpy = os.path.join(pwd, 'fixture_wdconfig.py')
+            shutil.copy(wdogpy, '.')
+            shutil.copy(fixture_wdconfigpy, '.')
+            cmd = 'python3 wdog.py -c fixture_wdconfig.py > %s' % t.name
+            p = subprocess.Popen(cmd, shell=True, start_new_session=True)
             try:
                 # Wait for the write operation to finish.
                 p.wait(1)
@@ -331,5 +335,5 @@ class FunctionalTestCase(unittest.TestCase):
             self.assertEqual(t.read(), b'hello world\n')
 
         # Exit temporary directory.
-        # os.chdir(pwd)
-        # td.cleanup()
+        os.chdir(pwd)
+        td.cleanup()

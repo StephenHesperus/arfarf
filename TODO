@@ -97,6 +97,7 @@
         [x] tests
     [x] use args default value None, that is, from command line
     [x] use arglist
+    [*] test can use --config-file/-c option
 
 [x] use defaultdict() to refactor WDConfigParser.schedule_with()
 
