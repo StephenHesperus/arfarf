@@ -266,7 +266,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
 
     def test_stop(self):
         handler = AutoRunTrick('echo hello')
-        handler.start(subprocess.PIPE)
+        handler.start()
         handler.stop()
         self.assertIs(handler._process, None)
 
