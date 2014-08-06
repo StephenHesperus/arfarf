@@ -319,8 +319,6 @@ class FunctionalTestCase(unittest.TestCase):
 
         # Redirect command output to temporary file.
         with NamedTemporaryFile(mode='w+b') as t:
-            import shutil
-
             # Fixtures set up.
             wdogpy = os.path.join(oldwd, 'wdog.py')
             fixture_wdconfigpy = os.path.join(oldwd, 'fixture_wdconfig.py')
@@ -334,6 +332,18 @@ class FunctionalTestCase(unittest.TestCase):
             p = subprocess.Popen(cmd, shell=True, start_new_session=True)
 
             # Test file system events.
+            # file events
+            # file created event
+            # subprocess.call('touch dummy.py', shell=True)
+            # file modified event
+            # file moved event
+            # file deleted event
+            # directory events
+            # directory created event
+            # directory modified event
+            # directory moved event
+            # directory deleted event
+            # ignored file system events
 
             try:
                 # Wait for the redirect operation to finish.

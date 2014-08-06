@@ -117,6 +117,8 @@
     [ ] dog use_gitignore keyword argument overrides the default option
     [ ] add command line option to set this
 
+[ ] handle empty dogs tuple error, exit gracefully
+
 
 ====
 

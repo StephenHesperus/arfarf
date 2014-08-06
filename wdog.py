@@ -221,8 +221,9 @@ def main(args=None):
 
     if args.gitignore is not None:
         gitignore_path = os.path.join(os.getcwd(), args.gitignore)
-        # Set _gitignore_path of dogs[0], not Dog in wdog.
-        type(dogs[0]).set_gitignore_path(gitignore_path)
+        # Set _gitignore_path of type(dogs[0]), that is wdog.Dog in config
+        # file module, not Dog in wdog.
+        dogs[0].set_gitignore_path(gitignore_path)
 
     # The reason to use PollingObserver() is it's os-independent. And it's
     # more reliable.
