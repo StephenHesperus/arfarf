@@ -244,7 +244,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
 
     def test_start(self):
         handler = AutoRunTrick('echo hello')
-        handler.start(subprocess.PIPE)
+        handler.start(out=subprocess.PIPE)
         outs, errs = handler._process.communicate()
         self.assertEqual('hello\n', outs.decode())
 
@@ -253,7 +253,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
 
         handler = AutoRunTrick('')
         event = DirMovedEvent('/source/path', '/dest/path')
-        handler.start(subprocess.PIPE, event)
+        handler.start(event=event, out=subprocess.PIPE)
         outs, errs = handler._process.communicate()
         expected = b'directory /source/path is moved to /dest/path\n'
         self.assertEqual(expected, outs)
@@ -262,7 +262,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         from watchdog.events import DirMovedEvent
 
         handler = AutoRunTrick('')
-        handler.start(subprocess.PIPE)
+        handler.start(out=subprocess.PIPE)
         outs, errs = handler._process.communicate()
         self.assertEqual('', outs.decode())
 
@@ -342,10 +342,13 @@ class FunctionalTestCase(unittest.TestCase):
 
             p = subprocess.Popen(cmd, shell=True, start_new_session=True)
 
+            def sh(command):
+                subprocess.call(command, shell=True)
+
             # Test file system events.
             # file events
             # file created event
-            # subprocess.call('touch dummy.py', shell=True)
+            sh('touch dummy')
             # file modified event
             # file moved event
             # file deleted event
@@ -365,6 +368,7 @@ class FunctionalTestCase(unittest.TestCase):
             t.seek(0)
             result = set(t.read().split(b'\n'))
             expected = set(b'hello world\nnice to meet you\n'.split(b'\n'))
+            self.fail(result)
             self.assertEqual(result, expected)
 
         # Exit temporary directory.

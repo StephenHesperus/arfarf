@@ -101,9 +101,11 @@
     [*] test file system events
         [*] command default
             [*] file events
+                [*] all file events
+                [ ] typed file events
             [ ] directory events
 
-[*] Dog bugs:
+[x] Dog bugs:
     [x] AutoRunTrick: on_any_event(), start() call arguments
     [x] Dog patterns, ignore_patterns default value
         [x] patterns default: include everything
