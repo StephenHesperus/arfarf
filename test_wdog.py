@@ -255,8 +255,8 @@ class AutoRunTrickTestCase(unittest.TestCase):
         event = DirMovedEvent('/source/path', '/dest/path')
         handler.start(subprocess.PIPE, event)
         outs, errs = handler._process.communicate()
-        expected = 'directory /source/path is moved to /dest/path\n'
-        self.assertEqual(expected, outs.decode())
+        expected = b'directory /source/path is moved to /dest/path\n'
+        self.assertEqual(expected, outs)
 
     def test_start_with_command_default_and_no_event(self):
         from watchdog.events import DirMovedEvent
@@ -271,6 +271,16 @@ class AutoRunTrickTestCase(unittest.TestCase):
         handler.start()
         handler.stop()
         self.assertIs(handler._process, None)
+
+    def test_on_any_event(self):
+        from watchdog.events import DirMovedEvent
+
+        handler = AutoRunTrick('')
+        event = DirMovedEvent('/source/path', '/dest/path')
+        handler.on_any_event(event, subprocess.PIPE)
+        outs, errs = handler._process.communicate()
+        expected = b'directory /source/path is moved to /dest/path\n'
+        self.assertEqual(outs, expected)
 
 
 class MainEntryTestCase(unittest.TestCase):
@@ -307,6 +317,7 @@ class MainEntryTestCase(unittest.TestCase):
                 self.parser.parse_args(args)
 
 
+@unittest.skip('WIP')
 class FunctionalTestCase(unittest.TestCase):
 
     def test_wdog_script_execution(self):

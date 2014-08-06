@@ -99,6 +99,14 @@
     [x] use arglist
     [x] test can use --config-file/-c, --gitignore/-g option
     [*] test file system events
+        [*] command default
+            [*] file events
+            [ ] directory events
+
+[*] Dog bugs:
+    [*] on_any_event(), start() call arguments
+    [ ] Dog patterns default value
+    [ ] __repr__() when patterns and ignore_patterns are None
 
 [x] use defaultdict() to refactor WDConfigParser.schedule_with()
 
@@ -110,6 +118,7 @@
 [ ] remove wdconfig.py default dog entry
 
 [?] how to mock subprocess direct output
+    [?] how to mock subprocess calls
 
 [ ] add double quotes to default command output
 

@@ -163,9 +163,9 @@ class AutoRunTrick(Trick):
                     pass
         self._process = None
 
-    def on_any_event(self, event):
+    def on_any_event(self, event, out=None):
         self.stop()
-        self.start()
+        self.start(out=out, event=event)
 
     @property
     def key(self):
