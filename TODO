@@ -104,9 +104,17 @@
             [ ] directory events
 
 [*] Dog bugs:
-    [*] on_any_event(), start() call arguments
-    [ ] Dog patterns default value
-    [ ] __repr__() when patterns and ignore_patterns are None
+    [x] AutoRunTrick: on_any_event(), start() call arguments
+    [x] Dog patterns, ignore_patterns default value
+        [x] patterns default: include everything
+        [x] ignore_patterns default: exclude nothing
+        [x] watchdog internally use pathtools.patterns.match_any_paths in
+            PatternMatchingEventHandler, and this is the match_any_paths()
+            signature:
+            match_any_paths(pathnames, included_patterns=None,
+                            excluded_patterns=None, case_sensitive=True)
+            so the patterns, and ignore_patterns default value should be None
+    [x] __repr__() when patterns and ignore_patterns are None
 
 [x] use defaultdict() to refactor WDConfigParser.schedule_with()
 

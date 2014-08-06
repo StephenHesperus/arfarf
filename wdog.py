@@ -104,9 +104,10 @@ class AutoRunTrick(Trick):
     A variant of AutoRestartTrick.
     """
 
-    def __init__(self, command, patterns=['*'], ignore_patterns=[],
+    def __init__(self, command, patterns=None, ignore_patterns=None,
                  ignore_directories=False, stop_signal=signal.SIGINT,
                  kill_after=10):
+        # Matches Trick.__init__() signature.
         super().__init__(patterns, ignore_patterns, ignore_directories)
         self._command_default = ('echo ${event_object} ${event_src_path} is '
                     '${event_type}${if_moved}')
@@ -169,8 +170,16 @@ class AutoRunTrick(Trick):
 
     @property
     def key(self):
+        if self.patterns is None:
+            patterns = None
+        else:
+            patterns = tuple(self.patterns)
+        if self.ignore_patterns is None:
+            ignore_patterns = None
+        else:
+            ignore_patterns = tuple(self.ignore_patterns)
         return (self.command,
-                tuple(self.patterns), tuple(self.ignore_patterns),
+                patterns, ignore_patterns,
                 self.ignore_directories)
 
     def __eq__(self, value):
