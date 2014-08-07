@@ -26,11 +26,13 @@ class Dog(object):
 
     _gitignore = None
     _gitignore_path = os.path.join(os.getcwd(), '.gitignore')
+    _command_default = ('echo ${event_object} ${event_src_path} is '
+                        '${event_type}${if_moved}')
 
-    def __init__(self, command, patterns=['*'], ignore_patterns=[],
+    def __init__(self, command=None, patterns=None, ignore_patterns=None,
                  ignore_directories=False, path='.', recursive=True,
                  use_gitignore=False):
-        self._command = command
+        self._command = command if command else type(self)._command_default
         self._patterns = patterns
         self._ignore_patterns = ignore_patterns
         self._ignore_directories = ignore_directories
@@ -41,6 +43,17 @@ class Dog(object):
     def __del__(self):
         # Clear _gitignore state when Dog class is deleted.
         type(self)._gitignore = None
+
+    @property
+    def key(self):
+        patterns = tuple(self._patterns) if self._patterns is not None \
+                       else None
+        ignore_patterns = tuple(self._ignore_patterns) \
+                       if self._ignore_patterns is not None \
+                       else None
+        return (self._command, patterns, ignore_patterns,
+                self._ignore_directories, self._path, self._recursive,
+                self._use_gitignore)
 
     @classmethod
     def set_gitignore_path(cls, path):
@@ -70,11 +83,17 @@ class Dog(object):
         if self._use_gitignore:
             if type(self)._gitignore is None:
                 type(self)._gitignore = self._parse_gitignore()
-            self._ignore_patterns.extend(type(self)._gitignore)
-        patterns = [os.path.join(self._path, p) for p in self._patterns]
-        ignores = [os.path.join(self._path, p) for p in self._ignore_patterns]
+        gip = type(self)._gitignore if type(self)._gitignore is not None \
+              else []
+        selfip = [] if self._ignore_patterns is None \
+                 else self._ignore_patterns
+        ipatterns = gip + selfip
+        included = [os.path.join(self._path, p) for p in self._patterns] \
+                   if self._patterns is not None else None
+        excluded = [os.path.join(self._path, p) for p in ipatterns] \
+                   if ipatterns else None
         return trick_cls(command=self._command,
-                         patterns=patterns, ignore_patterns=ignores,
+                         patterns=included, ignore_patterns=excluded,
                          ignore_directories=self._ignore_directories)
 
     @property

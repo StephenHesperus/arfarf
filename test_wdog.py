@@ -39,19 +39,38 @@ class DogTestCase(unittest.TestCase):
     def tearDown(self):
         self.patcher.stop()
 
+    # @unittest.expectedFailure
     def test_Dog_constructor(self):
         """Test Dog can use keywords and omit default values."""
         from wdog import Dog as dog
         try:
-            dog('echo hello', ['*.py'], [], False, '.', True, True)
+            dog('echo hello', ['*.py'], ['*~'], False, '.', True, True)
             dog('echo hello', ['*.py'], use_gitignore=True)
             dog(patterns=['*.py'], command='echo hello', use_gitignore=True)
             dog('echo hello')
         except:
             self.fail(__doc__)
 
-        with self.assertRaises(Exception):
-            dog()
+    def test_Dog_constructor_args_default_value(self):
+        """
+        Dog constructor args default values:
+        command: None, default log command is then provided
+        patterns: None, Trick class default
+        ignore_patterns: None, Trick class default
+        ignore_directories: False, catches all events
+        path: os.curdir, '.'
+        recursive: True, catches all events
+        use_gitignore: False, not all people use git, I do ,though
+        """
+        from wdog import Dog as dog
+        try:
+            d = dog()
+        except:
+            self.fail('Dog should be able to call without args.')
+        log = 'echo ${event_object} ${event_src_path} is ${event_type}${if_moved}'
+        expected = (log, None, None, False, '.', True, False)
+        self.assertEqual(d.key, expected)
+
 
     def test_watch_info_property(self):
         dog = Dog(command='echo hello')
@@ -79,8 +98,8 @@ class DogTestCase(unittest.TestCase):
                   path=monitored_path, recursive=True, ignore_directories=True)
         MockClass = MagicMock()
         handler = dog.create_handler(MockClass)
-        ignores = [os.path.join(monitored_path, 'more_ipattern')] + \
-                  [os.path.join(monitored_path, p) for p in self.patterns]
+        ignores = [os.path.join(monitored_path, p) for p in self.patterns] + \
+                  [os.path.join(monitored_path, 'more_ipattern')]
         MockClass.assert_called_once_with(
             command='echo hello',
             patterns=['monitored/path/*.py'],

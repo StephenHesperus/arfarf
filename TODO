@@ -44,8 +44,8 @@
             recursive default: traverse to subdirectories
             use_gitignore default: no, if you use Git, set this option
 
-[ ] AutoRunTrick : AutoRestartTrick
-    [ ] context print injection(print -> echo command)
+[x] AutoRunTrick : AutoRestartTrick
+    [-] context print injection(print -> echo command)
     [x] override __init__(), start()
     [x] equality
     [x] hashable
@@ -63,63 +63,65 @@
     [-] add handler to the same ObservedWatch
     [x] refactor: remove unused _sort method
 
-[ ] wdconfig.py
-    [ ] dogs is a tuple of wdog.Dog
-
 [x] fix WDConfigParserTestCase class doc string
-
-[x] Dog, AutoRunTrick command arg no default, make it positional
 
 [x] main
     [x] after schedule handlers, start the handler
     [x] after observer stop, stop the handler
     [x] expose AutoRunTrick start(), stop()
 
+[x] change the list param to tuple when hashing, or
+    [-] change all Dog keyword arguments default value to tuple
 
-[-] change all Dog keyword arguments default value to tuple
-    [x] or change the list param to tuple when hashing
+[x] use defaultdict() to refactor WDConfigParser.schedule_with()
 
-[ ] use tempfile to test wdog.py
-    [x] use shell redirect to test logfile
-    [*] change to tempdir and change back after the test
-    [-] use multiprocessing to start wdog.py
-        [ ] use wdog main()
-        [ ] use mock dogs
+[x] add event_src_path, dest path, event type environment variables
+    [x] if command is '', use a default log command
+        [x] expose event related shell environment variables
+    [x] refactor tests, default command
 
-[*] main()
-    [*] _create_main_argparser()
+[x] Dog bugs:
+    [x] AutoRunTrick: on_any_event(), start() call arguments
+    [x] Dog patterns, ignore_patterns default value
+        [x] patterns default: include everything
+        [x] ignore_patterns default: exclude nothing
+        [x] watchdog internally use pathtools.patterns.match_any_paths in
+            PatternMatchingEventHandler, and this is the match_any_paths()
+            signature:
+            match_any_paths(pathnames, included_patterns=None,
+                            excluded_patterns=None, case_sensitive=True)
+            so the patterns, and ignore_patterns default value should be None
+    [x] __repr__() when patterns and ignore_patterns are None
+
+[x] main()
+    [x] _create_main_argparser()
         [x] empty arg list
         [x] use --config-file option to specify a wdconfig.py file
-            [ ] the name of the file is not significant
+            [x] the name of the file is not significant
         [x] use --gitignore option to specify a .gitignore file
-            [ ] the name of the file is not significant
+            [x] the name of the file is not significant
         [-] use subclass of ArgumentParser to test, mock exception
         [x] tests
     [x] use args default value None, that is, from command line
     [x] use arglist
     [x] test can use --config-file/-c, --gitignore/-g option
-    [*] test file system events
-        [*] command default
-            [*] file events
-                [*] all file events
-                [ ] typed file events
-            [ ] directory events
 
-[ ] config file resolution order
-    1. command line --config-file/-c option
-    2. the directory the script runs
-    3. the directory wdog.py sits
-[ ] gitignore file resolution order
-    1. command line --gitignore/-g option
-    2. the directory the script runs
-    3. the directory wdog.py sits
+====
 
 [-] Dog default directory is os.curdir, and should only be it for gitignore
     patterns to work, or
-[*] update included, excluded and gitignore patterns according to monitor path
+[-] update included, excluded and gitignore patterns according to monitor path
     [ ] make _parse_gitignore a instance method, or
     [ ] cache _gitignore and invalid it only if monitored path is different
         [ ] sort dogs by path, group by path
+
+====
+
+[*] Dog, AutoRunTrick command arg
+    [x] Dog command arg can be omitted
+    [*] AutoRunTrick command arg must be meaningful
+    [-] Dog, AutoRunTrick command arg no default, make it positional
+
 [*] override AutoRunTrick(Trick).dispatch() method
     [x] insert monitor path before included, excluded and gitignore patterns
         when create handler
@@ -138,25 +140,33 @@
             ...
         ```
 
-[x] Dog bugs:
-    [x] AutoRunTrick: on_any_event(), start() call arguments
-    [x] Dog patterns, ignore_patterns default value
-        [x] patterns default: include everything
-        [x] ignore_patterns default: exclude nothing
-        [x] watchdog internally use pathtools.patterns.match_any_paths in
-            PatternMatchingEventHandler, and this is the match_any_paths()
-            signature:
-            match_any_paths(pathnames, included_patterns=None,
-                            excluded_patterns=None, case_sensitive=True)
-            so the patterns, and ignore_patterns default value should be None
-    [x] __repr__() when patterns and ignore_patterns are None
+[#] use tempfile to test wdog.py
+    [x] use shell redirect to test logfile
+    [*] change to tempdir and change back after the test
+    [-] use multiprocessing to start wdog.py
+        [ ] use wdog main()
+        [ ] use mock dogs
 
-[x] use defaultdict() to refactor WDConfigParser.schedule_with()
+[#] test file system events
+    [*] command default
+        [*] file events
+            [#] all file events
+            [ ] typed file events
+        [ ] directory events
 
-[x] add event_src_path, dest path, event type environment variables
-    [x] if command is '', use a default log command
-        [x] expose event related shell environment variables
-    [x] refactor tests, default command
+====
+
+[ ] config file resolution order
+    1. command line --config-file/-c option
+    2. the directory the script runs
+    3. the directory wdog.py sits
+[ ] gitignore file resolution order
+    1. command line --gitignore/-g option
+    2. the directory the script runs
+    3. the directory wdog.py sits
+
+[ ] wdconfig.py
+    [ ] dogs is a tuple of wdog.Dog
 
 [ ] remove wdconfig.py default dog entry
 
@@ -170,7 +180,6 @@
     [ ] add command line option to set this
 
 [ ] handle empty dogs tuple error, exit gracefully
-
 
 ====
 
