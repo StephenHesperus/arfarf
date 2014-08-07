@@ -121,24 +121,28 @@ class WDConfigParser(object):
 class AutoRunTrick(Trick):
     """
     A variant of AutoRestartTrick.
+    When called without arguments, it's the same as a logger of file system
+    events.
     """
 
-    def __init__(self, command, patterns=None, ignore_patterns=None,
+    _command_default = ('echo ${event_object} ${event_src_path} is '
+                        '${event_type}${if_moved}')
+
+    def __init__(self, command=None, patterns=None, ignore_patterns=None,
                  ignore_directories=False, stop_signal=signal.SIGINT,
                  kill_after=10):
         # Matches Trick.__init__() signature.
         super().__init__(patterns, ignore_patterns, ignore_directories)
-        self._command_default = ('echo ${event_object} ${event_src_path} is '
-                    '${event_type}${if_moved}')
-        self._command = command if command else self._command_default
+        self._command = command if command is not None \
+                        else type(self)._command_default
         self._stop_signal = stop_signal
         self._kill_after = kill_after
         self._process = None
 
     def _substitute_command(self, event):
         if event is None:
-            c = self._command if self._command != self._command_default else \
-                ''
+            c = self._command if self._command != type(self)._command_default \
+                else ''
             return c
 
         dest = event.dest_path if hasattr(event, 'dest_path') else ''

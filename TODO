@@ -106,6 +106,13 @@
     [x] use arglist
     [x] test can use --config-file/-c, --gitignore/-g option
 
+[x] Dog, AutoRunTrick command arg
+    [x] Dog command arg can be omitted
+    [x] AutoRunTrick command can be omitted, and a default value is provided
+        [x] by default, it's a log command
+    [-] Dog, AutoRunTrick command arg no default, make it positional
+    [-] AutoRunTrick command arg must be meaningful
+
 ====
 
 [-] Dog default directory is os.curdir, and should only be it for gitignore
@@ -116,11 +123,6 @@
         [ ] sort dogs by path, group by path
 
 ====
-
-[*] Dog, AutoRunTrick command arg
-    [x] Dog command arg can be omitted
-    [*] AutoRunTrick command arg must be meaningful
-    [-] Dog, AutoRunTrick command arg no default, make it positional
 
 [*] override AutoRunTrick(Trick).dispatch() method
     [x] insert monitor path before included, excluded and gitignore patterns

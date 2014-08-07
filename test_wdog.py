@@ -167,26 +167,13 @@ class WDConfigParserTestCase(unittest.TestCase):
 
 
 class AutoRunTrickTestCase(unittest.TestCase):
-    """
-    The only difference between AutoRunTrick and AutoRestartTrick is the way
-    they handle command parsing and execution. So the this test case only
-    focus on it.
-    """
-
-    def test_command_is_positional_arg(self):
-        with self.assertRaises(TypeError):
-            handler = AutoRunTrick()
-        try:
-            handler = AutoRunTrick('echo hello')
-        except:
-            self.fail('"command" should be a positional argument.')
 
     def test_command_property(self):
         handler = AutoRunTrick(command='echo hello')
         self.assertEqual('echo hello', handler.command)
 
     def test_command_default(self):
-        handler = AutoRunTrick(command='')
+        handler = AutoRunTrick()
         expected = ('echo ${event_object} ${event_src_path} is '
                     '${event_type}${if_moved}')
         self.assertEqual(expected, handler.command)
@@ -198,7 +185,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         from string import Template
         from watchdog.events import FileCreatedEvent, DirMovedEvent
 
-        handler = AutoRunTrick(command='')
+        handler = AutoRunTrick()
         path = '/source/path'
         event = FileCreatedEvent(path)
         command = handler._substitute_command(event)
@@ -258,7 +245,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
     def test_start_with_event(self):
         from watchdog.events import DirMovedEvent
 
-        handler = AutoRunTrick('')
+        handler = AutoRunTrick()
         event = DirMovedEvent('/source/path', '/dest/path')
         handler.start(event=event, out=subprocess.PIPE)
         outs, errs = handler._process.communicate()
@@ -266,8 +253,6 @@ class AutoRunTrickTestCase(unittest.TestCase):
         self.assertEqual(expected, outs)
 
     def test_start_with_command_default_and_no_event(self):
-        from watchdog.events import DirMovedEvent
-
         handler = AutoRunTrick('')
         handler.start(out=subprocess.PIPE)
         outs, errs = handler._process.communicate()
@@ -282,7 +267,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
     def test_on_any_event(self):
         from watchdog.events import DirMovedEvent
 
-        handler = AutoRunTrick('')
+        handler = AutoRunTrick()
         event = DirMovedEvent('/source/path', '/dest/path')
         handler.on_any_event(event, subprocess.PIPE)
         outs, errs = handler._process.communicate()
