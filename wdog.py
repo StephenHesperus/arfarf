@@ -71,9 +71,11 @@ class Dog(object):
             if type(self)._gitignore is None:
                 type(self)._gitignore = self._parse_gitignore()
             self._ignore_patterns.extend(type(self)._gitignore)
-        return trick_cls(command=self._command, patterns=self._patterns,
-                   ignore_patterns=self._ignore_patterns,
-                   ignore_directories=self._ignore_directories)
+        patterns = [os.path.join(self._path, p) for p in self._patterns]
+        ignores = [os.path.join(self._path, p) for p in self._ignore_patterns]
+        return trick_cls(command=self._command,
+                         patterns=patterns, ignore_patterns=ignores,
+                         ignore_directories=self._ignore_directories)
 
     @property
     def watch_info(self):

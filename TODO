@@ -105,6 +105,39 @@
                 [ ] typed file events
             [ ] directory events
 
+[ ] config file resolution order
+    1. command line --config-file/-c option
+    2. the directory the script runs
+    3. the directory wdog.py sits
+[ ] gitignore file resolution order
+    1. command line --gitignore/-g option
+    2. the directory the script runs
+    3. the directory wdog.py sits
+
+[-] Dog default directory is os.curdir, and should only be it for gitignore
+    patterns to work, or
+[*] update included, excluded and gitignore patterns according to monitor path
+    [ ] make _parse_gitignore a instance method, or
+    [ ] cache _gitignore and invalid it only if monitored path is different
+        [ ] sort dogs by path, group by path
+[*] override AutoRunTrick(Trick).dispatch() method
+    [x] insert monitor path before included, excluded and gitignore patterns
+        when create handler
+    [ ] adapt path as dir/file before matching, trailing slash
+        ```
+        def dispath(self, event):
+            if hasattr(event, 'dest_path'):
+                '''Append dest_path'''
+            if event.src_path:
+                '''Append src_path'''
+            if event.is_directory:
+                '''Append slash to event src_path
+                if has attr dest_path:
+                    Append slash to event dest_path
+                '''
+            ...
+        ```
+
 [x] Dog bugs:
     [x] AutoRunTrick: on_any_event(), start() call arguments
     [x] Dog patterns, ignore_patterns default value

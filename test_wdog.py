@@ -6,7 +6,7 @@ from io import StringIO
 import subprocess
 import signal
 import unittest
-from unittest.mock import mock_open, patch, sentinel
+from unittest.mock import mock_open, patch, sentinel, MagicMock
 
 import watchdog.events
 from watchdog.observers import Observer
@@ -63,21 +63,21 @@ class DogTestCase(unittest.TestCase):
 
     def test_create_handler(self):
         import watchdog.events
+
+        monitored_path = 'monitored/path'
         dog = Dog(command='echo hello', patterns=['*.py'],
                   ignore_patterns=['more_ipattern'], use_gitignore=True,
-                  path='.', recursive=True, ignore_directories=True)
-        with patch('watchdog.events.PatternMatchingEventHandler') as MockClass:
-            handler = dog.create_handler(
-                watchdog.events.PatternMatchingEventHandler
-            )
-            self.assertIs(watchdog.events.PatternMatchingEventHandler,
-                          MockClass)
-            MockClass.assert_called_once_with(
-                command='echo hello',
-                patterns=['*.py'],
-                ignore_patterns=['more_ipattern'] + self.patterns,
-                ignore_directories=True
-            )
+                  path=monitored_path, recursive=True, ignore_directories=True)
+        MockClass = MagicMock()
+        handler = dog.create_handler(MockClass)
+        ignores = [os.path.join(monitored_path, 'more_ipattern')] + \
+                  [os.path.join(monitored_path, p) for p in self.patterns]
+        MockClass.assert_called_once_with(
+            command='echo hello',
+            patterns=['monitored/path/*.py'],
+            ignore_patterns=ignores,
+            ignore_directories=True
+        )
 
     def test_watch_info_property(self):
         dog = Dog(command='echo hello')
@@ -374,3 +374,40 @@ class FunctionalTestCase(unittest.TestCase):
         # Exit temporary directory.
         os.chdir(oldwd)
         td.cleanup()
+
+
+class MiscellaneousTestCase(unittest.TestCase):
+
+    def test_fnmatch_func(self):
+        from fnmatch import fnmatch
+        from os.path import join
+
+        def match(name, pattern):
+            self.assertTrue(fnmatch(name, pattern))
+
+        def notmatch(name, pattern):
+            self.assertFalse(fnmatch(name, pattern))
+
+        # relative to os.curdir
+        match('dummy', 'dummy')
+        notmatch('./dummy', 'dummy')
+        match('./dummy', join('.', 'dummy'))
+
+        # relative to 'relative'
+        match('relative/path', 'relative/path')
+        notmatch('relative/path', 'path')
+        match('relative/path', join('relative', 'path'))
+
+        # absolute path
+        match('/absolute/path', '/absolute/path')
+        notmatch('/absolute/path', 'absolute/path')
+        notmatch('/absolute/path', 'path')
+        match('/absolute/path', join('/absolute', 'path'))
+
+        # directory
+        match('./directory/', './directory/')
+        notmatch('./directory/', './directory') # dir matching file
+        notmatch('./directory', './directory/')
+        match(join('./directory', ''), './directory/')
+        match(join('./directory/', ''), './directory/')
+        match(join('/abs/dir', ''), join('/abs', 'dir/'))
