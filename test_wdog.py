@@ -53,6 +53,15 @@ class DogTestCase(unittest.TestCase):
         with self.assertRaises(Exception):
             dog()
 
+    def test_watch_info_property(self):
+        dog = Dog(command='echo hello')
+        winfo = dog.watch_info
+        self.assertEqual(winfo, ('.', True))
+
+        dog = Dog(command='echo hello', path='/dummy/path', recursive=False)
+        winfo = dog.watch_info
+        self.assertEqual(winfo, ('/dummy/path', False))
+
     def test__parse_gitignore(self):
         dog = Dog(command='echo hello')
         result = dog._parse_gitignore()
@@ -79,15 +88,6 @@ class DogTestCase(unittest.TestCase):
             ignore_directories=True
         )
 
-    def test_watch_info_property(self):
-        dog = Dog(command='echo hello')
-        winfo = dog.watch_info
-        self.assertEqual(winfo, ('.', True))
-
-        dog = Dog(command='echo hello', path='/dummy/path', recursive=False)
-        winfo = dog.watch_info
-        self.assertEqual(winfo, ('/dummy/path', False))
-
 
 class WDConfigParserTestCase(unittest.TestCase):
 
@@ -105,16 +105,12 @@ class WDConfigParserTestCase(unittest.TestCase):
         d_m = self.patcher.start()
         self.dogs = d_m()
         self.parser = WDConfigParser(self.dogs)
-        self.hpatcher = patch('watchdog.events.PatternMatchingEventHandler')
-        handler = self.hpatcher.start()
-        # make each handler created is different from the other
-        handler.side_effect = [sentinel.a, sentinel.b, sentinel.c,
-                               sentinel.d] * 2
-        self.HandlerClass = handler
+        self.HandlerClass = MagicMock()
+        self.HandlerClass.side_effect = [sentinel.a, sentinel.b,
+                                         sentinel.c, sentinel.d] * 2
 
     def tearDown(self):
         self.patcher.stop()
-        self.hpatcher.stop()
 
     def test_schedule_with(self):
         # This provides more readable traceback message for ObservedWatch.
@@ -122,16 +118,11 @@ class WDConfigParserTestCase(unittest.TestCase):
             return str((self.path, self.is_recursive))
         setattr(ObservedWatch, '__repr__', ow_repr)
         observer = Observer()
-        result = self.parser.schedule_with(
-            observer,
-            watchdog.events.PatternMatchingEventHandler
-        )
+        result = self.parser.schedule_with(observer, self.HandlerClass)
         # expected
         handlers = []
         for dog in self.dogs:
-            handler = dog.create_handler(
-                watchdog.events.PatternMatchingEventHandler
-            )
+            handler = dog.create_handler(self.HandlerClass)
             handlers.append(handler)
         watches = []
         for dog in self.dogs:
@@ -144,17 +135,13 @@ class WDConfigParserTestCase(unittest.TestCase):
         }
 
         self.maxDiff = None
-        # self.fail(result)
-        # self.fail(handler_for_watch)
+        # self.fail((result, handler_for_watch))
         self.assertEqual(result, handler_for_watch)
 
     def test__parse_gitignore_called_at_most_once_in_create_handler(self):
         with patch.object(Dog, '_parse_gitignore') as mg:
             observer = Observer()
-            self.parser.schedule_with(
-                observer,
-                watchdog.events.PatternMatchingEventHandler
-            )
+            self.parser.schedule_with(observer, self.HandlerClass)
             self.assertIs(Dog._parse_gitignore, mg)
         mg.assert_called_once_with()
 
