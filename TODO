@@ -127,7 +127,7 @@
 [*] override AutoRunTrick(Trick).dispatch() method
     [x] insert monitor path before included, excluded and gitignore patterns
         when create handler
-    [ ] adapt path as dir/file before matching, trailing slash
+    [*] adapt path as dir/file before matching, trailing slash
         ```
         def dispath(self, event):
             if hasattr(event, 'dest_path'):
@@ -141,6 +141,14 @@
                 '''
             ...
         ```
+    [*] test dispatch
+        [*] file events
+            [*] included patterns
+            [ ] excluded patterns
+        [ ] directory events
+            [ ] included patterns
+            [ ] excluded patterns
+
 
 [#] use tempfile to test wdog.py
     [x] use shell redirect to test logfile
@@ -148,13 +156,6 @@
     [-] use multiprocessing to start wdog.py
         [ ] use wdog main()
         [ ] use mock dogs
-
-[#] test file system events
-    [*] command default
-        [*] file events
-            [#] all file events
-            [ ] typed file events
-        [ ] directory events
 
 ====
 

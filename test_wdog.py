@@ -6,7 +6,7 @@ from io import StringIO
 import subprocess
 import signal
 import unittest
-from unittest.mock import mock_open, patch, sentinel, MagicMock
+from unittest.mock import mock_open, patch, sentinel, MagicMock, call
 
 import watchdog.events
 from watchdog.observers import Observer
@@ -273,6 +273,52 @@ class AutoRunTrickTestCase(unittest.TestCase):
         outs, errs = handler._process.communicate()
         expected = b'directory /source/path is moved to /dest/path\n'
         self.assertEqual(outs, expected)
+
+    def test_dispatch_file_event(self):
+        from watchdog import events
+
+        class EchoAutoRunTrick(AutoRunTrick):
+
+            log = []
+
+            def __del__(self):
+                del type(self).log
+
+            def on_any_event(self, event):
+                type(self).log += ['on_any_event']
+
+            def on_created(self, event):
+                type(self).log += ['on_created']
+
+            def on_modified(self, event):
+                type(self).log += ['on_modified']
+
+            def on_moved(self, event):
+                type(self).log += ['on_moved']
+
+            def on_deleted(self, event):
+                type(self).log += ['on_deleted']
+
+        handler = EchoAutoRunTrick()
+        path = 'dummy/path'
+        created = events.FileCreatedEvent(path)
+        modified = events.FileModifiedEvent(path)
+        deleted = events.FileDeletedEvent(path)
+        moved = events.FileMovedEvent(path, 'dummy/dest/path')
+        expected = []
+
+        handler.dispatch(created)
+        expected += ['on_any_event', 'on_created']
+        self.assertEqual(handler.log, expected)
+        handler.dispatch(modified)
+        expected += ['on_any_event', 'on_modified']
+        self.assertEqual(handler.log, expected)
+        handler.dispatch(moved)
+        expected += ['on_any_event', 'on_moved']
+        self.assertEqual(handler.log, expected)
+        handler.dispatch(deleted)
+        expected += ['on_any_event', 'on_deleted']
+        self.assertEqual(handler.log, expected)
 
 
 class MainEntryTestCase(unittest.TestCase):
