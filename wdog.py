@@ -26,13 +26,11 @@ class Dog(object):
 
     _gitignore = None
     _gitignore_path = os.path.join(os.getcwd(), '.gitignore')
-    _command_default = ('echo ${event_object} ${event_src_path} is '
-                        '${event_type}${if_moved}')
 
     def __init__(self, command=None, patterns=None, ignore_patterns=None,
                  ignore_directories=False, path='.', recursive=True,
                  use_gitignore=False):
-        self._command = command if command else type(self)._command_default
+        self._command = command
         self._patterns = patterns
         self._ignore_patterns = ignore_patterns
         self._ignore_directories = ignore_directories

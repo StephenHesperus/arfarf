@@ -54,7 +54,8 @@ class DogTestCase(unittest.TestCase):
     def test_Dog_constructor_args_default_value(self):
         """
         Dog constructor args default values:
-        command: None, default log command is then provided
+        command: None, subclass of FileSystemEventHandler should provide a
+                 default value
         patterns: None, Trick class default
         ignore_patterns: None, Trick class default
         ignore_directories: False, catches all events
@@ -67,8 +68,8 @@ class DogTestCase(unittest.TestCase):
             d = dog()
         except:
             self.fail('Dog should be able to call without args.')
-        log = 'echo ${event_object} ${event_src_path} is ${event_type}${if_moved}'
-        expected = (log, None, None, False, '.', True, False)
+        # log = 'echo ${event_object} ${event_src_path} is ${event_type}${if_moved}'
+        expected = (None, None, None, False, '.', True, False)
         self.assertEqual(d.key, expected)
 
 
