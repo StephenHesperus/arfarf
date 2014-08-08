@@ -274,7 +274,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         expected = b'directory /source/path is moved to /dest/path\n'
         self.assertEqual(outs, expected)
 
-    def _dispatch_test_helper(self, path):
+    def _dispatch_test_helper(self, path, ignore_directories=False):
         """patterns: 'relative/path/*.py', 'relative/path/src/'
         ignore_patterns: 'relative/path/*.rst', 'relative/path/__pycache__/',
                          'relative/path/htmlcov/'
@@ -308,7 +308,8 @@ class AutoRunTrickTestCase(unittest.TestCase):
         excluded = ['relative/path/*.rst', 'relative/path/__pycache__/',
                     'relative/path/htmlcov/']
         handler = EchoAutoRunTrick(patterns=included,
-                                   ignore_patterns=excluded)
+                                   ignore_patterns=excluded,
+                                   ignore_directories=ignore_directories)
         created = events.FileCreatedEvent(path)
         modified = events.FileModifiedEvent(path)
         deleted = events.FileDeletedEvent(path)
@@ -323,7 +324,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
 
         return handler, fevents, devents, event_types
 
-    def test_dispatch_file_event_matching_included_patterns(self):
+    def test_dispatch_file_events_matching_included_patterns(self):
         """All file events should be dispatched."""
         path = 'relative/path/dummy.py'
         handler, fevents, _, event_types  = self._dispatch_test_helper(path)
@@ -338,7 +339,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         for event, event_type in zip(fevents, event_types):
             _assert_will_dispatch(event, event_type)
 
-    def test_dispatch_file_event_matching_ignored_patterns(self):
+    def test_dispatch_file_events_matching_ignored_patterns(self):
         """No file event should be dispatched."""
         path = 'relative/path/dummy.rst'
         handler, fevents, _, _ = self._dispatch_test_helper(path)
@@ -351,7 +352,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         for event in fevents:
             _assert_will_not_dispatch(event)
 
-    def test_dispatch_directory_event_matching_included_patterns(self):
+    def test_dispatch_directory_events_matching_included_patterns(self):
         """All directory events should be dispatched."""
         # Notice no trailing slash is appended.
         # But it's the src path of directory events.
@@ -367,6 +368,38 @@ class AutoRunTrickTestCase(unittest.TestCase):
 
         for event, event_type in zip(devents, event_types):
             _assert_will_dispatch(event, event_type)
+
+    def test_dispatch_directory_events_matching_excluded_patterns(self):
+        """No directory events should be dispatched."""
+        # Notice no trailing slash is appended.
+        # But it's the src path of directory events.
+        path = 'relative/path/__pycache__'
+        handler, _, devents, event_types = self._dispatch_test_helper(path)
+
+        def _assert_will_not_dispatch(event):
+            handler.dispatch(event)
+            expected = []
+            self.assertEqual(handler.log, expected)
+
+        for event in devents:
+            _assert_will_not_dispatch(event)
+
+    def test_dispatch_dir_events_matching_patterns_when_ignore_directories(self):
+        """No directory events should be dispatched."""
+        # Notice no trailing slash is appended.
+        # But it's the src path of directory events.
+        path = 'relative/path/src'
+        handler, _, devents, event_types = self._dispatch_test_helper(
+            path, ignore_directories=True
+        )
+
+        def _assert_will_not_dispatch(event):
+            handler.dispatch(event)
+            expected = []
+            self.assertEqual(handler.log, expected)
+
+        for event in devents:
+            _assert_will_not_dispatch(event)
 
 
 class MainEntryTestCase(unittest.TestCase):

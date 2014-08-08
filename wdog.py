@@ -224,6 +224,9 @@ class AutoRunTrick(Trick):
                 self.ignore_directories)
 
     def dispatch(self, event):
+        if event.is_directory and self._ignore_directories:
+            return
+
         paths = []
         if event.is_directory:
             if hasattr(event, 'dest_path'):

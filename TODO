@@ -149,8 +149,8 @@
             [x] included patterns
                 [!] os.path.isdir() return True whether the path has trailing
                     slash or not
-            [ ] excluded patterns
-            [ ] ignore_directories is True
+            [x] excluded patterns
+            [x] ignore_directories is True
 
 
 [#] use tempfile to test wdog.py
