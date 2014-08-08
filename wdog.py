@@ -228,18 +228,18 @@ class AutoRunTrick(Trick):
             return
 
         paths = []
-        if event.is_directory:
-            if hasattr(event, 'dest_path'):
+        if hasattr(event, 'dest_path'):
+            if event.is_directory:
                 dest_path = os.path.join(event.dest_path, '')
-                paths.append(unicode_paths.decode(dest_path))
-            if event.src_path:
+            else:
+                dest_path = event.dest_path
+            paths.append(unicode_paths.decode(dest_path))
+        if event.src_path:
+            if event.is_directory:
                 src_path = os.path.join(event.src_path, '')
-                paths.append(unicode_paths.decode(src_path))
-        else:
-            if hasattr(event, 'dest_path'):
-                paths.append(unicode_paths.decode(event.dest_path))
-            if event.src_path:
-                paths.append(unicode_paths.decode(event.src_path))
+            else:
+                src_path = event.src_path
+            paths.append(unicode_paths.decode(src_path))
 
         if match_any_paths(paths,
                            included_patterns=self._patterns,

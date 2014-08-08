@@ -168,6 +168,9 @@ class WDConfigParserTestCase(unittest.TestCase):
 
 class AutoRunTrickTestCase(unittest.TestCase):
 
+    def setUp(self):
+        self.log_expected = []
+
     def test_command_property(self):
         handler = AutoRunTrick(command='echo hello')
         self.assertEqual('echo hello', handler.command)
@@ -324,33 +327,31 @@ class AutoRunTrickTestCase(unittest.TestCase):
 
         return handler, fevents, devents, event_types
 
+    def _assert_will_dispatch(self, event, event_type, handler):
+        handler.dispatch(event)
+        self.log_expected += ['on_any_event', event_type]
+        self.assertEqual(handler.log, self.log_expected)
+
+    def _assert_will_not_dispatch(self, event, handler):
+        handler.dispatch(event)
+        expected = []
+        self.assertEqual(handler.log, expected)
+
     def test_dispatch_file_events_matching_included_patterns(self):
         """All file events should be dispatched."""
         path = 'relative/path/dummy.py'
         handler, fevents, _, event_types  = self._dispatch_test_helper(path)
-        expected = []
-
-        def _assert_will_dispatch(event, event_type):
-            nonlocal expected
-            handler.dispatch(event)
-            expected += ['on_any_event', event_type]
-            self.assertEqual(handler.log, expected)
 
         for event, event_type in zip(fevents, event_types):
-            _assert_will_dispatch(event, event_type)
+            self._assert_will_dispatch(event, event_type, handler)
 
     def test_dispatch_file_events_matching_ignored_patterns(self):
         """No file event should be dispatched."""
         path = 'relative/path/dummy.rst'
         handler, fevents, _, _ = self._dispatch_test_helper(path)
 
-        def _assert_will_not_dispatch(event):
-            handler.dispatch(event)
-            expected = []
-            self.assertEqual(handler.log, expected)
-
         for event in fevents:
-            _assert_will_not_dispatch(event)
+           self._assert_will_not_dispatch(event, handler)
 
     def test_dispatch_directory_events_matching_included_patterns(self):
         """All directory events should be dispatched."""
@@ -358,16 +359,9 @@ class AutoRunTrickTestCase(unittest.TestCase):
         # But it's the src path of directory events.
         path = 'relative/path/src'
         handler, _, devents, event_types = self._dispatch_test_helper(path)
-        expected = []
-
-        def _assert_will_dispatch(event, event_type):
-            nonlocal expected
-            handler.dispatch(event)
-            expected += ['on_any_event', event_type]
-            self.assertEqual(handler.log, expected)
 
         for event, event_type in zip(devents, event_types):
-            _assert_will_dispatch(event, event_type)
+            self._assert_will_dispatch(event, event_type, handler)
 
     def test_dispatch_directory_events_matching_excluded_patterns(self):
         """No directory events should be dispatched."""
@@ -376,13 +370,8 @@ class AutoRunTrickTestCase(unittest.TestCase):
         path = 'relative/path/__pycache__'
         handler, _, devents, event_types = self._dispatch_test_helper(path)
 
-        def _assert_will_not_dispatch(event):
-            handler.dispatch(event)
-            expected = []
-            self.assertEqual(handler.log, expected)
-
         for event in devents:
-            _assert_will_not_dispatch(event)
+            self._assert_will_not_dispatch(event, handler)
 
     def test_dispatch_dir_events_matching_patterns_when_ignore_directories(self):
         """No directory events should be dispatched."""
@@ -530,3 +519,45 @@ class MiscellaneousTestCase(unittest.TestCase):
         match(join('./directory', ''), './directory/')
         match(join('./directory/', ''), './directory/')
         match(join('/abs/dir', ''), join('/abs', 'dir/'))
+
+    def test_function_keyword_argument_default_value_is_empty_sequence(self):
+        """This is a very interesting test.
+        It shows the reason to specify the default value of all sequence
+        keyword arguments to None, instead of an empty sequence.
+        """
+        with self.assertRaises(SyntaxError):
+            fstr = """
+            # This will raise a SyntaxError, saying:
+            # name 'g' is parameter and nonlocal
+            def f(g=[]):
+                nonlocal g
+                print(g)
+            """
+            eval(fstr)
+        # From above we see function parameter is nonlocal.
+        # When we need a default value for an argument, that is, when we use a
+        # keyword argument, and when the argument is a sequence, we have two
+        # ways to achieve this.
+        # 1. Use empty sequence
+        def f(x, l=[]):
+            l += [x]
+            return l
+        self.assertEqual(f(4, [0, 1, 2, 3]), [0, 1, 2, 3, 4])
+        self.assertEqual(f(0), [0])
+        self.assertEqual(f(1), [0, 1])
+        self.assertEqual(f(2), [0, 1, 2])
+        # The problem with the above approach is the default value is altered
+        # with each call to the function omitting the keyword argument.
+        # 2. use None
+        def g(x, l=None):
+            if l is None:
+                l = []
+            l += [x]
+            return l
+        self.assertEqual(g(4, [0, 1, 2, 3]), [0, 1, 2, 3, 4])
+        self.assertEqual(g(0), [0])
+        self.assertEqual(g(1), [1])
+        self.assertEqual(g(2), [2])
+        # With the second approach, you get a fresh empty sequence every time
+        # you omit the keyword argument, without worrying it will be changed
+        # elsewhere.

@@ -113,21 +113,10 @@
     [-] Dog, AutoRunTrick command arg no default, make it positional
     [-] AutoRunTrick command arg must be meaningful
 
-====
-
-[-] Dog default directory is os.curdir, and should only be it for gitignore
-    patterns to work, or
-[-] update included, excluded and gitignore patterns according to monitor path
-    [ ] make _parse_gitignore a instance method, or
-    [ ] cache _gitignore and invalid it only if monitored path is different
-        [ ] sort dogs by path, group by path
-
-====
-
-[*] override AutoRunTrick(Trick).dispatch() method
+[x] override AutoRunTrick(Trick).dispatch() method
     [x] insert monitor path before included, excluded and gitignore patterns
         when create handler
-    [*] adapt path as dir/file before matching, trailing slash
+    [x] adapt path as dir/file before matching, trailing slash
         ```
         def dispath(self, event):
             if hasattr(event, 'dest_path'):
@@ -141,17 +130,29 @@
                 '''
             ...
         ```
-    [*] test dispatch
+    [x] test dispatch
         [x] file events
             [x] included patterns
             [x] excluded patterns
-        [*] directory events
+        [x] directory events
             [x] included patterns
                 [!] os.path.isdir() return True whether the path has trailing
                     slash or not
             [x] excluded patterns
             [x] ignore_directories is True
+        [x] refactor dispatch tests
+        [x] refactor dispatch implementation
 
+====
+
+[-] Dog default directory is os.curdir, and should only be it for gitignore
+    patterns to work, or
+[-] update included, excluded and gitignore patterns according to monitor path
+    [ ] make _parse_gitignore a instance method, or
+    [ ] cache _gitignore and invalid it only if monitored path is different
+        [ ] sort dogs by path, group by path
+
+====
 
 [#] use tempfile to test wdog.py
     [x] use shell redirect to test logfile
