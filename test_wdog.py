@@ -274,7 +274,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         expected = b'directory /source/path is moved to /dest/path\n'
         self.assertEqual(outs, expected)
 
-    def test_dispatch_file_event(self):
+    def _dispatch_test_helper(self):
         from watchdog import events
 
         class EchoAutoRunTrick(AutoRunTrick):
@@ -299,26 +299,30 @@ class AutoRunTrickTestCase(unittest.TestCase):
             def on_deleted(self, event):
                 type(self).log += ['on_deleted']
 
-        handler = EchoAutoRunTrick()
-        path = 'dummy/path'
+        p = 'relative/path'
+        handler = EchoAutoRunTrick(patterns=['relative/path/*.py'],
+                                   ignore_patterns=['relative/path/*.rst'])
+        path = 'relative/path/dummy.py'
         created = events.FileCreatedEvent(path)
         modified = events.FileModifiedEvent(path)
         deleted = events.FileDeletedEvent(path)
-        moved = events.FileMovedEvent(path, 'dummy/dest/path')
+        moved = events.FileMovedEvent(path, 'relative/path/dummy.rst')
+        event_types = ['on_created', 'on_modified', 'on_moved', 'on_deleted']
+
+        return handler, created, modified, moved, deleted, event_types
+
+    def test_dispatch_file_event_matching_included_pattern(self):
+        handler, *events, event_types  = self._dispatch_test_helper()
         expected = []
 
-        handler.dispatch(created)
-        expected += ['on_any_event', 'on_created']
-        self.assertEqual(handler.log, expected)
-        handler.dispatch(modified)
-        expected += ['on_any_event', 'on_modified']
-        self.assertEqual(handler.log, expected)
-        handler.dispatch(moved)
-        expected += ['on_any_event', 'on_moved']
-        self.assertEqual(handler.log, expected)
-        handler.dispatch(deleted)
-        expected += ['on_any_event', 'on_deleted']
-        self.assertEqual(handler.log, expected)
+        def _assert_can_dispatch_to(event, event_type):
+            nonlocal expected
+            handler.dispatch(event)
+            expected += ['on_any_event', event_type]
+            self.assertEqual(handler.log, expected)
+
+        for event, event_type in zip(events, event_types):
+            _assert_can_dispatch_to(event, event_type)
 
 
 class MainEntryTestCase(unittest.TestCase):
