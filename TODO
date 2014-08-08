@@ -142,11 +142,11 @@
             ...
         ```
     [*] test dispatch
-        [*] file events
+        [x] file events
+            [x] included patterns
+            [x] excluded patterns
+        [*] directory events
             [*] included patterns
-            [ ] excluded patterns
-        [ ] directory events
-            [ ] included patterns
             [ ] excluded patterns
 
 

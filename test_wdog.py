@@ -274,7 +274,10 @@ class AutoRunTrickTestCase(unittest.TestCase):
         expected = b'directory /source/path is moved to /dest/path\n'
         self.assertEqual(outs, expected)
 
-    def _dispatch_test_helper(self):
+    def _dispatch_test_helper(self, path):
+        """patterns: 'relative/path/*.py'
+        ignore_patterns: 'relative/path/*.rst'
+        """
         from watchdog import events
 
         class EchoAutoRunTrick(AutoRunTrick):
@@ -302,27 +305,41 @@ class AutoRunTrickTestCase(unittest.TestCase):
         p = 'relative/path'
         handler = EchoAutoRunTrick(patterns=['relative/path/*.py'],
                                    ignore_patterns=['relative/path/*.rst'])
-        path = 'relative/path/dummy.py'
         created = events.FileCreatedEvent(path)
         modified = events.FileModifiedEvent(path)
         deleted = events.FileDeletedEvent(path)
-        moved = events.FileMovedEvent(path, 'relative/path/dummy.rst')
+        moved = events.FileMovedEvent(path, 'relative/path/yummy.rst')
         event_types = ['on_created', 'on_modified', 'on_moved', 'on_deleted']
 
         return handler, created, modified, moved, deleted, event_types
 
     def test_dispatch_file_event_matching_included_pattern(self):
-        handler, *events, event_types  = self._dispatch_test_helper()
+        """All events should be dispatched."""
+        path = 'relative/path/dummy.py'
+        handler, *events, event_types  = self._dispatch_test_helper(path)
         expected = []
 
-        def _assert_can_dispatch_to(event, event_type):
+        def _assert_will_dispatch(event, event_type):
             nonlocal expected
             handler.dispatch(event)
             expected += ['on_any_event', event_type]
             self.assertEqual(handler.log, expected)
 
         for event, event_type in zip(events, event_types):
-            _assert_can_dispatch_to(event, event_type)
+            _assert_will_dispatch(event, event_type)
+
+    def test_dispatch_file_event_matching_ignored_patterns(self):
+        """No event should be dispatched."""
+        path = 'relative/path/dummy.rst'
+        handler, *events, _ = self._dispatch_test_helper(path)
+
+        def _assert_will_not_dispatch(event):
+            handler.dispatch(event)
+            expected = []
+            self.assertEqual(handler.log, expected)
+
+        for event in events:
+            _assert_will_not_dispatch(event)
 
 
 class MainEntryTestCase(unittest.TestCase):
