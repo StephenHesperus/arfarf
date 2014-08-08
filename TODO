@@ -146,8 +146,11 @@
             [x] included patterns
             [x] excluded patterns
         [*] directory events
-            [*] included patterns
+            [x] included patterns
+                [!] os.path.isdir() return True whether the path has trailing
+                    slash or not
             [ ] excluded patterns
+            [ ] ignore_directories is True
 
 
 [#] use tempfile to test wdog.py
@@ -183,6 +186,8 @@
     [ ] add command line option to set this
 
 [ ] handle empty dogs tuple error, exit gracefully
+
+[ ] provide case_sensitive option, default is False
 
 ====
 

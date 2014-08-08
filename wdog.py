@@ -19,7 +19,11 @@ import argparse
 from collections import defaultdict
 from string import Template
 
+from pathtools.patterns import match_any_paths
 from watchdog.tricks import Trick
+from watchdog.utils import unicode_paths
+from watchdog.events import EVENT_TYPE_CREATED, EVENT_TYPE_MODIFIED
+from watchdog.events import EVENT_TYPE_MOVED, EVENT_TYPE_DELETED
 
 
 class Dog(object):
@@ -139,6 +143,20 @@ class AutoRunTrick(Trick):
         self._kill_after = kill_after
         self._process = None
 
+    def __eq__(self, value):
+        return isinstance(value, self.__class__) and self.key == value.key
+
+    def __ne__(self, value):
+        return not self.__eq__(value)
+
+    def __hash__(self):
+        return hash(self.key)
+
+    def __repr__(self):
+        repr_str = ('<AutoRunTrick: command={}, patterns={}, ignore_patterns={},'
+                'ignore_directories={}>').format(*self.key)
+        return repr_str
+
     def _substitute_command(self, event):
         if event is None:
             c = self._command if self._command != type(self)._command_default \
@@ -205,19 +223,34 @@ class AutoRunTrick(Trick):
                 patterns, ignore_patterns,
                 self.ignore_directories)
 
-    def __eq__(self, value):
-        return isinstance(value, self.__class__) and self.key == value.key
+    def dispatch(self, event):
+        paths = []
+        if event.is_directory:
+            if hasattr(event, 'dest_path'):
+                dest_path = os.path.join(event.dest_path, '')
+                paths.append(unicode_paths.decode(dest_path))
+            if event.src_path:
+                src_path = os.path.join(event.src_path, '')
+                paths.append(unicode_paths.decode(src_path))
+        else:
+            if hasattr(event, 'dest_path'):
+                paths.append(unicode_paths.decode(event.dest_path))
+            if event.src_path:
+                paths.append(unicode_paths.decode(event.src_path))
 
-    def __ne__(self, value):
-        return not self.__eq__(value)
-
-    def __hash__(self):
-        return hash(self.key)
-
-    def __repr__(self):
-        repr_str = ('<AutoRunTrick: command={}, patterns={}, ignore_patterns={},'
-                'ignore_directories={}>').format(*self.key)
-        return repr_str
+        if match_any_paths(paths,
+                           included_patterns=self._patterns,
+                           excluded_patterns=self._ignore_patterns,
+                           case_sensitive=self.case_sensitive):
+            self.on_any_event(event)
+            method_map = {
+                EVENT_TYPE_CREATED: self.on_created,
+                EVENT_TYPE_MODIFIED: self.on_modified,
+                EVENT_TYPE_MOVED: self.on_moved,
+                EVENT_TYPE_DELETED: self.on_deleted,
+            }
+            event_type = event.event_type
+            method_map[event_type](event)
 
 
 def _create_main_argparser():

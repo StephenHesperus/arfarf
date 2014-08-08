@@ -275,8 +275,9 @@ class AutoRunTrickTestCase(unittest.TestCase):
         self.assertEqual(outs, expected)
 
     def _dispatch_test_helper(self, path):
-        """patterns: 'relative/path/*.py'
-        ignore_patterns: 'relative/path/*.rst'
+        """patterns: 'relative/path/*.py', 'relative/path/src/'
+        ignore_patterns: 'relative/path/*.rst', 'relative/path/__pycache__/',
+                         'relative/path/htmlcov/'
         """
         from watchdog import events
 
@@ -303,20 +304,29 @@ class AutoRunTrickTestCase(unittest.TestCase):
                 type(self).log += ['on_deleted']
 
         p = 'relative/path'
-        handler = EchoAutoRunTrick(patterns=['relative/path/*.py'],
-                                   ignore_patterns=['relative/path/*.rst'])
+        included = ['relative/path/*.py', 'relative/path/src/']
+        excluded = ['relative/path/*.rst', 'relative/path/__pycache__/',
+                    'relative/path/htmlcov/']
+        handler = EchoAutoRunTrick(patterns=included,
+                                   ignore_patterns=excluded)
         created = events.FileCreatedEvent(path)
         modified = events.FileModifiedEvent(path)
         deleted = events.FileDeletedEvent(path)
         moved = events.FileMovedEvent(path, 'relative/path/yummy.rst')
+        dircreated = events.DirCreatedEvent(path)
+        dirmodified = events.DirModifiedEvent(path)
+        dirdeleted = events.DirDeletedEvent(path)
+        dirmoved = events.DirMovedEvent(path, 'relative/path/htmlcov/')
+        fevents = (created, modified, moved, deleted)
+        devents = (dircreated, dirmodified, dirmoved, dirdeleted)
         event_types = ['on_created', 'on_modified', 'on_moved', 'on_deleted']
 
-        return handler, created, modified, moved, deleted, event_types
+        return handler, fevents, devents, event_types
 
-    def test_dispatch_file_event_matching_included_pattern(self):
-        """All events should be dispatched."""
+    def test_dispatch_file_event_matching_included_patterns(self):
+        """All file events should be dispatched."""
         path = 'relative/path/dummy.py'
-        handler, *events, event_types  = self._dispatch_test_helper(path)
+        handler, fevents, _, event_types  = self._dispatch_test_helper(path)
         expected = []
 
         def _assert_will_dispatch(event, event_type):
@@ -325,21 +335,38 @@ class AutoRunTrickTestCase(unittest.TestCase):
             expected += ['on_any_event', event_type]
             self.assertEqual(handler.log, expected)
 
-        for event, event_type in zip(events, event_types):
+        for event, event_type in zip(fevents, event_types):
             _assert_will_dispatch(event, event_type)
 
     def test_dispatch_file_event_matching_ignored_patterns(self):
-        """No event should be dispatched."""
+        """No file event should be dispatched."""
         path = 'relative/path/dummy.rst'
-        handler, *events, _ = self._dispatch_test_helper(path)
+        handler, fevents, _, _ = self._dispatch_test_helper(path)
 
         def _assert_will_not_dispatch(event):
             handler.dispatch(event)
             expected = []
             self.assertEqual(handler.log, expected)
 
-        for event in events:
+        for event in fevents:
             _assert_will_not_dispatch(event)
+
+    def test_dispatch_directory_event_matching_included_patterns(self):
+        """All directory events should be dispatched."""
+        # Notice no trailing slash is appended.
+        # But it's the src path of directory events.
+        path = 'relative/path/src'
+        handler, _, devents, event_types = self._dispatch_test_helper(path)
+        expected = []
+
+        def _assert_will_dispatch(event, event_type):
+            nonlocal expected
+            handler.dispatch(event)
+            expected += ['on_any_event', event_type]
+            self.assertEqual(handler.log, expected)
+
+        for event, event_type in zip(devents, event_types):
+            _assert_will_dispatch(event, event_type)
 
 
 class MainEntryTestCase(unittest.TestCase):
