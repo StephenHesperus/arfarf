@@ -158,8 +158,9 @@
 
 ====
 
-[*] test main()
-    [ ] multiprocessing
+[*] add use_gitignore default option to wdconfig.py so it can be set to True
+    [ ] dog use_gitignore keyword argument overrides the default option
+    [ ] add command line option to set this
 
 ====
 
@@ -173,10 +174,6 @@
     3. the directory wdog.py sits
 
 [ ] add double quotes to default command output
-
-[ ] add use_gitignore default option to wdconfig.py so it can be set to True
-    [ ] dog use_gitignore keyword argument overrides the default option
-    [ ] add command line option to set this
 
 [ ] provide case_sensitive option, default is False
 
