@@ -26,96 +26,6 @@ from watchdog.events import EVENT_TYPE_CREATED, EVENT_TYPE_MODIFIED
 from watchdog.events import EVENT_TYPE_MOVED, EVENT_TYPE_DELETED
 
 
-class Dog(object):
-
-    _gitignore = None
-    _gitignore_path = os.path.join(os.curdir, '.gitignore')
-
-    def __init__(self, command=None, patterns=None, ignore_patterns=None,
-                 ignore_directories=False, path='.', recursive=True,
-                 use_gitignore=False):
-        self._command = command
-        self._patterns = patterns
-        self._ignore_patterns = ignore_patterns
-        self._ignore_directories = ignore_directories
-        self._path = path
-        self._recursive = recursive
-        self._use_gitignore = use_gitignore
-
-    def __del__(self):
-        # Clear _gitignore state when Dog class is deleted.
-        type(self)._gitignore = None
-
-    def __eq__(self, value):
-        return isinstance(value, type(self)) and self.key == value.key
-
-    def __ne__(self, value):
-        return not self.__eq__(value)
-
-    def __repr__(self):
-        return '<Dog: {} {}>'.format(self.key, type(self)._gitignore_path)
-
-    @property
-    def key(self):
-        patterns = tuple(self._patterns) if self._patterns is not None \
-                       else None
-        ignore_patterns = tuple(self._ignore_patterns) \
-                       if self._ignore_patterns is not None \
-                       else None
-        return (self._command, patterns, ignore_patterns,
-                self._ignore_directories, self._path, self._recursive,
-                self._use_gitignore)
-
-    @classmethod
-    def set_gitignore_path(cls, path):
-        cls._gitignore_path = path
-
-    @classmethod
-    def reset_gitignore_path(cls):
-        cls._gitignore_path = os.path.join(os.curdir, '.gitignore')
-
-    @classmethod
-    def _parse_gitignore(cls):
-        with open(cls._gitignore_path) as f:
-            lines = f.readlines()
-        gitignore = []
-        for line in lines:
-            drop_chars = (
-                '#', # drop comment lines
-                '\n', # drop blank lines
-                '!' # patterns starting with a '!' is not supported
-                    # but "\!" to escape '!' is supported
-            )
-            if not line.startswith(drop_chars):
-                p = line.strip()
-                # support escape trailing space with a backslash
-                if p.endswith('\\'):
-                    p += ' '
-                gitignore.append(p)
-        return gitignore
-
-    def create_handler(self, trick_cls):
-        if self._use_gitignore:
-            if type(self)._gitignore is None:
-                type(self)._gitignore = self._parse_gitignore()
-        gip = type(self)._gitignore if type(self)._gitignore is not None \
-              else []
-        selfip = [] if self._ignore_patterns is None \
-                 else self._ignore_patterns
-        ipatterns = gip + selfip
-        included = [os.path.join(self._path, p) for p in self._patterns] \
-                   if self._patterns is not None else None
-        excluded = [os.path.join(self._path, p) for p in ipatterns] \
-                   if ipatterns else None
-        return trick_cls(command=self._command,
-                         patterns=included, ignore_patterns=excluded,
-                         ignore_directories=self._ignore_directories)
-
-    @property
-    def watch_info(self):
-        return (self._path, self._recursive)
-
-
 class WDConfigParser(object):
     """
     Parser for wdconfig.py file.
@@ -281,6 +191,8 @@ def _create_main_argparser():
 
 
 def _parse_main_args(args):
+    if args is None:
+        args = []
     parser = _create_main_argparser()
     args = parser.parse_args(args)
 
@@ -301,9 +213,8 @@ def _parse_main_args(args):
 
     if args.gitignore is not None:
         gitignore_path = os.path.join(os.curdir, args.gitignore)
-        # Set _gitignore_path of type(dogs[0]), that is wdog.Dog in config
-        # file module, not Dog in wdog.
-        type(dogs[0]).set_gitignore_path(gitignore_path)
+        from dog import Dog
+        Dog.set_gitignore_path(gitignore_path)
 
     return dogs
 

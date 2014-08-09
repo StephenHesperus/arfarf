@@ -13,7 +13,8 @@ from watchdog.observers import Observer
 from watchdog.observers.api import ObservedWatch
 
 import wdconfig
-from wdog import Dog, WDConfigParser, AutoRunTrick
+from wdog import WDConfigParser, AutoRunTrick
+from dog import Dog
 
 
 class DogTestCase(unittest.TestCase):
@@ -42,7 +43,7 @@ class DogTestCase(unittest.TestCase):
     # @unittest.expectedFailure
     def test_Dog_constructor(self):
         """Test Dog can use keywords and omit default values."""
-        from wdog import Dog as dog
+        from dog import Dog as dog
         try:
             dog('echo hello', ['*.py'], ['*~'], False, '.', True, True)
             dog('echo hello', ['*.py'], use_gitignore=True)
@@ -63,7 +64,7 @@ class DogTestCase(unittest.TestCase):
         recursive: True, catches all events
         use_gitignore: False, not all people use git, I do ,though
         """
-        from wdog import Dog as dog
+        from dog import Dog as dog
         try:
             d = dog()
         except:
@@ -112,7 +113,7 @@ class DogTestCase(unittest.TestCase):
 class WDConfigParserTestCase(unittest.TestCase):
 
     def setUp(self):
-        from wdog import Dog as dog
+        from dog import Dog as dog
         dogs_mock = (
             dog(command='echo dog1', path='.', recursive=True,
                 use_gitignore=True),
@@ -427,7 +428,6 @@ class MainEntryTestCase(unittest.TestCase):
         dogs = _parse_main_args(args)
         self.assertEqual(expected, dogs)
 
-    # @unittest.skip('WIP')
     def test__parse_main_args_with_gitignore_option(self):
         from wdog import _parse_main_args
 

@@ -24,11 +24,11 @@ use_gitignore       True/False, if Git is used, its ignore patterns can be
                     project
 """
 
-from wdog import Dog as dog
+# from wdog import Dog as dog
+from dog import Dog as dog
 
 
 dogs = (
-    dog(),
     # examples
     ## this dog shows the default values for each argument
     # dog(command='', patterns=['*'], ignore_patterns=[],
