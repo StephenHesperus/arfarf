@@ -86,7 +86,7 @@ class DogTestCase(unittest.TestCase):
         dog = Dog(command='echo hello')
         result = dog._parse_gitignore()
         self.gitignore_mock.assert_called_once_with(
-            os.path.join(os.getcwd(), '.gitignore')
+            os.path.join(os.curdir, '.gitignore')
         )
         self.assertEqual(self.patterns, result)
 
@@ -382,13 +382,13 @@ class AutoRunTrickTestCase(unittest.TestCase):
             path, ignore_directories=True
         )
 
-        def _assert_will_not_dispatch(event):
-            handler.dispatch(event)
-            expected = []
-            self.assertEqual(handler.log, expected)
+        # def _assert_will_not_dispatch(event):
+            # handler.dispatch(event)
+            # expected = []
+            # self.assertEqual(handler.log, expected)
 
         for event in devents:
-            _assert_will_not_dispatch(event)
+            self._assert_will_not_dispatch(event, handler)
 
 
 class MainEntryTestCase(unittest.TestCase):
@@ -423,6 +423,39 @@ class MainEntryTestCase(unittest.TestCase):
             args = ['--unknown-option', 'unknown-option']
             with self.assertRaises(SystemExit):
                 self.parser.parse_args(args)
+
+    def test__parse_main_args_with_config_option(self):
+        from wdog import _parse_main_args
+
+        expected = (Dog(ignore_patterns=['output'], use_gitignore=True), )
+        args = ['--config-file', 'fixture_wdconfig.py']
+        dogs = _parse_main_args(args)
+        # self.fail(dogs[0])
+        self.assertEqual(expected, dogs)
+
+    # @unittest.skip('WIP')
+    def test__parse_main_args_with_gitignore_option(self):
+        from wdog import _parse_main_args
+
+        args = ['--config-file', 'fixture_wdconfig.py',
+                '--gitignore', 'fixture_gitignore']
+        dogs = _parse_main_args(args)
+        # self.fail(dogs[0])
+        expected = os.path.join(os.curdir, 'fixture_gitignore')
+        self.assertEqual(dogs[0]._gitignore_path, expected)
+
+    def test__parse_main_args_with_no_option(self):
+        from wdog import _parse_main_args
+        # from wdog import Dog as dog
+
+        Dog.reset_gitignore_path()
+        dogs_mock = (Dog(), )
+        with patch('wdconfig.dogs', return_value=dogs_mock) as d_m:
+            args = None
+            dogs = _parse_main_args(args)
+            self.assertEqual(dogs(), d_m())
+            expected = os.path.join(os.curdir, '.gitignore')
+            self.assertEqual(dogs()[0]._gitignore_path, expected)
 
 
 @unittest.skip('WIP')

@@ -29,7 +29,7 @@ from watchdog.events import EVENT_TYPE_MOVED, EVENT_TYPE_DELETED
 class Dog(object):
 
     _gitignore = None
-    _gitignore_path = os.path.join(os.getcwd(), '.gitignore')
+    _gitignore_path = os.path.join(os.curdir, '.gitignore')
 
     def __init__(self, command=None, patterns=None, ignore_patterns=None,
                  ignore_directories=False, path='.', recursive=True,
@@ -46,6 +46,15 @@ class Dog(object):
         # Clear _gitignore state when Dog class is deleted.
         type(self)._gitignore = None
 
+    def __eq__(self, value):
+        return isinstance(value, type(self)) and self.key == value.key
+
+    def __ne__(self, value):
+        return not self.__eq__(value)
+
+    def __repr__(self):
+        return '<Dog: {} {}>'.format(self.key, type(self)._gitignore_path)
+
     @property
     def key(self):
         patterns = tuple(self._patterns) if self._patterns is not None \
@@ -60,6 +69,10 @@ class Dog(object):
     @classmethod
     def set_gitignore_path(cls, path):
         cls._gitignore_path = path
+
+    @classmethod
+    def reset_gitignore_path(cls):
+        cls._gitignore_path = os.path.join(os.curdir, '.gitignore')
 
     @classmethod
     def _parse_gitignore(cls):
@@ -265,6 +278,34 @@ def _create_main_argparser():
                         help=('specify a .gitignore file to provide patterns'
                               'to ignore'))
     return parser
+
+
+def _parse_main_args(args):
+    parser = _create_main_argparser()
+    args = parser.parse_args(args)
+
+    if args.config is not None:
+        import sys
+        import importlib
+
+        mpath = os.path.dirname(args.config)
+        sys.path.insert(0, mpath)
+        mbase = os.path.basename(args.config)
+        mname = os.path.splitext(mbase)[0]
+        m = importlib.import_module(mname)
+        dogs = m.dogs
+    else:
+        import wdconfig
+
+        dogs = wdconfig.dogs
+
+    if args.gitignore is not None:
+        gitignore_path = os.path.join(os.curdir, args.gitignore)
+        # Set _gitignore_path of type(dogs[0]), that is wdog.Dog in config
+        # file module, not Dog in wdog.
+        type(dogs[0]).set_gitignore_path(gitignore_path)
+
+    return dogs
 
 
 def main(args=None):

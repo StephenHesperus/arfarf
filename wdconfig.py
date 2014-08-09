@@ -28,6 +28,7 @@ from wdog import Dog as dog
 
 
 dogs = (
+    dog(),
     # examples
     ## this dog shows the default values for each argument
     # dog(command='', patterns=['*'], ignore_patterns=[],

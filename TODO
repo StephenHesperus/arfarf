@@ -152,14 +152,21 @@
     [ ] cache _gitignore and invalid it only if monitored path is different
         [ ] sort dogs by path, group by path
 
-====
-
-[#] use tempfile to test wdog.py
+[-] use tempfile to test wdog.py
     [x] use shell redirect to test logfile
     [*] change to tempdir and change back after the test
     [-] use multiprocessing to start wdog.py
         [ ] use wdog main()
         [ ] use mock dogs
+====
+
+[*] parse main args
+    [x] args is None
+    [x] args.config is not None
+    [x] args.gitignore is not None
+    [*] refactor main()
+
+[ ] refactor test_dispatch_dir_events_matching_patterns_when_ignore_directories
 
 ====
 
