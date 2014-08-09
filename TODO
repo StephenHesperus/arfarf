@@ -143,6 +143,14 @@
         [x] refactor dispatch tests
         [x] refactor dispatch implementation
 
+[x] parse main args
+    [x] args is None
+    [x] args.config is not None
+    [x] args.gitignore is not None
+    [x] refactor main()
+
+[x] refactor test_dispatch_dir_events_matching_patterns_when_ignore_directories
+
 ====
 
 [-] Dog default directory is os.curdir, and should only be it for gitignore
@@ -160,13 +168,7 @@
         [ ] use mock dogs
 ====
 
-[*] parse main args
-    [x] args is None
-    [x] args.config is not None
-    [x] args.gitignore is not None
-    [x] refactor main()
-
-[ ] refactor test_dispatch_dir_events_matching_patterns_when_ignore_directories
+[*] separate Dog module
 
 ====
 

@@ -382,11 +382,6 @@ class AutoRunTrickTestCase(unittest.TestCase):
             path, ignore_directories=True
         )
 
-        # def _assert_will_not_dispatch(event):
-            # handler.dispatch(event)
-            # expected = []
-            # self.assertEqual(handler.log, expected)
-
         for event in devents:
             self._assert_will_not_dispatch(event, handler)
 
