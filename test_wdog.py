@@ -232,6 +232,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
 
     def test_hashable(self):
         import collections
+
         handler = AutoRunTrick(command='echo hello')
         self.assertTrue(isinstance(handler, collections.Hashable))
 
@@ -422,30 +423,33 @@ class MainEntryTestCase(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 self.parser.parse_args(args)
 
-    def test__parse_main_args_with_config_option(self):
-        from wdog import _parse_main_args
+    def test__apply_main_args_with_config_option(self):
+        from wdog import _apply_main_args
 
         expected = (Dog(ignore_patterns=['output'], use_gitignore=True), )
-        args = ['--config-file', 'fixture_wdconfig.py']
-        dogs = _parse_main_args(args)
+        arglist = ['--config-file', 'fixture_wdconfig.py']
+        args = self.parser.parse_args(arglist)
+        dogs = _apply_main_args(args)
         self.assertEqual(expected, dogs)
 
-    def test__parse_main_args_with_gitignore_option(self):
-        from wdog import _parse_main_args
+    def test__apply_main_args_with_gitignore_option(self):
+        from wdog import _apply_main_args
 
-        args = ['--config-file', 'fixture_wdconfig.py',
+        arglist = ['--config-file', 'fixture_wdconfig.py',
                 '--gitignore', 'fixture_gitignore']
-        dogs = _parse_main_args(args)
+        args = self.parser.parse_args(arglist)
+        dogs = _apply_main_args(args)
         expected = os.path.join(os.curdir, 'fixture_gitignore')
         self.assertEqual(dogs[0]._gitignore_path, expected)
 
-    def test__parse_main_args_with_no_option(self):
-        from wdog import _parse_main_args
+    def test__apply_main_args_with_no_option(self):
+        from wdog import _apply_main_args
 
         dogs_mock = (Dog(), )
         with patch('wdconfig.dogs', return_value=dogs_mock) as d_m:
-            args = None
-            dogs = _parse_main_args(args)
+            arglist = None
+            args = self.parser.parse_args(arglist)
+            dogs = _apply_main_args(args)
             self.assertEqual(dogs(), d_m())
             expected = os.path.join(os.curdir, '.gitignore')
             self.assertEqual(dogs()[0]._gitignore_path, expected)

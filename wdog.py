@@ -190,12 +190,7 @@ def _create_main_argparser():
     return parser
 
 
-def _parse_main_args(args):
-    if args is None:
-        args = []
-    parser = _create_main_argparser()
-    args = parser.parse_args(args)
-
+def _apply_main_args(args):
     if args.config is not None:
         import sys
         import importlib
@@ -214,16 +209,19 @@ def _parse_main_args(args):
     if args.gitignore is not None:
         gitignore_path = os.path.join(os.curdir, args.gitignore)
         from dog import Dog
+
         Dog.set_gitignore_path(gitignore_path)
 
     return dogs
 
 
-def main(args=None):
+def main():
     """Script entry point."""
     from watchdog.observers.polling import PollingObserver
 
-    dogs = _parse_main_args(args)
+    parser = _create_main_argparser()
+    args = parser.parse_args()
+    dogs = _apply_main_args(args)
 
     # The reason to use PollingObserver() is it's os-independent. And it's
     # more reliable.

@@ -170,7 +170,8 @@
 
 [x] separate Dog module
 
-[ ] create parser, parse args, apply args
+[x] create parser, parse args, apply args
+    [x] _apply_main_args()
 
 ====
 
