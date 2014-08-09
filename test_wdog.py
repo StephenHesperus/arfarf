@@ -447,7 +447,7 @@ class MainEntryTestCase(unittest.TestCase):
 
         dogs_mock = (Dog(), )
         with patch('wdconfig.dogs', return_value=dogs_mock) as d_m:
-            arglist = None
+            arglist = []
             args = self.parser.parse_args(arglist)
             dogs = _apply_main_args(args)
             self.assertEqual(dogs(), d_m())
@@ -455,9 +455,9 @@ class MainEntryTestCase(unittest.TestCase):
             self.assertEqual(dogs()[0]._gitignore_path, expected)
 
 
-@unittest.skip('WIP')
 class FunctionalTestCase(unittest.TestCase):
 
+    @unittest.skip('WIP')
     def test_wdog_script_execution(self):
         from tempfile import NamedTemporaryFile, TemporaryDirectory
 
@@ -512,6 +512,12 @@ class FunctionalTestCase(unittest.TestCase):
         # Exit temporary directory.
         os.chdir(oldwd)
         td.cleanup()
+
+    @unittest.skip('WIP')
+    def test_wdog_main(self):
+        cmd = ('python3 wdog.py -c fixture_wdconfig.py -g fixture_gitignore'
+               '')
+        p = subprocess.Popen(cmd, shell=True, start_new_session=True)
 
 
 class MiscellaneousTestCase(unittest.TestCase):
@@ -591,3 +597,7 @@ class MiscellaneousTestCase(unittest.TestCase):
         # With the second approach, you get a fresh empty sequence every time
         # you omit the keyword argument, without worrying it will be changed
         # elsewhere.
+
+
+if __name__ == '__main__':
+    unittest.main()

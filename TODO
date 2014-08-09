@@ -151,27 +151,15 @@
 
 [x] refactor test_dispatch_dir_events_matching_patterns_when_ignore_directories
 
-====
-
-[-] Dog default directory is os.curdir, and should only be it for gitignore
-    patterns to work, or
-[-] update included, excluded and gitignore patterns according to monitor path
-    [ ] make _parse_gitignore a instance method, or
-    [ ] cache _gitignore and invalid it only if monitored path is different
-        [ ] sort dogs by path, group by path
-
-[-] use tempfile to test wdog.py
-    [x] use shell redirect to test logfile
-    [*] change to tempdir and change back after the test
-    [-] use multiprocessing to start wdog.py
-        [ ] use wdog main()
-        [ ] use mock dogs
-====
-
 [x] separate Dog module
 
 [x] create parser, parse args, apply args
     [x] _apply_main_args()
+
+====
+
+[*] test main()
+    [ ] multiprocessing
 
 ====
 
@@ -184,23 +172,21 @@
     2. the directory the script runs
     3. the directory wdog.py sits
 
-[ ] wdconfig.py
-    [ ] dogs is a tuple of wdog.Dog
-
-[ ] remove wdconfig.py default dog entry
-
-[?] how to mock subprocess direct output
-    [?] how to mock subprocess calls
-
 [ ] add double quotes to default command output
 
 [ ] add use_gitignore default option to wdconfig.py so it can be set to True
     [ ] dog use_gitignore keyword argument overrides the default option
     [ ] add command line option to set this
 
-[ ] handle empty dogs tuple error, exit gracefully
-
 [ ] provide case_sensitive option, default is False
+
+[ ] when _apply_main_args(), test
+    [ ] dogs is a tuple of wdog.Dog
+        [ ] handle empty dogs tuple error, exit gracefully
+    [ ] catch wdconfig module ImportError
+
+[?] how to mock subprocess direct output
+    [?] how to mock subprocess calls
 
 ====
 
@@ -221,3 +207,19 @@
 
 [ ] nosetests
     [ ] @unittest.expectedFailure RuntimeWarning
+
+====
+
+[-] Dog default directory is os.curdir, and should only be it for gitignore
+    patterns to work, or
+[-] update included, excluded and gitignore patterns according to monitor path
+    [ ] make _parse_gitignore a instance method, or
+    [ ] cache _gitignore and invalid it only if monitored path is different
+        [ ] sort dogs by path, group by path
+
+[-] use tempfile to test wdog.py
+    [x] use shell redirect to test logfile
+    [*] change to tempdir and change back after the test
+    [-] use multiprocessing to start wdog.py
+        [ ] use wdog main()
+        [ ] use mock dogs
