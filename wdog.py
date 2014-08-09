@@ -312,27 +312,7 @@ def main(args=None):
     """Script entry point."""
     from watchdog.observers.polling import PollingObserver
 
-    parser = _create_main_argparser()
-    args = parser.parse_args(args)
-
-    if args.config is not None:
-        import sys
-        import importlib
-
-        mpath = os.path.dirname(args.config)
-        sys.path.insert(0, mpath)
-        mbase = os.path.basename(args.config)
-        mname = os.path.splitext(mbase)[0]
-        m = importlib.import_module(mname)
-        dogs = m.dogs
-    else:
-        from wdconfig import dogs
-
-    if args.gitignore is not None:
-        gitignore_path = os.path.join(os.getcwd(), args.gitignore)
-        # Set _gitignore_path of type(dogs[0]), that is wdog.Dog in config
-        # file module, not Dog in wdog.
-        dogs[0].set_gitignore_path(gitignore_path)
+    dogs = _parse_main_args(args)
 
     # The reason to use PollingObserver() is it's os-independent. And it's
     # more reliable.

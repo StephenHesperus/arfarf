@@ -164,7 +164,7 @@
     [x] args is None
     [x] args.config is not None
     [x] args.gitignore is not None
-    [*] refactor main()
+    [x] refactor main()
 
 [ ] refactor test_dispatch_dir_events_matching_patterns_when_ignore_directories
 

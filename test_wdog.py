@@ -430,7 +430,6 @@ class MainEntryTestCase(unittest.TestCase):
         expected = (Dog(ignore_patterns=['output'], use_gitignore=True), )
         args = ['--config-file', 'fixture_wdconfig.py']
         dogs = _parse_main_args(args)
-        # self.fail(dogs[0])
         self.assertEqual(expected, dogs)
 
     # @unittest.skip('WIP')
@@ -440,13 +439,11 @@ class MainEntryTestCase(unittest.TestCase):
         args = ['--config-file', 'fixture_wdconfig.py',
                 '--gitignore', 'fixture_gitignore']
         dogs = _parse_main_args(args)
-        # self.fail(dogs[0])
         expected = os.path.join(os.curdir, 'fixture_gitignore')
         self.assertEqual(dogs[0]._gitignore_path, expected)
 
     def test__parse_main_args_with_no_option(self):
         from wdog import _parse_main_args
-        # from wdog import Dog as dog
 
         Dog.reset_gitignore_path()
         dogs_mock = (Dog(), )
