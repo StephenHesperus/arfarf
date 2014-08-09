@@ -17,10 +17,6 @@ class Dog(object):
         self._recursive = recursive
         self._use_gitignore = use_gitignore
 
-    def __del__(self):
-        # Clear _gitignore state when Dog class is deleted.
-        type(self)._gitignore = None
-
     def __eq__(self, value):
         return isinstance(value, type(self)) and self.key == value.key
 
@@ -72,7 +68,7 @@ class Dog(object):
     def create_handler(self, trick_cls):
         if self._use_gitignore:
             if type(self)._gitignore is None:
-                type(self)._gitignore = self._parse_gitignore()
+                type(self)._gitignore = type(self)._parse_gitignore()
         gip = type(self)._gitignore if type(self)._gitignore is not None \
               else []
         selfip = [] if self._ignore_patterns is None \

@@ -168,7 +168,9 @@
         [ ] use mock dogs
 ====
 
-[*] separate Dog module
+[x] separate Dog module
+
+[ ] create parser, parse args, apply args
 
 ====
 

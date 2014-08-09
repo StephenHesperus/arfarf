@@ -129,6 +129,7 @@ class WDConfigParserTestCase(unittest.TestCase):
         self.HandlerClass = MagicMock()
         self.HandlerClass.side_effect = [sentinel.a, sentinel.b,
                                          sentinel.c, sentinel.d] * 2
+        Dog._gitignore = None
 
     def tearDown(self):
         self.patcher.stop()
@@ -392,6 +393,7 @@ class MainEntryTestCase(unittest.TestCase):
     def setUp(self):
         import wdog
         self.parser = wdog._create_main_argparser()
+        Dog.reset_gitignore_path()
 
     def test__create_main_argparser_without_args(self):
         result = self.parser.parse_args([])
@@ -440,7 +442,6 @@ class MainEntryTestCase(unittest.TestCase):
     def test__parse_main_args_with_no_option(self):
         from wdog import _parse_main_args
 
-        Dog.reset_gitignore_path()
         dogs_mock = (Dog(), )
         with patch('wdconfig.dogs', return_value=dogs_mock) as d_m:
             args = None
