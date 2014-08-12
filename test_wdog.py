@@ -114,7 +114,7 @@ class WDConfigParserTestCase(unittest.TestCase):
 
     def setUp(self):
         from dog import Dog as dog
-        dogs_mock = (
+        self.dogs = (
             dog(command='echo dog1', path='.', recursive=True,
                 use_gitignore=True),
             dog(command='echo dog2', path='.', recursive=True,
@@ -122,17 +122,11 @@ class WDConfigParserTestCase(unittest.TestCase):
             dog(command='echo dog3', path='..', recursive=True),
             dog(command='echo dog4', path='.', recursive=False),
         )
-        self.patcher = patch('wdconfig.dogs', return_value=dogs_mock)
-        d_m = self.patcher.start()
-        self.dogs = d_m()
         self.parser = WDConfigParser(self.dogs)
         self.HandlerClass = MagicMock()
         self.HandlerClass.side_effect = [sentinel.a, sentinel.b,
                                          sentinel.c, sentinel.d] * 2
         Dog._gitignore = None
-
-    def tearDown(self):
-        self.patcher.stop()
 
     def test_schedule_with(self):
         # This provides more readable traceback message for ObservedWatch.
