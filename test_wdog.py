@@ -558,6 +558,24 @@ class MiscellaneousTestCase(unittest.TestCase):
         # you omit the keyword argument, without worrying it will be changed
         # elsewhere.
 
+    def test_local_set_cls_attr_scope(self):
+        class C(object):
+            cls_attr = None
+
+        c = MagicMock()
+        c.C = C
+        expected = 'Set in patch.dict'
+        with patch.dict('sys.modules', pretty_c=c):
+            def f():
+                from pretty_c import C as PC
+
+                PC.cls_attr = 'Set in patch.dict'
+            f()
+            import pretty_c
+            self.assertEqual(C.cls_attr, expected)
+            self.assertEqual(pretty_c.C.cls_attr, expected)
+        self.assertEqual(C.cls_attr, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
