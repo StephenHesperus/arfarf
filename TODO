@@ -161,7 +161,7 @@
 [*] add use_gitignore default option to wdconfig.py so it can be set to True
     [x] dog use_gitignore keyword argument overrides the default option
     [ ] add command line option to set this
-    [ ] make it always present in wdconfig
+    [x] make it always present in wdconfig
         [x] before create_handler(), use use_gitignore option to calculate the
             final value of use_gitignore
             [x] calculation:

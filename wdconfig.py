@@ -44,3 +44,6 @@ dogs = (
     # dog('echo hello', ['*.py'], use_gitignore=True),
     # dog(command='echo hello', patterns=['*.py'], use_gitignore=True),
 )
+
+# Set use gitignore or not by default
+# use_gitignore_default = True
