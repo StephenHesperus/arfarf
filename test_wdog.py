@@ -122,9 +122,10 @@ class WDConfigParserTestCase(unittest.TestCase):
             dog(command='echo dog3', path='..', recursive=True),
             dog(command='echo dog4', path='.', recursive=False),
         )
-        wdmm = MagicMock()
-        wdmm.dogs = self.dogs
-        self.patcher = patch.dict('sys.modules', wdconfig_module=wdmm)
+        self.wdmm = MagicMock()
+        self.wdmm.dogs = self.dogs
+        self.wdmm.use_gitignore_default = True
+        self.patcher = patch.dict('sys.modules', wdconfig_module=self.wdmm)
         self.patcher.start()
         import wdconfig_module
         self.parser = WDConfigParser(wdconfig_module)
@@ -170,13 +171,28 @@ class WDConfigParserTestCase(unittest.TestCase):
         mg.assert_called_once_with()
 
     def test_construct_using_wdconfig_module(self):
-        import fixture_wdconfig
+        import wdconfig_module
         from types import ModuleType
 
-        wdconfig_module = fixture_wdconfig
-        parser = WDConfigParser(wdconfig_module)
-        self.assertIsNotNone(parser._wdconfig)
-        self.assertIsInstance(parser._wdconfig, ModuleType)
+        self.assertIsNotNone(self.parser._wdconfig)
+        self.assertIs(self.parser._wdconfig, wdconfig_module)
+
+    def test_can_set_Dog_use_gitignore_defaut_cls_attr(self):
+        use = self.parser._use_gitignore_default # True
+        self.parser._set_use_gitignore_default()
+        self.assertEqual(use, Dog._use_gitignore_default)
+        dog = Dog()
+        self.assertEqual(dog._use_gitignore_default, use)
+        self.assertEqual(self.wdmm.dogs[0]._use_gitignore_default, use)
+
+        self.wdmm.use_gitignore_default = False
+        parser = WDConfigParser(self.wdmm)
+        parser._set_use_gitignore_default()
+        self.assertEqual(parser._use_gitignore_default,
+                         Dog._use_gitignore_default)
+        dog = Dog()
+        self.assertEqual(dog._use_gitignore_default, False)
+        self.assertEqual(self.wdmm.dogs[0]._use_gitignore_default, False)
 
 
 class AutoRunTrickTestCase(unittest.TestCase):

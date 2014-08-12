@@ -159,31 +159,28 @@
 ====
 
 [*] add use_gitignore default option to wdconfig.py so it can be set to True
-    [ ] dog use_gitignore keyword argument overrides the default option
+    [x] dog use_gitignore keyword argument overrides the default option
     [ ] add command line option to set this
     [ ] make it always present in wdconfig
-        [ ] before create_handler(), use use_gitignore option to calculate the
+        [x] before create_handler(), use use_gitignore option to calculate the
             final value of use_gitignore
-            [ ] calculation:
+            [x] calculation:
                 ```
                 use = self._use_gitignore if self._use_gitignore is not None \
                       else type(self)._use_gitignore_default
                 ```
-                use_gitignore truth table
-                CD: constructor default
-                CA: class attribute
-                CV: constructor value
-                 CD | CA  | CV  | RESULT
-                ------------------------
-                None|True |True |True
-                None|True |False|False
-                None|False|True |True
-                None|False|False|False
     [x] WDConfigParser use a wdconfig_module as argument
         [x] parse dogs
-        [ ] parse Dog.use_gitignore_default
+        [x] parse Dog.use_gitignore_default
+        [x] test dogs[0]._use_gitignore_default changed by
+            _set_use_gitignore_default
+[x] Refactor test_construct_using_wdconfig_module(), use mock module instead
+[ ] separate WDConfigParser, AutoRunTrick
 
 ====
+
+[ ] provide wdconfig_ignore to set default '.gitignore'-like ignore file
+    location
 
 [ ] config file resolution order
     1. command line --config-file/-c option
@@ -202,9 +199,6 @@
     [ ] dogs is a tuple of wdog.Dog
         [ ] handle empty dogs tuple error, exit gracefully
     [ ] catch wdconfig module ImportError
-
-[?] how to mock subprocess direct output
-    [?] how to mock subprocess calls
 
 ====
 
@@ -241,3 +235,6 @@
     [-] use multiprocessing to start wdog.py
         [ ] use wdog main()
         [ ] use mock dogs
+
+[-] how to mock subprocess direct output
+    [?] how to mock subprocess calls
