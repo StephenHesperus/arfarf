@@ -175,7 +175,8 @@
         [x] test dogs[0]._use_gitignore_default changed by
             _set_use_gitignore_default
 [x] Refactor test_construct_using_wdconfig_module(), use mock module instead
-[ ] separate WDConfigParser, AutoRunTrick
+[x] separate WDConfigParser
+[ ] separate AutoRunTrick
 
 ====
 

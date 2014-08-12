@@ -16,7 +16,6 @@ import subprocess
 import time
 import argparse
 
-from collections import defaultdict
 from string import Template
 
 from pathtools.patterns import match_any_paths
@@ -24,33 +23,6 @@ from watchdog.tricks import Trick
 from watchdog.utils import unicode_paths
 from watchdog.events import EVENT_TYPE_CREATED, EVENT_TYPE_MODIFIED
 from watchdog.events import EVENT_TYPE_MOVED, EVENT_TYPE_DELETED
-
-
-class WDConfigParser(object):
-    """
-    Parser for wdconfig.py file.
-    """
-
-    def __init__(self, wdconfig_module):
-        self._dogs = wdconfig_module.dogs
-        self._use_gitignore_default = wdconfig_module.use_gitignore_default
-        self._wdconfig = wdconfig_module
-
-    def _set_use_gitignore_default(self):
-        from dog import Dog
-        Dog._use_gitignore_default = self._use_gitignore_default
-
-    def schedule_with(self, observer, cls):
-        self._set_use_gitignore_default()
-
-        handler_for_watch = defaultdict(set)
-        for dog in self._dogs:
-            handler = dog.create_handler(cls)
-            watch = observer.schedule(handler, *dog.watch_info)
-            handler_for_watch[watch].add(handler)
-        handler_for_watch = dict(handler_for_watch)
-
-        return handler_for_watch
 
 
 class AutoRunTrick(Trick):
@@ -223,6 +195,7 @@ def _apply_main_args(args):
 def main():
     """Script entry point."""
     from watchdog.observers.polling import PollingObserver
+    from parser import WDConfigParser
 
     parser = _create_main_argparser()
     args = parser.parse_args()
