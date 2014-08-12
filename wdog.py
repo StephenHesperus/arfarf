@@ -12,6 +12,7 @@ set the ``use_gitignore`` option of a dog in the wdconfig.py file.
 
 import argparse
 import os
+import time
 
 
 def _create_main_argparser():
