@@ -176,7 +176,7 @@
             _set_use_gitignore_default
 [x] Refactor test_construct_using_wdconfig_module(), use mock module instead
 [x] separate WDConfigParser
-[ ] separate AutoRunTrick
+[x] separate AutoRunTrick
 
 ====
 
@@ -200,6 +200,8 @@
     [ ] dogs is a tuple of wdog.Dog
         [ ] handle empty dogs tuple error, exit gracefully
     [ ] catch wdconfig module ImportError
+
+[ ] Refactor all local import
 
 ====
 

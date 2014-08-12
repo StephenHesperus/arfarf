@@ -13,9 +13,9 @@ from watchdog.observers import Observer
 from watchdog.observers.api import ObservedWatch
 
 import wdconfig
-from wdog import AutoRunTrick
 from dog import Dog
 from parser import WDConfigParser
+from tricks import AutoRunTrick
 
 
 class DogTestCase(unittest.TestCase):

@@ -24,7 +24,6 @@ use_gitignore       True/False, if Git is used, its ignore patterns can be
                     project
 """
 
-# from wdog import Dog as dog
 from dog import Dog as dog
 
 
