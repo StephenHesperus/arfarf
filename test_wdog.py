@@ -122,11 +122,19 @@ class WDConfigParserTestCase(unittest.TestCase):
             dog(command='echo dog3', path='..', recursive=True),
             dog(command='echo dog4', path='.', recursive=False),
         )
-        self.parser = WDConfigParser(self.dogs)
+        wdmm = MagicMock()
+        wdmm.dogs = self.dogs
+        self.patcher = patch.dict('sys.modules', wdconfig_module=wdmm)
+        self.patcher.start()
+        import wdconfig_module
+        self.parser = WDConfigParser(wdconfig_module)
         self.HandlerClass = MagicMock()
         self.HandlerClass.side_effect = [sentinel.a, sentinel.b,
                                          sentinel.c, sentinel.d] * 2
         Dog._gitignore = None
+
+    def tearDown(self):
+        self.patcher.stop()
 
     def test_schedule_with(self):
         # This provides more readable traceback message for ObservedWatch.
@@ -160,6 +168,15 @@ class WDConfigParserTestCase(unittest.TestCase):
             self.parser.schedule_with(observer, self.HandlerClass)
             self.assertIs(Dog._parse_gitignore, mg)
         mg.assert_called_once_with()
+
+    def test_construct_using_wdconfig_module(self):
+        import fixture_wdconfig
+        from types import ModuleType
+
+        wdconfig_module = fixture_wdconfig
+        parser = WDConfigParser(wdconfig_module)
+        self.assertIsNotNone(parser._wdconfig)
+        self.assertIsInstance(parser._wdconfig, ModuleType)
 
 
 class AutoRunTrickTestCase(unittest.TestCase):
@@ -423,8 +440,8 @@ class MainEntryTestCase(unittest.TestCase):
         expected = (Dog(ignore_patterns=['output'], use_gitignore=True), )
         arglist = ['--config-file', 'fixture_wdconfig.py']
         args = self.parser.parse_args(arglist)
-        dogs = _apply_main_args(args)
-        self.assertEqual(expected, dogs)
+        wdm = _apply_main_args(args)
+        self.assertEqual(expected, wdm.dogs)
 
     def test__apply_main_args_with_gitignore_option(self):
         from wdog import _apply_main_args
@@ -432,21 +449,18 @@ class MainEntryTestCase(unittest.TestCase):
         arglist = ['--config-file', 'fixture_wdconfig.py',
                 '--gitignore', 'fixture_gitignore']
         args = self.parser.parse_args(arglist)
-        dogs = _apply_main_args(args)
+        _apply_main_args(args)
         expected = os.path.join(os.curdir, 'fixture_gitignore')
-        self.assertEqual(dogs[0]._gitignore_path, expected)
+        self.assertEqual(Dog._gitignore_path, expected)
 
     def test__apply_main_args_with_no_option(self):
         from wdog import _apply_main_args
 
-        dogs_mock = (Dog(), )
-        with patch('wdconfig.dogs', return_value=dogs_mock) as d_m:
-            arglist = []
-            args = self.parser.parse_args(arglist)
-            dogs = _apply_main_args(args)
-            self.assertEqual(dogs(), d_m())
-            expected = os.path.join(os.curdir, '.gitignore')
-            self.assertEqual(dogs()[0]._gitignore_path, expected)
+        arglist = []
+        args = self.parser.parse_args(arglist)
+        _apply_main_args(args)
+        expected = os.path.join(os.curdir, '.gitignore')
+        self.assertEqual(Dog._gitignore_path, expected)
 
 
 class MiscellaneousTestCase(unittest.TestCase):

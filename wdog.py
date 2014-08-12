@@ -31,8 +31,9 @@ class WDConfigParser(object):
     Parser for wdconfig.py file.
     """
 
-    def __init__(self, dogs):
-        self._dogs = dogs
+    def __init__(self, wdconfig_module):
+        self._dogs = wdconfig_module.dogs
+        self._wdconfig = wdconfig_module
 
     def schedule_with(self, observer, cls):
         handler_for_watch = defaultdict(set)
@@ -199,12 +200,9 @@ def _apply_main_args(args):
         sys.path.insert(0, mpath)
         mbase = os.path.basename(args.config)
         mname = os.path.splitext(mbase)[0]
-        m = importlib.import_module(mname)
-        dogs = m.dogs
+        wdconfig = importlib.import_module(mname)
     else:
         import wdconfig
-
-        dogs = wdconfig.dogs
 
     if args.gitignore is not None:
         gitignore_path = os.path.join(os.curdir, args.gitignore)
@@ -212,7 +210,7 @@ def _apply_main_args(args):
 
         Dog.set_gitignore_path(gitignore_path)
 
-    return dogs
+    return wdconfig
 
 
 def main():
@@ -221,13 +219,13 @@ def main():
 
     parser = _create_main_argparser()
     args = parser.parse_args()
-    dogs = _apply_main_args(args)
+    wdconfig = _apply_main_args(args)
 
     # The reason to use PollingObserver() is it's os-independent. And it's
     # more reliable.
     observer = PollingObserver()
 
-    parser = WDConfigParser(dogs)
+    parser = WDConfigParser(wdconfig)
     handler_for_watch = parser.schedule_with(observer, AutoRunTrick)
     handlers = set.union(*tuple(handler_for_watch.values()))
 
