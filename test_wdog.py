@@ -453,8 +453,9 @@ class MainEntryTestCase(unittest.TestCase):
 
     def test__apply_main_args_with_config_option(self):
         from wdog import _apply_main_args
+        import fixture_wdconfig
 
-        expected = (Dog(ignore_patterns=['output'], use_gitignore=True), )
+        expected = fixture_wdconfig.dogs
         arglist = ['--config-file', 'fixture_wdconfig.py']
         args = self.parser.parse_args(arglist)
         wdm = _apply_main_args(args)
