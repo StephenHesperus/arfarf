@@ -479,6 +479,40 @@ class MainTestCase(unittest.TestCase):
         expected = os.path.join(os.curdir, '.gitignore')
         self.assertEqual(Dog._gitignore_path, expected)
 
+    def test__create_wdconfig_when_not_found_and_no_config_option(self):
+        """Test prompt the user to create wdconfig.py if no wdconfig.py is
+        found where the script is run and the script is launched without
+        --config-file option."""
+        from tempfile import TemporaryDirectory
+        from main import _create_wdconfig_module
+        from dog import Dog as dog
+
+        oldwd = os.getcwd()
+        wdconfig_template = os.path.join(os.getcwd(), 'wdconfig_template')
+        context = {
+            'use_gitignore_default': 'True',
+            'dogs': '    dog("echo hello"),\n    dog(),',
+        }
+        expected_dogs = (dog("echo hello"), dog(), )
+        with TemporaryDirectory() as td:
+            os.chdir(td)
+            _create_wdconfig_module(wdconfig_template, context)
+            try:
+                import wdconfig
+            except ImportError:
+                self.fail('wdconfig.py module should exist now.')
+            else:
+                self.assertEqual(wdconfig.dogs, expected_dogs)
+                self.assertEqual(wdconfig.use_gitignore_default, True)
+            os.chdir(oldwd)
+
+    @unittest.skip('WIP')
+    def test__apply_main_args_with_no_option_nor_wdconfig_module(self):
+        # m = MagicMock()
+        # m.side_effect = ['True', 'dog("echo hello"),', 'dog(),']
+        # with patch('builtins.input', m):
+        self.fail('WIP')
+
 
 class MiscellaneousTestCase(unittest.TestCase):
 

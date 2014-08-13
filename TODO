@@ -192,6 +192,12 @@
     2. the directory the script runs
         [ ] if not found, raise error
     [-] 3. the directory wdog.py sits
+[*] prompt the user to create the wdconfig.py file
+    [ ] provide --copy-config-template option to help create wdconfig.py
+    [ ] get multiple lines input: '\n'.join(iter(input, ''))
+        [!] readline, input receive an empty string '' when EOF
+    [x] create wdconfig.py from template and context:
+        _create_wdconfig_module()
 
 
 ====

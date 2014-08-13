@@ -27,22 +27,21 @@ use_gitignore       True/False, if Git is used, its ignore patterns can be
 from dog import Dog as dog
 
 
-dogs = (
-    # examples
-    ## this dog shows the default values for each argument
-    # dog(command='', patterns=['*'], ignore_patterns=[],
-        # ignore_directories=False, path='.', recursive=True,
-        # use_gitignore=False),
-
-    ## this dog shows the same default values without using keywords
-    # dog('echo hello', ['*.py'], [], False, '.', True, True),
-
-    ## those are other different way to specific a dog
-    # dog(command='echo Hello, World!', ignore_directories=True,
-    #     use_gitignore=True),
-    # dog('echo hello', ['*.py'], use_gitignore=True),
-    # dog(command='echo hello', patterns=['*.py'], use_gitignore=True),
-)
-
 # Set use gitignore or not by default
-# use_gitignore_default = True
+use_gitignore_default = ${use_gitignore_default}
+
+# Examples
+# This dog shows the default values for each argument.
+#    dog(command=None, patterns=None, ignore_patterns=None,
+#    	 ignore_directories=False, path='.', recursive=True,
+#    	 use_gitignore=False),
+# Or
+#    dog(None, None, None, False, '.', True, False),
+# Or
+#    dog(),
+# Those are other different way to specific a dog.
+#    dog('echo hello', ['*.py'], use_gitignore=True),
+#    dog(command='echo hello', patterns=['*.py'], use_gitignore=True),
+dogs = (
+    ${dogs}
+)

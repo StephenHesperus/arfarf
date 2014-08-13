@@ -13,6 +13,16 @@ set the ``use_gitignore`` option of a dog in the wdconfig.py file.
 import argparse
 import os
 import time
+from string import Template
+
+
+def _create_wdconfig_module(wdconfig_template, context):
+    with open(wdconfig_template) as f:
+        template = f.read()
+    t = Template(template)
+    wdconfig_str = t.substitute(context)
+    with open('wdconfig.py', 'w') as g:
+        g.write(wdconfig_str)
 
 
 def _create_main_argparser():
@@ -40,9 +50,10 @@ def _apply_main_args(args):
         wdconfig_module = None
         try:
             import wdconfig
-            wdconfig_module = wdconfig
         except ImportError:
             pass
+        else:
+            wdconfig_module = wdconfig
 
     if args.gitignore is not None:
         gitignore_path = os.path.join(os.curdir, args.gitignore)
