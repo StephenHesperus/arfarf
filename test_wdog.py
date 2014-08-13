@@ -12,7 +12,6 @@ import watchdog.events
 from watchdog.observers import Observer
 from watchdog.observers.api import ObservedWatch
 
-import wdconfig
 from dog import Dog
 from parser import WDConfigParser
 from tricks import AutoRunTrick
@@ -417,11 +416,11 @@ class AutoRunTrickTestCase(unittest.TestCase):
             self._assert_will_not_dispatch(event, handler)
 
 
-class MainEntryTestCase(unittest.TestCase):
+class MainTestCase(unittest.TestCase):
 
     def setUp(self):
-        import wdog
-        self.parser = wdog._create_main_argparser()
+        import main
+        self.parser = main._create_main_argparser()
         Dog.reset_gitignore_path()
 
     def test__create_main_argparser_without_args(self):
@@ -452,7 +451,7 @@ class MainEntryTestCase(unittest.TestCase):
                 self.parser.parse_args(args)
 
     def test__apply_main_args_with_config_option(self):
-        from wdog import _apply_main_args
+        from main import _apply_main_args
         import fixture_wdconfig
 
         expected = fixture_wdconfig.dogs
@@ -462,7 +461,7 @@ class MainEntryTestCase(unittest.TestCase):
         self.assertEqual(expected, wdm.dogs)
 
     def test__apply_main_args_with_gitignore_option(self):
-        from wdog import _apply_main_args
+        from main import _apply_main_args
 
         arglist = ['--config-file', 'fixture_wdconfig.py',
                 '--gitignore', 'fixture_gitignore']
@@ -472,7 +471,7 @@ class MainEntryTestCase(unittest.TestCase):
         self.assertEqual(Dog._gitignore_path, expected)
 
     def test__apply_main_args_with_no_option(self):
-        from wdog import _apply_main_args
+        from main import _apply_main_args
 
         arglist = []
         args = self.parser.parse_args(arglist)

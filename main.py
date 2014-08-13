@@ -35,9 +35,14 @@ def _apply_main_args(args):
         sys.path.insert(0, mpath)
         mbase = os.path.basename(args.config)
         mname = os.path.splitext(mbase)[0]
-        wdconfig = importlib.import_module(mname)
+        wdconfig_module = importlib.import_module(mname)
     else:
-        import wdconfig
+        wdconfig_module = None
+        try:
+            import wdconfig
+            wdconfig_module = wdconfig
+        except ImportError:
+            pass
 
     if args.gitignore is not None:
         gitignore_path = os.path.join(os.curdir, args.gitignore)
@@ -45,7 +50,7 @@ def _apply_main_args(args):
 
         Dog.set_gitignore_path(gitignore_path)
 
-    return wdconfig
+    return wdconfig_module
 
 
 def main():

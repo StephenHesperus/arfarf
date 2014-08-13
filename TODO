@@ -156,11 +156,13 @@
 [x] create parser, parse args, apply args
     [x] _apply_main_args()
 
-====
+[x] Refactor test_construct_using_wdconfig_module(), use mock module instead
+[x] separate WDConfigParser
+[x] separate AutoRunTrick
 
-[*] add use_gitignore default option to wdconfig.py so it can be set to True
+[x] add use_gitignore default option to wdconfig.py so it can be set to True
     [x] dog use_gitignore keyword argument overrides the default option
-    [ ] add command line option to set this
+    [-] add command line option to set this
     [x] make it always present in wdconfig
         [x] before create_handler(), use use_gitignore option to calculate the
             final value of use_gitignore
@@ -174,23 +176,40 @@
         [x] parse Dog.use_gitignore_default
         [x] test dogs[0]._use_gitignore_default changed by
             _set_use_gitignore_default
-[x] Refactor test_construct_using_wdconfig_module(), use mock module instead
-[x] separate WDConfigParser
-[x] separate AutoRunTrick
 
 ====
-
-[ ] provide wdconfig_ignore to set default '.gitignore'-like ignore file
-    location
 
 [ ] config file resolution order
     1. command line --config-file/-c option
     2. the directory the script runs
-    3. the directory wdog.py sits
+        [ ] if wdconfig.py is not found
+            [*] prompt the user to create the wdconfig.py file
+    [-] 3. the directory wdog.py sits
+        [ ] every project should have its own wdconfig.py module
 [ ] gitignore file resolution order
     1. command line --gitignore/-g option
+        [ ] if not found, raise error
     2. the directory the script runs
-    3. the directory wdog.py sits
+        [ ] if not found, raise error
+    [-] 3. the directory wdog.py sits
+
+
+====
+
+[ ] use a wdconfig dict to collect all needed config options
+    [ ] wdconfig['dogs'] or wdconfig.dogs
+
+[ ] wdconfig.py
+    [ ] content:
+        [ ] dogs
+        [ ] use_gitignore_by_default
+        [ ] gitignore_path
+        [ ] enable session info (future)
+    [ ] returned by _parse_main_args()
+    [-] load the first file it finds then stop searching
+
+[ ] provide wdconfig_ignore to set default '.gitignore'-like ignore file
+    location
 
 [ ] add double quotes to default command output
 
@@ -202,6 +221,8 @@
     [ ] catch wdconfig module ImportError
 
 [ ] Refactor all local import
+
+[ ] expanduser when parsing main args
 
 ====
 
