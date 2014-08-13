@@ -48,22 +48,21 @@ class Dog(object):
 
     @classmethod
     def _parse_gitignore(cls):
-        with open(cls._gitignore_path) as f:
-            lines = f.readlines()
         gitignore = []
-        for line in lines:
-            drop_chars = (
-                '#', # drop comment lines
-                '\n', # drop blank lines
-                '!' # patterns starting with a '!' is not supported
-                    # but "\!" to escape '!' is supported
-            )
-            if not line.startswith(drop_chars):
-                p = line.strip()
-                # support escape trailing space with a backslash
-                if p.endswith('\\'):
-                    p += ' '
-                gitignore.append(p)
+        with open(cls._gitignore_path) as f:
+            for line in iter(f.readline, ''):
+                drop_chars = (
+                    '#', # drop comment lines
+                    '\n', # drop blank lines
+                    '!' # patterns starting with a '!' is not supported
+                        # but "\!" to escape '!' is supported
+                )
+                if not line.startswith(drop_chars):
+                    p = line.strip()
+                    # support escape trailing space with a backslash
+                    if p.endswith('\\'):
+                        p += ' '
+                    gitignore.append(p)
         return gitignore
 
     def create_handler(self, trick_cls):
