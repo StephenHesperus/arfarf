@@ -176,8 +176,6 @@
         [x] test dogs[0]._use_gitignore_default changed by
             _set_use_gitignore_default
 
-====
-
 [x] config file resolution order
     1. command line --config-file/-c option
         [x] if not found, raise error
@@ -192,30 +190,30 @@
             [!] FileNotFoundError won't raise until _parse_gitignore is called
 [x] provide --create-wdconfig option to help create wdconfig.py
 
+[x] provide wdconfig_ignore to set default '.gitignore'-like ignore file
+    location
+    [x] gitignore_path
+[x] wdconfig.py
+    [x] content:
+        [x] dogs
+        [x] use_gitignore_by_default
+        [x] gitignore_path
+        [ ] enable session info (future)
+    [x] returned by _parse_main_args()
+
+====
+
+[ ] provide case_sensitive option, default is False
+
+[ ] use a wdconfig dict to collect all needed config options
+    [ ] wdconfig['dogs'] or wdconfig.dogs
 
 ====
 
 [ ] refactor: extract args parse, create wdconfig parser, schedule_with,
     pass handlers to main
 
-[ ] use a wdconfig dict to collect all needed config options
-    [ ] wdconfig['dogs'] or wdconfig.dogs
-
-[ ] wdconfig.py
-    [ ] content:
-        [ ] dogs
-        [ ] use_gitignore_by_default
-        [ ] gitignore_path
-        [ ] enable session info (future)
-    [ ] returned by _parse_main_args()
-    [-] load the first file it finds then stop searching
-
-[ ] provide wdconfig_ignore to set default '.gitignore'-like ignore file
-    location
-
 [ ] add double quotes to default command output
-
-[ ] provide case_sensitive option, default is False
 
 [ ] when _apply_main_args(), test
     [ ] dogs is a tuple of wdog.Dog

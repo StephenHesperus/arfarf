@@ -125,6 +125,7 @@ class WDConfigParserTestCase(unittest.TestCase):
         self.wdmm = MagicMock()
         self.wdmm.dogs = self.dogs
         self.wdmm.use_gitignore_default = True
+        self.wdmm.gitignore_path = '.gitignore'
         self.patcher = patch.dict('sys.modules', wdconfig_module=self.wdmm)
         self.patcher.start()
         import wdconfig_module
@@ -142,6 +143,14 @@ class WDConfigParserTestCase(unittest.TestCase):
         def ow_repr(self):
             return str((self.path, self.is_recursive))
         setattr(ObservedWatch, '__repr__', ow_repr)
+
+        # mock open so that files other than '.gitignore' raise exception
+        m = mock_open(read_data='*.py[cod]\n__pycache__/\n')
+        patcher = patch('builtins.open', m)
+        patcher.start()
+
+        # reset gitignore path to '.gitignore' (a file that exists)
+        self.parser._gitignore_path = '.gitignore'
         observer = Observer()
         result = self.parser.schedule_with(observer, self.HandlerClass)
         # expected
@@ -162,6 +171,7 @@ class WDConfigParserTestCase(unittest.TestCase):
         self.maxDiff = None
         # self.fail((result, handler_for_watch))
         self.assertEqual(result, handler_for_watch)
+        patcher.stop()
 
     def test__parse_gitignore_called_at_most_once_in_create_handler(self):
         with patch.object(Dog, '_parse_gitignore') as mg:
@@ -181,8 +191,10 @@ class WDConfigParserTestCase(unittest.TestCase):
         use = self.parser._use_gitignore_default # True
         self.parser._set_use_gitignore_default()
         self.assertEqual(use, Dog._use_gitignore_default)
+        # newly created Dog() _use_gitignore_default is changed
         dog = Dog()
         self.assertEqual(dog._use_gitignore_default, use)
+        # _use_gitignore_default of dogs in wdconfig are changed
         self.assertEqual(self.wdmm.dogs[0]._use_gitignore_default, use)
 
         self.wdmm.use_gitignore_default = False
@@ -193,6 +205,19 @@ class WDConfigParserTestCase(unittest.TestCase):
         dog = Dog()
         self.assertEqual(dog._use_gitignore_default, False)
         self.assertEqual(self.wdmm.dogs[0]._use_gitignore_default, False)
+
+    def test_can_set_Dog_gitignore_path_cls_attr(self):
+        gi_path = self.parser._gitignore_path # '.gitignore'
+        self.assertEqual(Dog._gitignore_path, './.gitignore')
+
+        # change gitignore file path to .bzrignore
+        self.wdmm.gitignore_path = '.bzrignore'
+        parser = WDConfigParser(self.wdmm)
+        parser._set_gitignore_path()
+        self.assertEqual('./.bzrignore', Dog._gitignore_path)
+        dog = Dog()
+        self.assertEqual(dog._gitignore_path,
+                         self.wdmm.dogs[0]._gitignore_path)
 
 
 class AutoRunTrickTestCase(unittest.TestCase):
@@ -421,7 +446,8 @@ class MainTestCase(unittest.TestCase):
     def setUp(self):
         import main
         self.parser = main._create_main_argparser()
-        Dog.reset_gitignore_path()
+        # Dog.reset_gitignore_path()
+        Dog._gitignore_path = './.gitignore'
 
     def test__create_main_argparser_without_args(self):
         result = self.parser.parse_args([])

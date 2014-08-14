@@ -43,10 +43,6 @@ class Dog(object):
         cls._gitignore_path = path
 
     @classmethod
-    def reset_gitignore_path(cls):
-        cls._gitignore_path = os.path.join(os.curdir, '.gitignore')
-
-    @classmethod
     def _parse_gitignore(cls):
         gitignore = []
         with open(cls._gitignore_path) as f:
