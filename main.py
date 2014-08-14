@@ -14,7 +14,6 @@ import argparse
 import os
 import sys
 import time
-from string import Template
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -61,7 +60,6 @@ def _apply_main_args(args):
         try:
             import wdconfig
         except ImportError as e:
-            # sys.exit(e.msg)
             sys.exit(e.msg)
         else:
             wdconfig_module = wdconfig
