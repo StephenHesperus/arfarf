@@ -36,15 +36,13 @@ class DogTestCase(unittest.TestCase):
     def tearDown(self):
         self.patcher.stop()
 
-    # @unittest.expectedFailure
     def test_Dog_constructor(self):
         """Test Dog can use keywords and omit default values."""
-        from dog import Dog as dog
         try:
-            dog('echo hello', ['*.py'], ['*~'], False, '.', True, True)
-            dog('echo hello', ['*.py'], use_gitignore=True)
-            dog(patterns=['*.py'], command='echo hello', use_gitignore=True)
-            dog('echo hello')
+            Dog('echo hello', ['*.py'], ['*~'], False, '.', True, True)
+            Dog('echo hello', ['*.py'], use_gitignore=True)
+            Dog(patterns=['*.py'], command='echo hello', use_gitignore=True)
+            Dog('echo hello')
         except:
             self.fail(__doc__)
 
@@ -60,9 +58,8 @@ class DogTestCase(unittest.TestCase):
         recursive: True, catches all events
         use_gitignore: False, not all people use git, I do ,though
         """
-        from dog import Dog as dog
         try:
-            d = dog()
+            d = Dog()
         except:
             self.fail('Dog should be able to call without args.')
         # log = 'echo ${event_object} ${event_src_path} is ${event_type}${if_moved}'
