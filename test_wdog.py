@@ -1,14 +1,10 @@
 import argparse
 from argparse import Namespace
 import os
-import sys
-from io import StringIO
 import subprocess
-import signal
 import unittest
-from unittest.mock import mock_open, patch, sentinel, MagicMock, call
+from unittest.mock import mock_open, patch, sentinel, MagicMock
 
-import watchdog.events
 from watchdog.observers import Observer
 from watchdog.observers.api import ObservedWatch
 
@@ -92,14 +88,12 @@ class DogTestCase(unittest.TestCase):
         self.assertEqual(self.patterns, result)
 
     def test_create_handler(self):
-        import watchdog.events
-
         monitored_path = 'monitored/path'
         dog = Dog(command='echo hello', patterns=['*.py'],
                   ignore_patterns=['more_ipattern'], use_gitignore=True,
                   path=monitored_path, recursive=True, ignore_directories=True)
         MockClass = MagicMock()
-        handler = dog.create_handler(MockClass)
+        _ = dog.create_handler(MockClass)
         ignores = [os.path.join(monitored_path, p) for p in self.patterns] + \
                   [os.path.join(monitored_path, 'more_ipattern')]
         MockClass.assert_called_once_with(
@@ -182,7 +176,6 @@ class WDConfigParserTestCase(unittest.TestCase):
 
     def test_construct_using_wdconfig_module(self):
         import wdconfig_module
-        from types import ModuleType
 
         self.assertIsNotNone(self.parser._wdconfig)
         self.assertIs(self.parser._wdconfig, wdconfig_module)
@@ -207,7 +200,7 @@ class WDConfigParserTestCase(unittest.TestCase):
         self.assertEqual(self.wdmm.dogs[0]._use_gitignore_default, False)
 
     def test_can_set_Dog_gitignore_path_cls_attr(self):
-        gi_path = self.parser._gitignore_path # '.gitignore'
+        # self.parser._gitignore_path is '.gitignore'
         self.assertEqual(Dog._gitignore_path, './.gitignore')
 
         # change gitignore file path to .bzrignore
@@ -297,8 +290,8 @@ class AutoRunTrickTestCase(unittest.TestCase):
     def test_start(self):
         handler = AutoRunTrick('echo hello')
         handler.start(out=subprocess.PIPE)
-        outs, errs = handler._process.communicate()
-        self.assertEqual('hello\n', outs.decode())
+        outs, _ = handler._process.communicate()
+        self.assertEqual(b'hello\n', outs)
 
     def test_start_with_event(self):
         from watchdog.events import DirMovedEvent
@@ -306,14 +299,14 @@ class AutoRunTrickTestCase(unittest.TestCase):
         handler = AutoRunTrick()
         event = DirMovedEvent('/source/path', '/dest/path')
         handler.start(event=event, out=subprocess.PIPE)
-        outs, errs = handler._process.communicate()
+        outs, _ = handler._process.communicate()
         expected = b'directory /source/path is moved to /dest/path\n'
         self.assertEqual(expected, outs)
 
     def test_start_with_command_default_and_no_event(self):
         handler = AutoRunTrick('')
         handler.start(out=subprocess.PIPE)
-        outs, errs = handler._process.communicate()
+        outs, _ = handler._process.communicate()
         self.assertEqual('', outs.decode())
 
     def test_stop(self):
@@ -328,7 +321,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         handler = AutoRunTrick()
         event = DirMovedEvent('/source/path', '/dest/path')
         handler.on_any_event(event, subprocess.PIPE)
-        outs, errs = handler._process.communicate()
+        outs, _ = handler._process.communicate()
         expected = b'directory /source/path is moved to /dest/path\n'
         self.assertEqual(outs, expected)
 
@@ -361,7 +354,6 @@ class AutoRunTrickTestCase(unittest.TestCase):
             def on_deleted(self, event):
                 type(self).log += ['on_deleted']
 
-        p = 'relative/path'
         included = ['relative/path/*.py', 'relative/path/src/']
         excluded = ['relative/path/*.rst', 'relative/path/__pycache__/',
                     'relative/path/htmlcov/']
@@ -423,7 +415,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         # Notice no trailing slash is appended.
         # But it's the src path of directory events.
         path = 'relative/path/__pycache__'
-        handler, _, devents, event_types = self._dispatch_test_helper(path)
+        handler, _, devents, _ = self._dispatch_test_helper(path)
 
         for event in devents:
             self._assert_will_not_dispatch(event, handler)
@@ -433,7 +425,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         # Notice no trailing slash is appended.
         # But it's the src path of directory events.
         path = 'relative/path/src'
-        handler, _, devents, event_types = self._dispatch_test_helper(
+        handler, _, devents, _ = self._dispatch_test_helper(
             path, ignore_directories=True
         )
 
