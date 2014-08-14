@@ -64,7 +64,7 @@ class Dog(object):
     def create_handler(self, trick_cls):
         use = self._use_gitignore if self._use_gitignore is not None \
               else type(self)._use_gitignore_default
-        if self._use_gitignore:
+        if use:
             if type(self)._gitignore is None:
                 type(self)._gitignore = type(self)._parse_gitignore()
         gip = type(self)._gitignore if type(self)._gitignore is not None \
