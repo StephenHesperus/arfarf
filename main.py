@@ -20,15 +20,6 @@ from string import Template
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-def _create_wdconfig_module(wdconfig_template, context):
-    with open(wdconfig_template) as f:
-        template = f.read()
-    t = Template(template)
-    wdconfig_str = t.substitute(context)
-    with open('wdconfig.py', 'w') as g:
-        g.write(wdconfig_str)
-
-
 def _create_main_argparser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config-file', '-c', dest='config',
@@ -54,6 +45,7 @@ def _apply_main_args(args):
         else:
             sys.exit('wdconfig.py already exists!')
 
+    wdconfig_module = None
     if args.config is not None:
         import importlib
 
@@ -61,13 +53,15 @@ def _apply_main_args(args):
         sys.path.insert(0, mpath)
         mbase = os.path.basename(args.config)
         mname = os.path.splitext(mbase)[0]
-        wdconfig_module = importlib.import_module(mname)
+        try:
+            wdconfig_module = importlib.import_module(mname)
+        except ImportError as e:
+            sys.exit(e.msg)
     else:
-        wdconfig_module = None
         try:
             import wdconfig
-        except ImportError:
-            pass
+        except ImportError as e:
+            sys.exit(e.msg)
         else:
             wdconfig_module = wdconfig
 

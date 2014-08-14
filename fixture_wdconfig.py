@@ -2,7 +2,7 @@
 from dog import Dog as dog
 
 dogs = (
-    dog(ignore_patterns=['output']),
+    dog(),
 )
 
-use_gitignore_default = True
+use_gitignore_default = False

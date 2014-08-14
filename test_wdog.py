@@ -477,10 +477,18 @@ class MainTestCase(unittest.TestCase):
         wdm = _apply_main_args(args)
         self.assertEqual(expected, wdm.dogs)
 
+        # exit on nonexist config file
+        arglist = ['--config-file', 'nonexist_config.py']
+        args = self.parser.parse_args(arglist)
+        with patch('sys.exit', MagicMock()) as me:
+            _apply_main_args(args)
+            me.assert_called_once_with("No module named 'nonexist_config'")
+
     def test__apply_main_args_with_gitignore_option(self):
         from main import _apply_main_args
 
-        arglist = ['--gitignore', 'fixture_gitignore']
+        arglist = ['-c', 'fixture_wdconfig.py', # suppress sys.exit()
+                   '--gitignore', 'fixture_gitignore']
         args = self.parser.parse_args(arglist)
         _apply_main_args(args)
         expected = os.path.join(os.curdir, 'fixture_gitignore')
@@ -503,7 +511,7 @@ class MainTestCase(unittest.TestCase):
                 self.fail('wdconfig.py module should exist now.')
             else:
                 self.assertEqual(wdconfig.use_gitignore_default, False)
-                self.assertEqual(wdconfig.dogs, (Dog(),))
+                self.assertEqual(wdconfig.dogs, (Dog(), ))
 
             # should exit warning wdconfig.py exists
             with patch('sys.exit', MagicMock()) as me:
@@ -512,41 +520,26 @@ class MainTestCase(unittest.TestCase):
             os.chdir(oldwd)
 
     def test__apply_main_args_with_no_option(self):
+        from tempfile import TemporaryDirectory
         from main import _apply_main_args
+        import shutil
 
         arglist = []
         args = self.parser.parse_args(arglist)
-        _apply_main_args(args)
-        expected = os.path.join(os.curdir, '.gitignore')
-        self.assertEqual(Dog._gitignore_path, expected)
-
-    @unittest.skip('not needed')
-    def test__create_wdconfig_when_not_found_and_no_config_option(self):
-        """Test prompt the user to create wdconfig.py if no wdconfig.py is
-        found where the script is run and the script is launched without
-        --config-file option."""
-        from tempfile import TemporaryDirectory
-        from main import _create_wdconfig_module
-        from dog import Dog as dog
-
         oldwd = os.getcwd()
-        wdconfig_template = os.path.join(os.getcwd(), 'wdconfig_template')
-        context = {
-            'use_gitignore_default': 'True',
-            'dogs': '    dog("echo hello"),\n    dog(),',
-        }
-        expected_dogs = (dog("echo hello"), dog(), )
-        with TemporaryDirectory() as td:
+        with TemporaryDirectory() as td, \
+                patch('sys.exit', MagicMock()) as me:
             os.chdir(td)
-            _create_wdconfig_module(wdconfig_template, context)
-            try:
-                import wdconfig
-            except ImportError:
-                os.chdir(oldwd)
-                self.fail('wdconfig.py module should exist now.')
-            else:
-                self.assertEqual(wdconfig.dogs, expected_dogs)
-                self.assertEqual(wdconfig.use_gitignore_default, True)
+            # no wdconfig.py exists
+            _apply_main_args(args)
+            me.assert_called_once_with("No module named 'wdconfig'")
+
+            # copy a wdconfig.py and parse again
+            shutil.copy(os.path.join(oldwd, 'fixture_wdconfig.py'),
+                        './wdconfig.py')
+            _apply_main_args(args)
+            expected = os.path.join(os.curdir, '.gitignore')
+            self.assertEqual(Dog._gitignore_path, expected)
             os.chdir(oldwd)
 
 

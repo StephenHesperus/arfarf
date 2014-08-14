@@ -178,13 +178,13 @@
 
 ====
 
-[ ] config file resolution order
+[x] config file resolution order
     1. command line --config-file/-c option
-        [ ] if not found, raise error
+        [x] if not found, raise error
     2. the directory the script runs
-        [ ] if wdconfig.py is not found
+        [x] if wdconfig.py is not found
             exit and promote the user to use --create-wdconfig option
-[ ] gitignore file resolution order
+[*] gitignore file resolution order
     1. command line --gitignore/-g option
         [ ] if not found, raise error
     2. the directory the script runs
@@ -193,6 +193,9 @@
 
 
 ====
+
+[ ] refactor: extract args parse, create wdconfig parser, schedule_with,
+    pass handlers to main
 
 [ ] use a wdconfig dict to collect all needed config options
     [ ] wdconfig['dogs'] or wdconfig.dogs
@@ -216,7 +219,6 @@
 [ ] when _apply_main_args(), test
     [ ] dogs is a tuple of wdog.Dog
         [ ] handle empty dogs tuple error, exit gracefully
-    [ ] catch wdconfig module ImportError
 
 [ ] Refactor all local import
 
