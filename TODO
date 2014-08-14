@@ -203,23 +203,26 @@
 
 ====
 
+[*] refactor using pylint
+    [x] refactor subprocess.Popen tests
+
+[ ] refactor: extract args parse, create wdconfig parser, schedule_with,
+    pass handlers to main
+
+[ ] Refactor all local import
+
+====
+
 [ ] provide case_sensitive option, default is False
 
 [ ] use a wdconfig dict to collect all needed config options
     [ ] wdconfig['dogs'] or wdconfig.dogs
-
-====
-
-[ ] refactor: extract args parse, create wdconfig parser, schedule_with,
-    pass handlers to main
 
 [ ] add double quotes to default command output
 
 [ ] when _apply_main_args(), test
     [ ] dogs is a tuple of wdog.Dog
         [ ] handle empty dogs tuple error, exit gracefully
-
-[ ] Refactor all local import
 
 [ ] expanduser when parsing main args
 

@@ -287,9 +287,15 @@ class AutoRunTrickTestCase(unittest.TestCase):
                 'ignore_directories={}>').format(*handler.key)
         self.assertEqual(rstr, repr(handler))
 
+    class PipePopen(subprocess.Popen):
+        """Mock of subprocess.Popen"""
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, stdout=subprocess.PIPE, **kwargs)
+
     def test_start(self):
         handler = AutoRunTrick('echo hello')
-        handler.start(out=subprocess.PIPE)
+        with patch('subprocess.Popen', new=self.PipePopen):
+            handler.start()
         outs, _ = handler._process.communicate()
         self.assertEqual(b'hello\n', outs)
 
@@ -298,14 +304,16 @@ class AutoRunTrickTestCase(unittest.TestCase):
 
         handler = AutoRunTrick()
         event = DirMovedEvent('/source/path', '/dest/path')
-        handler.start(event=event, out=subprocess.PIPE)
+        with patch('subprocess.Popen', new=self.PipePopen):
+            handler.start(event=event)
         outs, _ = handler._process.communicate()
         expected = b'directory /source/path is moved to /dest/path\n'
         self.assertEqual(expected, outs)
 
     def test_start_with_command_default_and_no_event(self):
         handler = AutoRunTrick('')
-        handler.start(out=subprocess.PIPE)
+        with patch('subprocess.Popen', new=self.PipePopen):
+            handler.start()
         outs, _ = handler._process.communicate()
         self.assertEqual('', outs.decode())
 
@@ -320,7 +328,8 @@ class AutoRunTrickTestCase(unittest.TestCase):
 
         handler = AutoRunTrick()
         event = DirMovedEvent('/source/path', '/dest/path')
-        handler.on_any_event(event, subprocess.PIPE)
+        with patch('subprocess.Popen', new=self.PipePopen):
+            handler.on_any_event(event)
         outs, _ = handler._process.communicate()
         expected = b'directory /source/path is moved to /dest/path\n'
         self.assertEqual(outs, expected)

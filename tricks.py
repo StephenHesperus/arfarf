@@ -70,10 +70,10 @@ class AutoRunTrick(Trick):
     def command(self):
         return self._command
 
-    def start(self, event=None, out=None,):
+    def start(self, event=None):
         command = self._substitute_command(event)
         self._process = subprocess.Popen(command, shell=True,
-                                         start_new_session=True, stdout=out)
+                                         start_new_session=True)
 
     def stop(self):
         if self._process is None:
@@ -96,9 +96,9 @@ class AutoRunTrick(Trick):
                     pass
         self._process = None
 
-    def on_any_event(self, event, out=None):
+    def on_any_event(self, event):
         self.stop()
-        self.start(event=event, out=out)
+        self.start(event=event)
 
     @property
     def key(self):
