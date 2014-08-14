@@ -61,15 +61,18 @@ def _apply_main_args(args):
         try:
             import wdconfig
         except ImportError as e:
+            # sys.exit(e.msg)
             sys.exit(e.msg)
         else:
             wdconfig_module = wdconfig
 
     if args.gitignore is not None:
         gitignore_path = os.path.join(os.curdir, args.gitignore)
-        from dog import Dog
-
-        Dog.set_gitignore_path(gitignore_path)
+        if os.path.isfile(gitignore_path):
+            from dog import Dog
+            Dog.set_gitignore_path(gitignore_path)
+        else:
+            sys.exit("File not found: '%s'" % gitignore_path)
 
     return wdconfig_module
 

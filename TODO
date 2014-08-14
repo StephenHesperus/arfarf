@@ -184,11 +184,12 @@
     2. the directory the script runs
         [x] if wdconfig.py is not found
             exit and promote the user to use --create-wdconfig option
-[*] gitignore file resolution order
+[x] gitignore file resolution order
     1. command line --gitignore/-g option
-        [ ] if not found, raise error
+        [x] if not found, raise error
     2. the directory the script runs
-        [ ] if not found, raise error
+        [-] if not found, raise error
+            [!] FileNotFoundError won't raise until _parse_gitignore is called
 [x] provide --create-wdconfig option to help create wdconfig.py
 
 

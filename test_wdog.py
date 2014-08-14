@@ -494,6 +494,14 @@ class MainTestCase(unittest.TestCase):
         expected = os.path.join(os.curdir, 'fixture_gitignore')
         self.assertEqual(Dog._gitignore_path, expected)
 
+        # exit on nonexist gitignore file
+        arglist = ['-c', 'fixture_wdconfig.py', # suppress sys.exit()
+                   '--gitignore', 'nonexist_gitignore']
+        args = self.parser.parse_args(arglist)
+        with patch('sys.exit', MagicMock()) as me:
+            _apply_main_args(args)
+            me.assert_called_once_with("File not found: './nonexist_gitignore'")
+
     def test__apply_main_args_with_template_option(self):
         from main import _apply_main_args
         from tempfile import TemporaryDirectory
