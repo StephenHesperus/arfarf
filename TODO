@@ -162,7 +162,6 @@
 
 [x] add use_gitignore default option to wdconfig.py so it can be set to True
     [x] dog use_gitignore keyword argument overrides the default option
-    [-] add command line option to set this
     [x] make it always present in wdconfig
         [x] before create_handler(), use use_gitignore option to calculate the
             final value of use_gitignore
@@ -181,23 +180,16 @@
 
 [ ] config file resolution order
     1. command line --config-file/-c option
+        [ ] if not found, raise error
     2. the directory the script runs
         [ ] if wdconfig.py is not found
-            [*] prompt the user to create the wdconfig.py file
-    [-] 3. the directory wdog.py sits
-        [ ] every project should have its own wdconfig.py module
+            exit and promote the user to use --create-wdconfig option
 [ ] gitignore file resolution order
     1. command line --gitignore/-g option
         [ ] if not found, raise error
     2. the directory the script runs
         [ ] if not found, raise error
-    [-] 3. the directory wdog.py sits
-[*] prompt the user to create the wdconfig.py file
-    [ ] provide --copy-config-template option to help create wdconfig.py
-    [ ] get multiple lines input: '\n'.join(iter(input, ''))
-        [!] readline, input receive an empty string '' when EOF
-    [x] create wdconfig.py from template and context:
-        _create_wdconfig_module()
+[x] provide --create-wdconfig option to help create wdconfig.py
 
 
 ====
@@ -249,22 +241,3 @@
 
 [ ] nosetests
     [ ] @unittest.expectedFailure RuntimeWarning
-
-====
-
-[-] Dog default directory is os.curdir, and should only be it for gitignore
-    patterns to work, or
-[-] update included, excluded and gitignore patterns according to monitor path
-    [ ] make _parse_gitignore a instance method, or
-    [ ] cache _gitignore and invalid it only if monitored path is different
-        [ ] sort dogs by path, group by path
-
-[-] use tempfile to test wdog.py
-    [x] use shell redirect to test logfile
-    [*] change to tempdir and change back after the test
-    [-] use multiprocessing to start wdog.py
-        [ ] use wdog main()
-        [ ] use mock dogs
-
-[-] how to mock subprocess direct output
-    [?] how to mock subprocess calls

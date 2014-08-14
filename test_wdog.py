@@ -425,20 +425,37 @@ class MainTestCase(unittest.TestCase):
 
     def test__create_main_argparser_without_args(self):
         result = self.parser.parse_args([])
-        self.assertEqual(Namespace(config=None, gitignore=None), result)
+        self.assertEqual(
+            result,
+            Namespace(config=None, gitignore=None, template=False)
+        )
 
     def test__create_main_argparser_with_config_option(self):
         lresult = self.parser.parse_args(['--config-file', 'dogs.py'])
         sresult = self.parser.parse_args(['-c', 'dogs.py'])
         self.assertEqual(lresult, sresult)
-        self.assertEqual(lresult, Namespace(config='dogs.py', gitignore=None))
+        self.assertEqual(
+            lresult,
+            Namespace(config='dogs.py', gitignore=None, template=False)
+        )
 
     def test__create_main_argparser_with_gitignore_option(self):
         lresult = self.parser.parse_args(['--gitignore', '.gitignore'])
         sresult = self.parser.parse_args(['-g', '.gitignore'])
         self.assertEqual(lresult, sresult)
-        self.assertEqual(lresult,
-                         Namespace(config=None, gitignore='.gitignore'))
+        self.assertEqual(
+            lresult,
+            Namespace(config=None, gitignore='.gitignore', template=False)
+        )
+
+    def test__create_main_argparser_with_template_option(self):
+        lresult = self.parser.parse_args(['--create-wdconfig'])
+        sresult = self.parser.parse_args(['-t'])
+        self.assertEqual(lresult, sresult)
+        self.assertEqual(
+            lresult,
+            Namespace(config=None, gitignore=None, template=True)
+        )
 
     def test__create_main_argparser_with_unknown_option(self):
         def error(self, *args, **kwargs):
@@ -463,12 +480,36 @@ class MainTestCase(unittest.TestCase):
     def test__apply_main_args_with_gitignore_option(self):
         from main import _apply_main_args
 
-        arglist = ['--config-file', 'fixture_wdconfig.py',
-                '--gitignore', 'fixture_gitignore']
+        arglist = ['--gitignore', 'fixture_gitignore']
         args = self.parser.parse_args(arglist)
         _apply_main_args(args)
         expected = os.path.join(os.curdir, 'fixture_gitignore')
         self.assertEqual(Dog._gitignore_path, expected)
+
+    def test__apply_main_args_with_template_option(self):
+        from main import _apply_main_args
+        from tempfile import TemporaryDirectory
+
+        oldwd = os.getcwd()
+        with TemporaryDirectory() as td:
+            os.chdir(td)
+            arglist = ['--create-wdconfig']
+            args = self.parser.parse_args(arglist)
+            _apply_main_args(args)
+            try:
+                import wdconfig
+            except ImportError:
+                os.chdir(oldwd)
+                self.fail('wdconfig.py module should exist now.')
+            else:
+                self.assertEqual(wdconfig.use_gitignore_default, False)
+                self.assertEqual(wdconfig.dogs, (Dog(),))
+
+            # should exit warning wdconfig.py exists
+            with patch('sys.exit', MagicMock()) as me:
+                _apply_main_args(args)
+                me.assert_called_with('wdconfig.py already exists!')
+            os.chdir(oldwd)
 
     def test__apply_main_args_with_no_option(self):
         from main import _apply_main_args
@@ -479,6 +520,7 @@ class MainTestCase(unittest.TestCase):
         expected = os.path.join(os.curdir, '.gitignore')
         self.assertEqual(Dog._gitignore_path, expected)
 
+    @unittest.skip('not needed')
     def test__create_wdconfig_when_not_found_and_no_config_option(self):
         """Test prompt the user to create wdconfig.py if no wdconfig.py is
         found where the script is run and the script is launched without
@@ -500,18 +542,12 @@ class MainTestCase(unittest.TestCase):
             try:
                 import wdconfig
             except ImportError:
+                os.chdir(oldwd)
                 self.fail('wdconfig.py module should exist now.')
             else:
                 self.assertEqual(wdconfig.dogs, expected_dogs)
                 self.assertEqual(wdconfig.use_gitignore_default, True)
             os.chdir(oldwd)
-
-    @unittest.skip('WIP')
-    def test__apply_main_args_with_no_option_nor_wdconfig_module(self):
-        # m = MagicMock()
-        # m.side_effect = ['True', 'dog("echo hello"),', 'dog(),']
-        # with patch('builtins.input', m):
-        self.fail('WIP')
 
 
 class MiscellaneousTestCase(unittest.TestCase):

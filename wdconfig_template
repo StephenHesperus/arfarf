@@ -28,7 +28,7 @@ from dog import Dog as dog
 
 
 # Set use gitignore or not by default
-use_gitignore_default = ${use_gitignore_default}
+use_gitignore_default = False
 
 # Examples
 # This dog shows the default values for each argument.
@@ -43,5 +43,5 @@ use_gitignore_default = ${use_gitignore_default}
 #    dog('echo hello', ['*.py'], use_gitignore=True),
 #    dog(command='echo hello', patterns=['*.py'], use_gitignore=True),
 dogs = (
-    ${dogs}
+    dog(),
 )

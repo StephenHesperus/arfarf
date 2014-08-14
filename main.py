@@ -12,8 +12,12 @@ set the ``use_gitignore`` option of a dog in the wdconfig.py file.
 
 import argparse
 import os
+import sys
 import time
 from string import Template
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def _create_wdconfig_module(wdconfig_template, context):
@@ -33,12 +37,24 @@ def _create_main_argparser():
     parser.add_argument('--gitignore', '-g', dest='gitignore',
                         help=('specify a .gitignore file to provide patterns'
                               'to ignore'))
+    parser.add_argument('--create-wdconfig', '-t', dest='template',
+                        action='store_true',
+                        help='create wdconfig.py using the default template')
     return parser
 
 
 def _apply_main_args(args):
+    if args.template:
+        import shutil
+
+        if not os.path.exists('./wdconfig.py'):
+            shutil.copy(os.path.join(BASE_DIR, 'wdconfig_template'),
+                        './wdconfig.py')
+            return
+        else:
+            sys.exit('wdconfig.py already exists!')
+
     if args.config is not None:
-        import sys
         import importlib
 
         mpath = os.path.dirname(args.config)
