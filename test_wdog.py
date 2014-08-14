@@ -251,7 +251,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         event = DirMovedEvent(path, dest)
         command = handler._substitute_command(event)
         moved = {'event_object': 'directory', 'event_src_path': path,
-                   'event_type': 'moved', 'if_moved': ' to "%s"' % dest}
+                 'event_type': 'moved', 'if_moved': ' to "%s"' % dest}
         expected = t.safe_substitute(**moved)
         self.assertEqual(expected, command)
 
@@ -283,9 +283,9 @@ class AutoRunTrickTestCase(unittest.TestCase):
 
     def test___repr__(self):
         handler = AutoRunTrick(command='echo hello')
-        repr_str = ('<AutoRunTrick: command={}, patterns={}, ignore_patterns={},'
+        rstr = ('<AutoRunTrick: command={}, patterns={}, ignore_patterns={}, '
                 'ignore_directories={}>').format(*handler.key)
-        self.assertEqual(repr_str, repr(handler))
+        self.assertEqual(rstr, repr(handler))
 
     def test_start(self):
         handler = AutoRunTrick('echo hello')
@@ -387,7 +387,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
     def test_dispatch_file_events_matching_included_patterns(self):
         """All file events should be dispatched."""
         path = 'relative/path/dummy.py'
-        handler, fevents, _, event_types  = self._dispatch_test_helper(path)
+        handler, fevents, _, event_types = self._dispatch_test_helper(path)
 
         for event, event_type in zip(fevents, event_types):
             self._assert_will_dispatch(event, event_type, handler)
@@ -398,7 +398,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         handler, fevents, _, _ = self._dispatch_test_helper(path)
 
         for event in fevents:
-           self._assert_will_not_dispatch(event, handler)
+            self._assert_will_not_dispatch(event, handler)
 
     def test_dispatch_directory_events_matching_included_patterns(self):
         """All directory events should be dispatched."""

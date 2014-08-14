@@ -44,9 +44,9 @@ class AutoRunTrick(Trick):
         return hash(self.key)
 
     def __repr__(self):
-        repr_str = ('<AutoRunTrick: command={}, patterns={}, ignore_patterns={},'
+        rstr = ('<AutoRunTrick: command={}, patterns={}, ignore_patterns={}, '
                 'ignore_directories={}>').format(*self.key)
-        return repr_str
+        return rstr
 
     def _substitute_command(self, event):
         if event is None:
