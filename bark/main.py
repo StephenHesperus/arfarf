@@ -67,7 +67,7 @@ def _apply_main_args(args):
     if args.gitignore is not None:
         gitignore_path = os.path.join(os.curdir, args.gitignore)
         if os.path.isfile(gitignore_path):
-            from dog import Dog
+            from .dog import Dog
             Dog.set_gitignore_path(gitignore_path)
         else:
             sys.exit("File not found: '%s'" % gitignore_path)

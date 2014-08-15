@@ -1,5 +1,5 @@
 # from wdog import Dog as dog
-from dog import Dog as dog
+from bark.dog import Dog as dog
 
 dogs = (
     dog(),

@@ -15,11 +15,11 @@ class WDConfigParser(object):
         self._wdconfig = wdconfig_module
 
     def _set_use_gitignore_default(self):
-        from dog import Dog
+        from .dog import Dog
         Dog._use_gitignore_default = self._use_gitignore_default
 
     def _set_gitignore_path(self):
-        from dog import Dog
+        from .dog import Dog
         Dog._gitignore_path = os.path.join(os.curdir, self._gitignore_path)
 
     def schedule_with(self, observer, cls):

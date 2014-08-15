@@ -8,9 +8,9 @@ from unittest.mock import mock_open, patch, sentinel, MagicMock
 from watchdog.observers import Observer
 from watchdog.observers.api import ObservedWatch
 
-from dog import Dog
-from parser import WDConfigParser
-from tricks import AutoRunTrick
+from bark.dog import Dog
+from bark.parser import WDConfigParser
+from bark.tricks import AutoRunTrick
 
 
 class DogTestCase(unittest.TestCase):
@@ -104,7 +104,7 @@ class DogTestCase(unittest.TestCase):
 class WDConfigParserTestCase(unittest.TestCase):
 
     def setUp(self):
-        from dog import Dog as dog
+        from bark.dog import Dog as dog
         self.dogs = (
             dog(command='echo dog1', path='.', recursive=True,
                 use_gitignore=True),
@@ -442,7 +442,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
 class MainTestCase(unittest.TestCase):
 
     def setUp(self):
-        import main
+        from bark import main
         self.parser = main._create_main_argparser()
         # Dog.reset_gitignore_path()
         Dog._gitignore_path = './.gitignore'
@@ -492,11 +492,11 @@ class MainTestCase(unittest.TestCase):
                 self.parser.parse_args(args)
 
     def test__apply_main_args_with_config_option(self):
-        from main import _apply_main_args
-        import fixture_wdconfig
+        from bark.main import _apply_main_args
+        from . import fixture_wdconfig
 
         expected = fixture_wdconfig.dogs
-        arglist = ['--config-file', 'fixture_wdconfig.py']
+        arglist = ['--config-file', 'tests/fixture_wdconfig.py']
         args = self.parser.parse_args(arglist)
         wdm = _apply_main_args(args)
         self.assertEqual(expected, wdm.dogs)
@@ -509,17 +509,17 @@ class MainTestCase(unittest.TestCase):
             me.assert_called_once_with("No module named 'nonexist_config'")
 
     def test__apply_main_args_with_gitignore_option(self):
-        from main import _apply_main_args
+        from bark.main import _apply_main_args
 
-        arglist = ['-c', 'fixture_wdconfig.py', # suppress sys.exit()
-                   '--gitignore', 'fixture_gitignore']
+        arglist = ['-c', 'tests/fixture_wdconfig.py', # suppress sys.exit()
+                   '--gitignore', 'tests/fixture_gitignore']
         args = self.parser.parse_args(arglist)
         _apply_main_args(args)
-        expected = os.path.join(os.curdir, 'fixture_gitignore')
+        expected = os.path.join(os.curdir, 'tests/fixture_gitignore')
         self.assertEqual(Dog._gitignore_path, expected)
 
         # exit on nonexist gitignore file
-        arglist = ['-c', 'fixture_wdconfig.py', # suppress sys.exit()
+        arglist = ['-c', 'tests/fixture_wdconfig.py', # suppress sys.exit()
                    '--gitignore', 'nonexist_gitignore']
         args = self.parser.parse_args(arglist)
         with patch('sys.exit', MagicMock()) as me:
@@ -527,7 +527,7 @@ class MainTestCase(unittest.TestCase):
             me.assert_called_once_with("File not found: './nonexist_gitignore'")
 
     def test__apply_main_args_with_template_option(self):
-        from main import _apply_main_args
+        from bark.main import _apply_main_args
         from tempfile import TemporaryDirectory
 
         oldwd = os.getcwd()
@@ -553,7 +553,7 @@ class MainTestCase(unittest.TestCase):
 
     def test__apply_main_args_with_no_option(self):
         from tempfile import TemporaryDirectory
-        from main import _apply_main_args
+        from bark.main import _apply_main_args
         import shutil
 
         arglist = []
@@ -567,7 +567,7 @@ class MainTestCase(unittest.TestCase):
             me.assert_called_once_with("No module named 'wdconfig'")
 
             # copy a wdconfig.py and parse again
-            shutil.copy(os.path.join(oldwd, 'fixture_wdconfig.py'),
+            shutil.copy(os.path.join(oldwd, 'tests/fixture_wdconfig.py'),
                         './wdconfig.py')
             _apply_main_args(args)
             expected = os.path.join(os.curdir, '.gitignore')
