@@ -27,8 +27,12 @@ use_gitignore       True/False, if Git is used, its ignore patterns can be
 from bark.dog import Dog as dog
 
 
-# Set use gitignore or not by default
+# Set use gitignore or not by default.
 use_gitignore_default = False
+
+# Set gitignore file path, absolute path or relative to the directory the
+# script is run.
+gitignore_path = '.gitignore'
 
 # Examples
 # This dog shows the default values for each argument.

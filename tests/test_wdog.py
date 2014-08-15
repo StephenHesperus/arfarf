@@ -444,7 +444,6 @@ class MainTestCase(unittest.TestCase):
     def setUp(self):
         from bark import main
         self.parser = main._create_main_argparser()
-        # Dog.reset_gitignore_path()
         Dog._gitignore_path = './.gitignore'
 
     def test__create_main_argparser_without_args(self):

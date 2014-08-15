@@ -201,17 +201,21 @@
         [ ] enable session info (future)
     [x] returned by _parse_main_args()
 
+[x] refactor using pylint
+    [x] refactor subprocess.Popen tests
+
+[x] Refactor all local import
+
+[x] add gitignore_path to fixture_wdconfig.py and wdconfig_template
+
 ====
 
-[*] refactor using pylint
-    [x] refactor subprocess.Popen tests
+[*] prepare package
+
+====
 
 [ ] refactor: extract args parse, create wdconfig parser, schedule_with,
     pass handlers to main
-
-[ ] Refactor all local import
-
-====
 
 [ ] provide case_sensitive option, default is False
 
