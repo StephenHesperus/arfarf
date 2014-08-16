@@ -210,9 +210,40 @@
 
 ====
 
+[*] change wdconfig_template to _wdconfig_template.py or move it to data dir
+
 [*] prepare package
 
+[ ] add os.getcwd() to sys.path before import wdconfig
+[ ] move main script out
+    [ ] run a submodule as a script is deprecated
+    [ ] use `env PYTHONPATH=path/to/package:$PYTHONPATH python -m __main__`
+[*] default logger eat the previous events when a bunch of events happen in
+    sequence, e.g. file created, directory is modified
+    [x] dir events add trailing slash
+    [ ] no exposure of context
+    [ ] when command is None: use default logger command
+        [ ] this can be done by subprocess.call instead of subprocess.Popen
+    [ ] and/or when event is None, start() execute an empty command ''
+    [ ] add quotes to event path
+[ ] ordered event receivers, so the order of handlers execution can be defined
+[ ] project structure
+    +myapp
+        -setup.py
+        +src
+            +lib(or project name)
+                -__init__.py
+            -__main__.py
+        +tests
+            -__init__.py
+
 ====
+
+[ ] support callable as command for Dog
+
+[ ] support gitignore '!' started patterns
+
+[ ] show GUI notifier
 
 [ ] refactor: extract args parse, create wdconfig parser, schedule_with,
     pass handlers to main

@@ -1,4 +1,3 @@
-# from wdog import Dog as dog
 from bark.dog import Dog as dog
 
 

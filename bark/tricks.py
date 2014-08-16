@@ -26,7 +26,7 @@ class AutoRunTrick(Trick):
     def __init__(self, command=None, patterns=None, ignore_patterns=None,
                  ignore_directories=False, stop_signal=signal.SIGINT,
                  kill_after=10):
-        # Matches Trick.__init__() signature.
+        # Match Trick.__init__() signature.
         super().__init__(patterns, ignore_patterns, ignore_directories)
         self._command = command if command is not None \
                         else type(self)._command_default
@@ -55,12 +55,24 @@ class AutoRunTrick(Trick):
             return c
 
         dest = event.dest_path if hasattr(event, 'dest_path') else ''
-        if_moved = ' to "%s"' % dest if dest else ''
+        if hasattr(event, 'dest_path'):
+            if event.is_directory:
+                dest_path = os.path.join(event.dest_path, '')
+            else:
+                dest_path = event.dest_path
+        else:
+            dest_path = ''
+        if event.src_path:
+            if event.is_directory:
+                src_path = os.path.join(event.src_path, '')
+            else:
+                src_path = event.src_path
+        if_moved = ' to %s' % dest_path if dest_path else ''
         context = {
             'event_object': 'directory' if event.is_directory else 'file',
-            'event_src_path': event.src_path,
+            'event_src_path': src_path,
             'event_type': event.event_type,
-            'event_dest_path': dest,
+            'event_dest_path': dest_path,
             'if_moved': if_moved,
         }
         command = Template(self._command).safe_substitute(**context)
