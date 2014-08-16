@@ -227,10 +227,10 @@
         [x] merge append slash to dir path in dispath() and
             _substitute_command()
     [x] when command is None: use default logger command
-        [ ] this can be done by subprocess.call instead of subprocess.Popen
+        [-] this can be done by subprocess.call instead of subprocess.Popen
+        [*] or just print()
     [x] when event is None, start() execute an empty command ''
     [ ] add quotes to event path
-[ ] ordered event receivers, so the order of handlers execution can be defined
 [ ] project structure
     +myapp
         -setup.py
@@ -241,7 +241,12 @@
         +tests
             -__init__.py
 
+[ ] sys.path.append instead of sys.path.insert
+    [ ] do this also, before `import wdconfig`
+
 ====
+
+[ ] ordered event receivers, so the order of handlers execution can be defined
 
 [ ] support callable as command for Dog
 

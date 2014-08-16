@@ -20,7 +20,7 @@ class AutoRunTrick(Trick):
     events.
     """
 
-    _command_default = ('echo ${event_object} ${event_src_path} is '
+    _command_default = ('${event_object} ${event_src_path} is '
                         '${event_type}${if_moved}')
 
     def __init__(self, command=None, patterns=None, ignore_patterns=None,
@@ -86,8 +86,11 @@ class AutoRunTrick(Trick):
 
     def start(self, event=None):
         command = self._substitute_command(event)
-        self._process = subprocess.Popen(command, shell=True,
-                                         start_new_session=True)
+        if self._command is None:
+            print(command)
+        else:
+            self._process = subprocess.Popen(command, shell=True,
+                                             start_new_session=True)
 
     def stop(self):
         if self._process is None:
