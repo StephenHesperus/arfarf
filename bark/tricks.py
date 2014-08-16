@@ -86,8 +86,8 @@ class AutoRunTrick(Trick):
 
     def start(self, event=None):
         command = self._substitute_command(event)
-        if self._command is None:
-            print(command)
+        if self._command is None and command:
+            print(command) # logging only on events
         else:
             self._process = subprocess.Popen(command, shell=True,
                                              start_new_session=True)

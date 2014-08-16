@@ -307,27 +307,21 @@ class AutoRunTrickTestCase(unittest.TestCase):
         outs, _ = handler._process.communicate()
         self.assertEqual(b'hello\n', outs)
 
-    @unittest.expectedFailure
     def test_start_with_command_default_and_event(self):
         """Default command only execute when there's an event."""
         from watchdog.events import DirMovedEvent
 
         handler = AutoRunTrick()
         event = DirMovedEvent('/source/path', '/dest/path')
-        with patch('subprocess.Popen', new=self.PipePopen):
-            handler.start(event=event)
-        outs, _ = handler._process.communicate()
-        expected = b'directory /source/path/ is moved to /dest/path/\n'
-        self.assertEqual(expected, outs)
+        handler.start(event=event)
+        expected = 'directory /source/path/ is moved to /dest/path/\n'
+        self.assertEqual(expected, self.mock_out.getvalue())
 
-    @unittest.expectedFailure
     def test_start_with_command_default_and_no_event(self):
         """Default command should not execute when there's no event."""
         handler = AutoRunTrick()
-        with patch('subprocess.Popen', new=self.PipePopen):
-            handler.start()
-        outs, _ = handler._process.communicate()
-        self.assertEqual(b'', outs)
+        handler.start()
+        self.assertEqual('', self.mock_out.getvalue())
 
     def test_command_default_executed_on_each_event(self):
         """Default logging command should execute once on each event."""
@@ -348,16 +342,15 @@ class AutoRunTrickTestCase(unittest.TestCase):
         handler.stop()
         self.assertIs(handler._process, None)
 
-    @unittest.expectedFailure
     def test_on_any_event(self):
         from watchdog.events import DirMovedEvent
 
-        handler = AutoRunTrick()
+        handler = AutoRunTrick(command='echo hello')
         event = DirMovedEvent('/source/path', '/dest/path')
         with patch('subprocess.Popen', new=self.PipePopen):
             handler.on_any_event(event)
         outs, _ = handler._process.communicate()
-        expected = 'directory /source/path/ is moved to /dest/path/\n'
+        expected = b'hello\n'
         self.assertEqual(outs, expected)
 
     def _dispatch_test_helper(self, path, ignore_directories=False):
