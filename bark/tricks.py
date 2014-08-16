@@ -47,6 +47,13 @@ class AutoRunTrick(Trick):
                 'ignore_directories={}>').format(*self.key)
         return rstr
 
+    def _add_dir_t_slash(self, event, path):
+        """Add trailing slash if event is directory event."""
+        if event.is_directory:
+            path = os.path.join(path, '')
+        return path
+
+
     def _substitute_command(self, event):
         # Only default logging command supports substitution
         if self._command is not None:
@@ -56,17 +63,11 @@ class AutoRunTrick(Trick):
 
         dest = event.dest_path if hasattr(event, 'dest_path') else ''
         if hasattr(event, 'dest_path'):
-            if event.is_directory:
-                dest_path = os.path.join(event.dest_path, '')
-            else:
-                dest_path = event.dest_path
+            dest_path = self._add_dir_t_slash(event, event.dest_path)
         else:
             dest_path = ''
         if event.src_path:
-            if event.is_directory:
-                src_path = os.path.join(event.src_path, '')
-            else:
-                src_path = event.src_path
+            src_path = self._add_dir_t_slash(event, event.src_path)
         event_obj = 'directory' if event.is_directory else 'file'
         if_moved = ' to %s' % dest_path if dest_path else ''
         context = {
@@ -133,16 +134,10 @@ class AutoRunTrick(Trick):
 
         paths = []
         if hasattr(event, 'dest_path'):
-            if event.is_directory:
-                dest_path = os.path.join(event.dest_path, '')
-            else:
-                dest_path = event.dest_path
+            dest_path = self._add_dir_t_slash(event, event.dest_path)
             paths.append(unicode_paths.decode(dest_path))
         if event.src_path:
-            if event.is_directory:
-                src_path = os.path.join(event.src_path, '')
-            else:
-                src_path = event.src_path
+            src_path = self._add_dir_t_slash(event, event.src_path)
             paths.append(unicode_paths.decode(src_path))
 
         if match_any_paths(paths,

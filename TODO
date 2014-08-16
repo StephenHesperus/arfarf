@@ -222,25 +222,13 @@
     sequence, e.g. file created, directory is modified
     [x] dir events add trailing slash
     [x] no exposure of context
-        if event is None:
-            if command is None:
-                command = command_default
-                substitute with empty context
-            else:
-                command = command
-        else:
-            if command is None:
-                command = command_default
-                substitute command with context
-            else:
-                command = command
-    [ ] refactor:
+    [x] refactor:
         [x] remove command redundant test
-        [ ] merge append slash to dir path in dispath() and
+        [x] merge append slash to dir path in dispath() and
             _substitute_command()
     [x] when command is None: use default logger command
-    [ ] this can be done by subprocess.call instead of subprocess.Popen
-    [ ] and/or when event is None, start() execute an empty command ''
+        [ ] this can be done by subprocess.call instead of subprocess.Popen
+    [x] when event is None, start() execute an empty command ''
     [ ] add quotes to event path
 [ ] ordered event receivers, so the order of handlers execution can be defined
 [ ] project structure
