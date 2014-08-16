@@ -215,19 +215,15 @@ class AutoRunTrickTestCase(unittest.TestCase):
     def setUp(self):
         self.log_expected = []
 
-    @unittest.skip('redundant')
     def test_command_property(self):
         handler = AutoRunTrick(command='echo hello')
         self.assertEqual('echo hello', handler.command)
 
-    def test_command_default(self):
+    def test_command_default_cls_attr(self):
         handler = AutoRunTrick()
         expected = ('echo ${event_object} ${event_src_path} is '
                     '${event_type}${if_moved}')
-        self.assertEqual(expected, handler.command)
-
-        handler = AutoRunTrick(command='echo hello')
-        self.assertEqual('echo hello', handler.command)
+        self.assertEqual(expected, handler._command_default)
 
     def test_command_default_file_event_substitution(self):
         from watchdog.events import FileCreatedEvent
@@ -239,7 +235,6 @@ class AutoRunTrickTestCase(unittest.TestCase):
         expected = 'echo file /source/path is created'
         self.assertEqual(expected, command)
 
-    # @unittest.expectedFailure
     def test_command_default_dir_event_substitution(self):
         from watchdog.events import DirMovedEvent
 
@@ -251,7 +246,6 @@ class AutoRunTrickTestCase(unittest.TestCase):
         expected = 'echo directory /source/path/ is moved to /dest/path/'
         self.assertEqual(expected, command)
 
-    @unittest.skip('deprecated')
     def test_command_shell_environment_variables(self):
         from watchdog.events import DirMovedEvent
 

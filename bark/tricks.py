@@ -28,8 +28,7 @@ class AutoRunTrick(Trick):
                  kill_after=10):
         # Match Trick.__init__() signature.
         super().__init__(patterns, ignore_patterns, ignore_directories)
-        self._command = command if command is not None \
-                        else type(self)._command_default
+        self._command = command
         self._stop_signal = stop_signal
         self._kill_after = kill_after
         self._process = None
@@ -49,10 +48,11 @@ class AutoRunTrick(Trick):
         return rstr
 
     def _substitute_command(self, event):
+        # Only default logging command supports substitution
+        if self._command is not None:
+            return self._command
         if event is None:
-            c = self._command if self._command != type(self)._command_default \
-                else ''
-            return c
+            return '' # do nothing
 
         dest = event.dest_path if hasattr(event, 'dest_path') else ''
         if hasattr(event, 'dest_path'):
@@ -67,16 +67,17 @@ class AutoRunTrick(Trick):
                 src_path = os.path.join(event.src_path, '')
             else:
                 src_path = event.src_path
+        event_obj = 'directory' if event.is_directory else 'file'
         if_moved = ' to %s' % dest_path if dest_path else ''
         context = {
-            'event_object': 'directory' if event.is_directory else 'file',
+            'event_object': event_obj,
             'event_src_path': src_path,
             'event_type': event.event_type,
             'event_dest_path': dest_path,
             'if_moved': if_moved,
         }
-        command = Template(self._command).safe_substitute(**context)
-        return command
+        c = Template(type(self)._command_default).safe_substitute(**context)
+        return c
 
     @property
     def command(self):
