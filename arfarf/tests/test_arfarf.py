@@ -8,9 +8,10 @@ from unittest.mock import mock_open, patch, sentinel, MagicMock
 from watchdog.observers import Observer
 from watchdog.observers.api import ObservedWatch
 
-from bark.dog import Dog
-from bark.parser import WDConfigParser
-from bark.tricks import AutoRunTrick
+from ..arf import _apply_main_args
+from ..dog import Dog
+from ..parser import WDConfigParser
+from ..tricks import AutoRunTrick
 
 
 class DogTestCase(unittest.TestCase):
@@ -104,7 +105,7 @@ class DogTestCase(unittest.TestCase):
 class WDConfigParserTestCase(unittest.TestCase):
 
     def setUp(self):
-        from bark.dog import Dog as dog
+        from ..dog import Dog as dog
         self.dogs = (
             dog(command='echo dog1', path='.', recursive=True,
                 use_gitignore=True),
@@ -464,8 +465,8 @@ class AutoRunTrickTestCase(unittest.TestCase):
 class MainTestCase(unittest.TestCase):
 
     def setUp(self):
-        from bark import main
-        self.parser = main._create_main_argparser()
+        from .. import arf
+        self.parser = arf._create_main_argparser()
         Dog._gitignore_path = './.gitignore'
 
     def test__create_main_argparser_without_args(self):
@@ -513,11 +514,10 @@ class MainTestCase(unittest.TestCase):
                 self.parser.parse_args(args)
 
     def test__apply_main_args_with_config_option(self):
-        from bark.main import _apply_main_args
-        from . import fixture_wdconfig
+        from . import fixture_arfconfig
 
-        expected = fixture_wdconfig.dogs
-        arglist = ['--config-file', 'tests/fixture_wdconfig.py']
+        expected = fixture_arfconfig.dogs
+        arglist = ['--config-file', 'arfarf/tests/fixture_arfconfig.py']
         args = self.parser.parse_args(arglist)
         wdm = _apply_main_args(args)
         self.assertEqual(expected, wdm.dogs)
@@ -530,17 +530,16 @@ class MainTestCase(unittest.TestCase):
             me.assert_called_once_with("No module named 'nonexist_config'")
 
     def test__apply_main_args_with_gitignore_option(self):
-        from bark.main import _apply_main_args
 
-        arglist = ['-c', 'tests/fixture_wdconfig.py', # suppress sys.exit()
-                   '--gitignore', 'tests/fixture_gitignore']
+        arglist = ['-c', 'tests/fixture_arfconfig.py', # suppress sys.exit()
+                   '--gitignore', 'arfarf/tests/fixture_gitignore']
         args = self.parser.parse_args(arglist)
         _apply_main_args(args)
-        expected = os.path.join(os.curdir, 'tests/fixture_gitignore')
+        expected = os.path.join(os.curdir, 'arfarf/tests/fixture_gitignore')
         self.assertEqual(Dog._gitignore_path, expected)
 
         # exit on nonexist gitignore file
-        arglist = ['-c', 'tests/fixture_wdconfig.py', # suppress sys.exit()
+        arglist = ['-c', 'arfarf/tests/fixture_arfconfig.py', # suppress sys.exit()
                    '--gitignore', 'nonexist_gitignore']
         args = self.parser.parse_args(arglist)
         with patch('sys.exit', MagicMock()) as me:
@@ -548,7 +547,6 @@ class MainTestCase(unittest.TestCase):
             me.assert_called_once_with("File not found: './nonexist_gitignore'")
 
     def test__apply_main_args_with_template_option(self):
-        from bark.main import _apply_main_args
         from tempfile import TemporaryDirectory
 
         oldwd = os.getcwd()
@@ -557,14 +555,16 @@ class MainTestCase(unittest.TestCase):
             arglist = ['--create-wdconfig']
             args = self.parser.parse_args(arglist)
             _apply_main_args(args)
+            import sys
+            sys.path.append(os.path.dirname(os.path.abspath(__file__)))
             try:
-                import wdconfig
+                import arfarfconfig
             except ImportError:
                 os.chdir(oldwd)
-                self.fail('wdconfig.py module should exist now.')
+                self.fail('arfarfconfig.py module should exist now.')
             else:
-                self.assertEqual(wdconfig.use_gitignore_default, False)
-                self.assertEqual(wdconfig.dogs, (Dog(), ))
+                self.assertEqual(arfarfconfig.use_gitignore_default, False)
+                self.assertEqual(arfarfconfig.dogs, (Dog(), ))
 
             # should exit warning wdconfig.py exists
             with patch('sys.exit', MagicMock()) as me:
@@ -574,7 +574,6 @@ class MainTestCase(unittest.TestCase):
 
     def test__apply_main_args_with_no_option(self):
         from tempfile import TemporaryDirectory
-        from bark.main import _apply_main_args
         import shutil
 
         arglist = []
@@ -588,7 +587,7 @@ class MainTestCase(unittest.TestCase):
             me.assert_called_once_with("No module named 'wdconfig'")
 
             # copy a wdconfig.py and parse again
-            shutil.copy(os.path.join(oldwd, 'tests/fixture_wdconfig.py'),
+            shutil.copy(os.path.join(oldwd, 'arfarf/tests/fixture_arfconfig.py'),
                         './wdconfig.py')
             _apply_main_args(args)
             expected = os.path.join(os.curdir, '.gitignore')

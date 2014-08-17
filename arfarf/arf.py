@@ -37,23 +37,23 @@ def _apply_main_args(args):
     if args.template:
         import shutil
 
-        if not os.path.exists('./wdconfig.py'):
-            shutil.copy(os.path.join(BASE_DIR, 'wdconfig_template'),
-                        './wdconfig.py')
+        if not os.path.exists('./arfarfconfig.py'):
+            shutil.copy(os.path.join(BASE_DIR, 'arfarfconfig_template'),
+                        './arfarfconfig.py')
             return
         else:
             sys.exit('wdconfig.py already exists!')
 
-    wdconfig_module = None
+    configm = None
     if args.config is not None:
         import importlib
 
         mpath = os.path.dirname(args.config)
-        sys.path.insert(0, mpath)
+        sys.path.append(mpath)
         mbase = os.path.basename(args.config)
         mname = os.path.splitext(mbase)[0]
         try:
-            wdconfig_module = importlib.import_module(mname)
+            configm = importlib.import_module(mname)
         except ImportError as e:
             sys.exit(e.msg)
     else:
@@ -62,7 +62,7 @@ def _apply_main_args(args):
         except ImportError as e:
             sys.exit(e.msg)
         else:
-            wdconfig_module = wdconfig
+            configm = wdconfig
 
     if args.gitignore is not None:
         gitignore_path = os.path.join(os.curdir, args.gitignore)
@@ -72,7 +72,7 @@ def _apply_main_args(args):
         else:
             sys.exit("File not found: '%s'" % gitignore_path)
 
-    return wdconfig_module
+    return configm
 
 
 def main():

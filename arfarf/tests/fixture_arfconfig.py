@@ -1,4 +1,4 @@
-from bark.dog import Dog as dog
+from arfarf.dog import Dog as dog
 
 
 use_gitignore_default = False

@@ -235,6 +235,12 @@
     [x] change file names
         [x] change names in arfarf package
         [x] move tests to arfarf
+    [*] refactor names to make everything work
+        [*] make tests work
+            [ ] make test_arfarf.py work
+    [*] change package config file name to arfarfconfig.py
+        [ ] __main__.py:
+            [ ] if arfarfconfig.py is not found, copy it, then exit
 
 [ ] project structure examples
 [ ] ipython
