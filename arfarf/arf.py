@@ -1,15 +1,5 @@
 #!/usr/bin/env python3
 
-"""
-A script to run commands upon file system events.
-
-Usage
-=====
-Recommanded: Run this script under your project root, this is mandatory if you
-set the ``use_gitignore`` option of a dog in the wdconfig.py file.
-"""
-
-
 import argparse
 import os
 import sys
@@ -22,14 +12,15 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 def _create_main_argparser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config-file', '-c', dest='config',
-                        help=('specify a config file to provide dogs,'
-                              'the format should be the same as wdconfig.py'))
+                        help=('specify a config file to provide dogs, the '
+                              'format should be the same as arfarfconfig.py'))
     parser.add_argument('--gitignore', '-g', dest='gitignore',
                         help=('specify a .gitignore file to provide patterns'
                               'to ignore'))
-    parser.add_argument('--create-wdconfig', '-t', dest='template',
+    parser.add_argument('--create-config', '-t', dest='template',
                         action='store_true',
-                        help='create wdconfig.py using the default template')
+                        help=('create the arfarfconfig.py config file'
+                              'using the default template'))
     return parser
 
 
@@ -42,7 +33,7 @@ def _apply_main_args(args):
                         './arfarfconfig.py')
             return
         else:
-            sys.exit('wdconfig.py already exists!')
+            sys.exit('arfarfconfig.py already exists!')
 
     configm = None
     if args.config is not None:
@@ -83,13 +74,13 @@ def main():
 
     parser = _create_main_argparser()
     args = parser.parse_args()
-    wdconfig = _apply_main_args(args)
+    configm = _apply_main_args(args)
 
     # The reason to use PollingObserver() is it's os-independent. And it's
     # more reliable.
     observer = PollingObserver()
 
-    parser = WDConfigParser(wdconfig)
+    parser = WDConfigParser(configm)
     handler_for_watch = parser.schedule_with(observer, AutoRunTrick)
     handlers = set.union(*tuple(handler_for_watch.values()))
 

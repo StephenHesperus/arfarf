@@ -41,7 +41,7 @@ class ArfTestCase(unittest.TestCase):
         )
 
     def test__create_main_argparser_with_template_option(self):
-        lresult = self.parser.parse_args(['--create-wdconfig'])
+        lresult = self.parser.parse_args(['--create-config'])
         sresult = self.parser.parse_args(['-t'])
         self.assertEqual(lresult, sresult)
         self.assertEqual(
@@ -101,7 +101,7 @@ class ArfTestCase(unittest.TestCase):
         oldwd = os.getcwd()
         with TemporaryDirectory() as td:
             os.chdir(td)
-            arglist = ['--create-wdconfig']
+            arglist = ['--create-config']
             args = self.parser.parse_args(arglist)
             _apply_main_args(args)
             import sys
@@ -110,16 +110,16 @@ class ArfTestCase(unittest.TestCase):
                 import arfarfconfig
             except ImportError:
                 os.chdir(oldwd)
-                self.fail('wdconfig.py module should exist now.')
+                self.fail('arfarfconfig.py module should exist now.')
             else:
                 self.assertEqual(arfarfconfig.use_gitignore_default, False)
                 self.assertEqual(arfarfconfig.dogs, (Dog(), ))
 
-            # should exit warning wdconfig.py exists
+            # should exit warning arfarfconfig.py exists
             # self.fail(os.listdir())
             with patch('sys.exit', MagicMock()) as me:
                 _apply_main_args(args)
-                me.assert_called_with('wdconfig.py already exists!')
+                me.assert_called_with('arfarfconfig.py already exists!')
             os.chdir(oldwd)
 
     def test__apply_main_args_with_no_option(self):
@@ -133,11 +133,11 @@ class ArfTestCase(unittest.TestCase):
         with TemporaryDirectory() as td, \
                 patch('sys.exit', MagicMock()) as me:
             os.chdir(td)
-            # no wdconfig.py exists
+            # no arfarfconfig.py exists
             _apply_main_args(args)
             me.assert_called_once_with("No module named 'arfarfconfig'")
 
-            # copy a wdconfig.py and parse again
+            # copy a arfarfconfig.py and parse again
             shutil.copy(os.path.join(oldwd, 'arfarf/tests/fixture_arfconfig.py'),
                         './arfarfconfig.py')
             _apply_main_args(args)

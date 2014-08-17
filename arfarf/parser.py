@@ -5,14 +5,14 @@ from collections import defaultdict
 
 class WDConfigParser(object):
     """
-    Parser for wdconfig.py file.
+    Parser for arfarfconfig.py file.
     """
 
-    def __init__(self, wdconfig_module):
-        self._dogs = wdconfig_module.dogs
-        self._use_gitignore_default = wdconfig_module.use_gitignore_default
-        self._gitignore_path = wdconfig_module.gitignore_path
-        self._wdconfig = wdconfig_module
+    def __init__(self, config_module):
+        self._dogs = config_module.dogs
+        self._use_gitignore_default = config_module.use_gitignore_default
+        self._gitignore_path = config_module.gitignore_path
+        self._config_module = config_module
 
     def _set_use_gitignore_default(self):
         from .dog import Dog

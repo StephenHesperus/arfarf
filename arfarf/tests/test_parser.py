@@ -25,10 +25,10 @@ class WDConfigParserTestCase(unittest.TestCase):
         self.wdmm.dogs = self.dogs
         self.wdmm.use_gitignore_default = True
         self.wdmm.gitignore_path = '.gitignore'
-        self.patcher = patch.dict('sys.modules', wdconfig_module=self.wdmm)
+        self.patcher = patch.dict('sys.modules', config_module=self.wdmm)
         self.patcher.start()
-        import wdconfig_module
-        self.parser = WDConfigParser(wdconfig_module)
+        import config_module
+        self.parser = WDConfigParser(config_module)
         self.HandlerClass = MagicMock()
         self.HandlerClass.side_effect = [sentinel.a, sentinel.b,
                                          sentinel.c, sentinel.d] * 2
@@ -79,11 +79,11 @@ class WDConfigParserTestCase(unittest.TestCase):
             self.assertIs(Dog._parse_gitignore, mg)
         mg.assert_called_once_with()
 
-    def test_construct_using_wdconfig_module(self):
-        import wdconfig_module
+    def test_construct_using_config_module(self):
+        import config_module
 
-        self.assertIsNotNone(self.parser._wdconfig)
-        self.assertIs(self.parser._wdconfig, wdconfig_module)
+        self.assertIsNotNone(self.parser._config_module)
+        self.assertIs(self.parser._config_module, config_module)
 
     def test_can_set_Dog_use_gitignore_defaut_cls_attr(self):
         use = self.parser._use_gitignore_default # True
@@ -92,7 +92,7 @@ class WDConfigParserTestCase(unittest.TestCase):
         # newly created Dog() _use_gitignore_default is changed
         dog = Dog()
         self.assertEqual(dog._use_gitignore_default, use)
-        # _use_gitignore_default of dogs in wdconfig are changed
+        # _use_gitignore_default of dogs in config_module are changed
         self.assertEqual(self.wdmm.dogs[0]._use_gitignore_default, use)
 
         self.wdmm.use_gitignore_default = False

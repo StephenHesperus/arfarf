@@ -218,11 +218,9 @@
 
 ====
 
-[*] change wdconfig_template to _wdconfig_template.py or move it to data dir
-
 [*] prepare package
 
-[ ] project structure
+[*] project structure
     [x] project name: arfarf
     >project
         -setup.py
@@ -235,25 +233,30 @@
     [x] change file names
         [x] change names in arfarf package
         [x] move tests to arfarf
-    [*] refactor names to make everything work
-        [*] make tests work
+    [x] refactor names to make everything work
+        [x] make tests work
             [x] make test_misc.py work
             [x] make test_arfarf.py work
             [x] make test_tricks.py work
             [x] make test_parser.py work
             [x] make test_dog.py work
             [x] make test_arf.py work
-            [*] make all tests work
-    [*] change package config file name to arfarfconfig.py
-        [ ] __main__.py:
-            [ ] if arfarfconfig.py is not found, copy it, then exit
+            [x] make all tests work
+    [ ] __main__.py:
+        [ ] if arfarfconfig.py is not found, copy it, then exit
     [x] project name: arfarf
-    [ ] project config name: arfarfconfig.py
-    [ ] command line arguments options:
-        [ ] --create-config/-t
-        [ ] --config-file/-c
-        [ ] --gitignore/-g
-    [ ] template name: arfarfconfig_template
+    [x] template name: arfarfconfig_template
+    [x] project config name: arfarfconfig.py
+    [x] command line arguments options:
+        [x] --create-config/-t
+        [x] --config-file/-c
+        [x] --gitignore/-g
+    [ ] add os.getcwd() to sys.path before import arfarfconfig
+    [ ] sys.path.append instead of sys.path.insert
+        [ ] do this also, before `import arfarfconfig`
+    [ ] change arfarfconfig_template to _arfarfconfig_template.py
+        [ ] or add it as non package data file
+
 
 [ ] project structure examples
 [ ] ipython
@@ -329,10 +332,6 @@
 
 ====
 
-[ ] add os.getcwd() to sys.path before import wdconfig
-[ ] sys.path.append instead of sys.path.insert
-    [ ] do this also, before `import wdconfig`
-
 [ ] use print('\ron the same line', end='') to update a line
 
 [ ] display_session_info:
@@ -358,13 +357,10 @@
 
 [ ] show GUI notifier
 
-[ ] refactor: extract args parse, create wdconfig parser, schedule_with,
-    pass handlers to main
-
 [ ] provide case_sensitive option, default is False
 
-[ ] use a wdconfig dict to collect all needed config options
-    [ ] wdconfig['dogs'] or wdconfig.dogs
+[ ] use a config dict to collect all needed config options
+    [ ] config['dogs'] or config.dogs
 
 [ ] add double quotes to default command output
 
