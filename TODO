@@ -223,7 +223,7 @@
 [*] prepare package
 
 [ ] project structure
-    [ ] project name: arfarf
+    [x] project name: arfarf
     >project
         -setup.py
         +project
@@ -232,6 +232,9 @@
             +tests
                 -__init__.py
                 -test_main.py
+    [*] change file names
+        [x] change names in arfarf package
+        [ ] move tests to arfarf
 
 [ ] project structure examples
 [ ] ipython
