@@ -223,6 +223,7 @@
 [*] prepare package
 
 [ ] project structure
+    [ ] project name: arfarf
     >project
         -setup.py
         +project
