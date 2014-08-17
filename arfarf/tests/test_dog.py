@@ -1,3 +1,11 @@
+import os
+import unittest
+
+from unittest.mock import mock_open, MagicMock, patch
+
+from ..dog import Dog
+
+
 class DogTestCase(unittest.TestCase):
 
     def setUp(self):
