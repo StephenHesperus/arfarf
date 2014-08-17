@@ -1,7 +1,18 @@
+import unittest
+
+from unittest.mock import MagicMock, patch, sentinel, mock_open
+
+from watchdog.observers import Observer
+from watchdog.observers.api import ObservedWatch
+
+from ..dog import Dog
+from ..parser import WDConfigParser
+
+
 class WDConfigParserTestCase(unittest.TestCase):
 
     def setUp(self):
-        from bark.dog import Dog as dog
+        from ..dog import Dog as dog
         self.dogs = (
             dog(command='echo dog1', path='.', recursive=True,
                 use_gitignore=True),
