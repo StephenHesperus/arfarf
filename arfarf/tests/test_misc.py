@@ -1,3 +1,8 @@
+import unittest
+
+from unittest.mock import MagicMock, patch
+
+
 class MiscellaneousTestCase(unittest.TestCase):
 
     def test_fnmatch_func(self):
