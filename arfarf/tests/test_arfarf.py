@@ -5,7 +5,7 @@ import subprocess
 import unittest
 from unittest.mock import mock_open, patch, sentinel, MagicMock
 
-from watchdog.observers import Observer
+from watchdog.observers.polling import PollingObserver
 from watchdog.observers.api import ObservedWatch
 
 from ..arf import _apply_main_args
@@ -143,7 +143,7 @@ class WDConfigParserTestCase(unittest.TestCase):
 
         # reset gitignore path to '.gitignore' (a file that exists)
         self.parser._gitignore_path = '.gitignore'
-        observer = Observer()
+        observer = PollingObserver()
         result = self.parser.schedule_with(observer, self.HandlerClass)
         # expected
         handlers = []
@@ -167,7 +167,7 @@ class WDConfigParserTestCase(unittest.TestCase):
 
     def test__parse_gitignore_called_at_most_once_in_create_handler(self):
         with patch.object(Dog, '_parse_gitignore') as mg:
-            observer = Observer()
+            observer = PollingObserver()
             self.parser.schedule_with(observer, self.HandlerClass)
             self.assertIs(Dog._parse_gitignore, mg)
         mg.assert_called_once_with()
@@ -584,7 +584,7 @@ class MainTestCase(unittest.TestCase):
             os.chdir(td)
             # no wdconfig.py exists
             _apply_main_args(args)
-            me.assert_called_once_with("No module named 'wdconfig'")
+            me.assert_called_once_with("No module named 'arfarfconfig'")
 
             # copy a wdconfig.py and parse again
             shutil.copy(os.path.join(oldwd, 'arfarf/tests/fixture_arfconfig.py'),

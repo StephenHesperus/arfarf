@@ -237,12 +237,23 @@
         [x] move tests to arfarf
     [*] refactor names to make everything work
         [*] make tests work
+            [x] make test_misc.py work
             [x] make test_arfarf.py work
             [x] make test_tricks.py work
-            [*] make test_dog.py work
+            [x] make test_parser.py work
+            [x] make test_dog.py work
+            [x] make test_arf.py work
+            [*] make all tests work
     [*] change package config file name to arfarfconfig.py
         [ ] __main__.py:
             [ ] if arfarfconfig.py is not found, copy it, then exit
+    [x] project name: arfarf
+    [ ] project config name: arfarfconfig.py
+    [ ] command line arguments options:
+        [ ] --create-config/-t
+        [ ] --config-file/-c
+        [ ] --gitignore/-g
+    [ ] template name: arfarfconfig_template
 
 [ ] project structure examples
 [ ] ipython

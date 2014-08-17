@@ -58,11 +58,11 @@ def _apply_main_args(args):
             sys.exit(e.msg)
     else:
         try:
-            import wdconfig
+            import arfarfconfig
         except ImportError as e:
             sys.exit(e.msg)
         else:
-            configm = wdconfig
+            configm = arfarfconfig
 
     if args.gitignore is not None:
         gitignore_path = os.path.join(os.curdir, args.gitignore)
