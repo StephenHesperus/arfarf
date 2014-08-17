@@ -69,8 +69,8 @@ def _apply_main_args(args):
 def main():
     """Script entry point."""
     from watchdog.observers.polling import PollingObserver
-    from parser import WDConfigParser
-    from tricks import AutoRunTrick
+    from .parser import WDConfigParser
+    from .tricks import AutoRunTrick
 
     parser = _create_main_argparser()
     args = parser.parse_args()
@@ -97,5 +97,5 @@ def main():
         handler.stop()
 
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+    # main()
