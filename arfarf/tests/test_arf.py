@@ -104,8 +104,6 @@ class ArfTestCase(unittest.TestCase):
             arglist = ['--create-config']
             args = self.parser.parse_args(arglist)
             _apply_main_args(args)
-            import sys
-            sys.path.append(os.path.dirname(os.path.abspath(__file__)))
             try:
                 import arfarfconfig
             except ImportError:
@@ -116,7 +114,6 @@ class ArfTestCase(unittest.TestCase):
                 self.assertEqual(arfarfconfig.dogs, (Dog(), ))
 
             # should exit warning arfarfconfig.py exists
-            # self.fail(os.listdir())
             with patch('sys.exit', MagicMock()) as me:
                 _apply_main_args(args)
                 me.assert_called_with('arfarfconfig.py already exists!')

@@ -242,8 +242,6 @@
             [x] make test_dog.py work
             [x] make test_arf.py work
             [x] make all tests work
-    [ ] __main__.py:
-        [ ] if arfarfconfig.py is not found, copy it, then exit
     [x] project name: arfarf
     [x] template name: arfarfconfig_template
     [x] project config name: arfarfconfig.py
@@ -251,9 +249,8 @@
         [x] --create-config/-t
         [x] --config-file/-c
         [x] --gitignore/-g
-    [ ] add os.getcwd() to sys.path before import arfarfconfig
-    [ ] sys.path.append instead of sys.path.insert
-        [ ] do this also, before `import arfarfconfig`
+    [*] __main__.py:
+        [*] if arfarfconfig.py is not found, copy it, then exit
     [ ] change arfarfconfig_template to _arfarfconfig_template.py
         [ ] or add it as non package data file
 
