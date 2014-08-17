@@ -232,9 +232,9 @@
             +tests
                 -__init__.py
                 -test_main.py
-    [*] change file names
+    [x] change file names
         [x] change names in arfarf package
-        [ ] move tests to arfarf
+        [x] move tests to arfarf
 
 [ ] project structure examples
 [ ] ipython
