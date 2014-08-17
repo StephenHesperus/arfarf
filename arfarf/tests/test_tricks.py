@@ -1,3 +1,11 @@
+import unittest
+import subprocess
+
+from unittest.mock import patch
+
+from ..tricks import AutoRunTrick
+
+
 class AutoRunTrickTestCase(unittest.TestCase):
 
     def setUp(self):
