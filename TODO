@@ -71,7 +71,6 @@
     [x] expose AutoRunTrick start(), stop()
 
 [x] change the list param to tuple when hashing, or
-    [-] change all Dog keyword arguments default value to tuple
 
 [x] use defaultdict() to refactor WDConfigParser.schedule_with()
 
@@ -100,7 +99,6 @@
             [x] the name of the file is not significant
         [x] use --gitignore option to specify a .gitignore file
             [x] the name of the file is not significant
-        [-] use subclass of ArgumentParser to test, mock exception
         [x] tests
     [x] use args default value None, that is, from command line
     [x] use arglist
@@ -110,8 +108,6 @@
     [x] Dog command arg can be omitted
     [x] AutoRunTrick command can be omitted, and a default value is provided
         [x] by default, it's a log command
-    [-] Dog, AutoRunTrick command arg no default, make it positional
-    [-] AutoRunTrick command arg must be meaningful
 
 [x] override AutoRunTrick(Trick).dispatch() method
     [x] insert monitor path before included, excluded and gitignore patterns
@@ -208,17 +204,7 @@
 
 [x] add gitignore_path to fixture_wdconfig.py and wdconfig_template
 
-====
-
-[*] change wdconfig_template to _wdconfig_template.py or move it to data dir
-
-[*] prepare package
-
-[ ] add os.getcwd() to sys.path before import wdconfig
-[ ] move main script out
-    [ ] run a submodule as a script is deprecated
-    [ ] use `env PYTHONPATH=path/to/package:$PYTHONPATH python -m __main__`
-[*] default logger eat the previous events when a bunch of events happen in
+[x] default logger eat the previous events when a bunch of events happen in
     sequence, e.g. file created, directory is modified
     [x] dir events add trailing slash
     [x] no exposure of context
@@ -227,24 +213,119 @@
         [x] merge append slash to dir path in dispath() and
             _substitute_command()
     [x] when command is None: use default logger command
-        [-] this can be done by subprocess.call instead of subprocess.Popen
-        [*] or just print()
+        [x] just print()
     [x] when event is None, start() execute an empty command ''
-    [ ] add quotes to event path
-[ ] project structure
-    +myapp
-        -setup.py
-        +src
-            +lib(or project name)
-                -__init__.py
-            -__main__.py
-        +tests
-            -__init__.py
 
+====
+
+[*] change wdconfig_template to _wdconfig_template.py or move it to data dir
+
+[*] prepare package
+
+[ ] project structure
+    >project
+        -setup.py
+        +project
+            -__init__.py
+            -__main__.py
+            +tests
+                -__init__.py
+                -test_main.py
+
+[ ] project structure examples
+[ ] ipython
+    tests along inside the subpackage
+    >ipython
+        -setup.py
+            """
+            entry_points['console_scripts'] = 'ipython = IPython:start_ipython'
+            """
+        -tox.ini
+        +docs
+        +examples
+        +tools
+        +IPython
+            -__init__.py
+            -__main__.py
+            +config
+                -__init__.py
+                +tests
+                    -__init__.py
+                    -test_blah.py
+            +core
+            +lib
+            +html
+                -__init__.py
+                -__main__.py
+                +tests
+                    -__init__.py
+                    -test_blah.py
+[ ] requests
+    single test_requests.py
+    >requests
+        -setup.py
+        -test_requests.py
+        +requests
+            -__init__.py
+            +packages
+                """third party packages"""
+[ ] fabric
+    entry_points['console_scripts'] = ['fab = fabric.main:main']
+    >fabric
+        -setup.py
+        +tests
+            -test_main.py
+        +fabric
+            -__init__.py
+            -main.py
+            -version.py
+[ ] pylint
+    executables under bin/
+    >pylint
+        -setup.py
+            """
+            entry_points    'pylint = pylint:run_pylint'
+            """
+        -__init__.py
+            """
+            define run_pylint
+            """
+        -__main__.py
+            """
+            import pylint
+            pylint.run_pylint()
+            """
+        -lint.py
+        +bin
+        +debian
+        +checkers (this is subpackage)
+        +pyreverse (this is subpackage)
+        +test (no __init__.py)
+            -test_regr.py
+            -unittest_lint.py
+
+====
+
+[ ] add os.getcwd() to sys.path before import wdconfig
 [ ] sys.path.append instead of sys.path.insert
     [ ] do this also, before `import wdconfig`
 
-====
+[ ] use print('\ron the same line', end='') to update a line
+
+[ ] display_session_info:
+    """called between stop() and start() in on_any_event()
+    session_info = (event, session_title)
+    prev_event = session_info.event
+    if event eq prev_event:
+        do nothing
+    else:
+        print('\r info', end='')
+
+[ ] move main script out
+    [ ] run a submodule as a script is deprecated
+    [ ] use `env PYTHONPATH=path/to/package:$PYTHONPATH python -m __main__`
+
+[ ] watchdog event queue with start and end sentinels
 
 [ ] ordered event receivers, so the order of handlers execution can be defined
 
