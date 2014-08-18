@@ -256,8 +256,8 @@
 
 [ ] pylint
     [*] too-few-public-methods
-        [*] parser: solution: use parser method to apply command line option
-        [*] let cmdline args override configm vars
+        [x] let cmdline args override configm vars
+        [-] write test to confirm command line option override configm vars
     [ ] protected-access
         [ ] change underscore class attr to public
     [ ] missing-docstring

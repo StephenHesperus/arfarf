@@ -82,9 +82,9 @@ class ArfTestCase(unittest.TestCase):
         arglist = ['-c', 'arfarf/tests/fixture_arfarfconfig.py', # suppress sys.exit()
                    '--gitignore', 'arfarf/tests/fixture_gitignore']
         args = self.parser.parse_args(arglist)
-        _apply_main_args(args)
+        configm = _apply_main_args(args)
         expected = os.path.join(os.curdir, 'arfarf/tests/fixture_gitignore')
-        self.assertEqual(Dog._gitignore_path, expected)
+        self.assertEqual(configm.gitignore_path, expected)
 
         # exit on nonexist gitignore file
         arglist = ['-c', 'arfarf/tests/fixture_arfarfconfig.py', # suppress sys.exit()
