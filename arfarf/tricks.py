@@ -47,7 +47,8 @@ class AutoRunTrick(Trick):
                 'ignore_directories={}>').format(*self.key)
         return rstr
 
-    def _add_dir_t_slash(self, event, path):
+    @staticmethod
+    def _add_dir_t_slash(event, path):
         """Add trailing slash if event is directory event."""
         if event.is_directory:
             path = os.path.join(path, '')
@@ -61,7 +62,7 @@ class AutoRunTrick(Trick):
         if event is None:
             return '' # do nothing
 
-        dest = event.dest_path if hasattr(event, 'dest_path') else ''
+        # dest = event.dest_path if hasattr(event, 'dest_path') else ''
         if hasattr(event, 'dest_path'):
             dest_path = self._add_dir_t_slash(event, event.dest_path)
         else:
