@@ -32,7 +32,7 @@ class WDConfigParserTestCase(unittest.TestCase):
         self.HandlerClass = MagicMock()
         self.HandlerClass.side_effect = [sentinel.a, sentinel.b,
                                          sentinel.c, sentinel.d] * 2
-        Dog._gitignore = None
+        Dog.gitignore = None
 
     def tearDown(self):
         self.patcher.stop()

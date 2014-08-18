@@ -4,7 +4,7 @@ import os
 class Dog(object):
 
     use_gitignore_default = False
-    _gitignore = None
+    gitignore = None
     gitignore_path = os.path.join(os.curdir, '.gitignore')
 
     def __init__(self, command=None, patterns=None, ignore_patterns=None,
@@ -65,9 +65,9 @@ class Dog(object):
         use = self._use_gitignore if self._use_gitignore is not None \
               else type(self).use_gitignore_default
         if use:
-            if type(self)._gitignore is None:
-                type(self)._gitignore = type(self)._parse_gitignore()
-        gip = type(self)._gitignore if type(self)._gitignore is not None \
+            if type(self).gitignore is None:
+                type(self).gitignore = type(self)._parse_gitignore()
+        gip = type(self).gitignore if type(self).gitignore is not None \
               else []
         selfip = [] if self._ignore_patterns is None \
                  else self._ignore_patterns
