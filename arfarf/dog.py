@@ -5,7 +5,7 @@ class Dog(object):
 
     _use_gitignore_default = False
     _gitignore = None
-    _gitignore_path = os.path.join(os.curdir, '.gitignore')
+    gitignore_path = os.path.join(os.curdir, '.gitignore')
 
     def __init__(self, command=None, patterns=None, ignore_patterns=None,
                  ignore_directories=False, path='.', recursive=True,
@@ -25,7 +25,7 @@ class Dog(object):
         return not self.__eq__(value)
 
     def __repr__(self):
-        return '<Dog: {} {}>'.format(self.key, type(self)._gitignore_path)
+        return '<Dog: {} {}>'.format(self.key, type(self).gitignore_path)
 
     @property
     def key(self):
@@ -40,12 +40,12 @@ class Dog(object):
 
     @classmethod
     def set_gitignore_path(cls, path):
-        cls._gitignore_path = path
+        cls.gitignore_path = path
 
     @classmethod
     def _parse_gitignore(cls):
         gitignore = []
-        with open(cls._gitignore_path) as f:
+        with open(cls.gitignore_path) as f:
             for line in iter(f.readline, ''):
                 drop_chars = (
                     '#', # drop comment lines

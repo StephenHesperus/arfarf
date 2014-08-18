@@ -49,7 +49,7 @@ class WDConfigParserTestCase(unittest.TestCase):
         patcher.start()
 
         # reset gitignore path to '.gitignore' (a file that exists)
-        self.parser._gitignore_path = '.gitignore'
+        self.parser.gitignore_path = '.gitignore'
         observer = Observer()
         result = self.parser.schedule_with(observer, self.HandlerClass)
         # expected
@@ -105,14 +105,14 @@ class WDConfigParserTestCase(unittest.TestCase):
         self.assertEqual(self.wdmm.dogs[0]._use_gitignore_default, False)
 
     def test_can_set_Dog_gitignore_path_cls_attr(self):
-        # self.parser._gitignore_path is '.gitignore'
-        self.assertEqual(Dog._gitignore_path, './.gitignore')
+        # self.parser.gitignore_path is '.gitignore'
+        self.assertEqual(Dog.gitignore_path, './.gitignore')
 
         # change gitignore file path to .bzrignore
         self.wdmm.gitignore_path = '.bzrignore'
         parser = WDConfigParser(self.wdmm)
         parser._set_gitignore_path()
-        self.assertEqual('./.bzrignore', Dog._gitignore_path)
+        self.assertEqual('./.bzrignore', Dog.gitignore_path)
         dog = Dog()
-        self.assertEqual(dog._gitignore_path,
-                         self.wdmm.dogs[0]._gitignore_path)
+        self.assertEqual(dog.gitignore_path,
+                         self.wdmm.dogs[0].gitignore_path)

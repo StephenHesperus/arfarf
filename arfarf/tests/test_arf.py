@@ -13,7 +13,7 @@ class ArfTestCase(unittest.TestCase):
     def setUp(self):
         from .. import arf
         self.parser = arf._create_main_argparser()
-        Dog._gitignore_path = './.gitignore'
+        Dog.gitignore_path = './.gitignore'
 
     def test__create_main_argparser_without_args(self):
         result = self.parser.parse_args([])
@@ -141,5 +141,5 @@ class ArfTestCase(unittest.TestCase):
             )
             _apply_main_args(args)
             expected = os.path.join(os.curdir, '.gitignore')
-            self.assertEqual(Dog._gitignore_path, expected)
+            self.assertEqual(Dog.gitignore_path, expected)
             os.chdir(oldwd)
