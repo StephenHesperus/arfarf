@@ -88,21 +88,21 @@ class WDConfigParserTestCase(unittest.TestCase):
     def test_can_set_Dog_use_gitignore_defaut_cls_attr(self):
         use = self.parser._use_gitignore_default # True
         self.parser._set_use_gitignore_default()
-        self.assertEqual(use, Dog._use_gitignore_default)
-        # newly created Dog() _use_gitignore_default is changed
+        self.assertEqual(use, Dog.use_gitignore_default)
+        # newly created Dog() use_gitignore_default is changed
         dog = Dog()
-        self.assertEqual(dog._use_gitignore_default, use)
-        # _use_gitignore_default of dogs in config_module are changed
-        self.assertEqual(self.wdmm.dogs[0]._use_gitignore_default, use)
+        self.assertEqual(dog.use_gitignore_default, use)
+        # use_gitignore_default of dogs in config_module are changed
+        self.assertEqual(self.wdmm.dogs[0].use_gitignore_default, use)
 
         self.wdmm.use_gitignore_default = False
         parser = WDConfigParser(self.wdmm)
         parser._set_use_gitignore_default()
         self.assertEqual(parser._use_gitignore_default,
-                         Dog._use_gitignore_default)
+                         Dog.use_gitignore_default)
         dog = Dog()
-        self.assertEqual(dog._use_gitignore_default, False)
-        self.assertEqual(self.wdmm.dogs[0]._use_gitignore_default, False)
+        self.assertEqual(dog.use_gitignore_default, False)
+        self.assertEqual(self.wdmm.dogs[0].use_gitignore_default, False)
 
     def test_can_set_Dog_gitignore_path_cls_attr(self):
         # self.parser.gitignore_path is '.gitignore'

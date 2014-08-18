@@ -17,7 +17,7 @@ class WDConfigParser(object):
         self._config_module = config_module
 
     def _set_use_gitignore_default(self):
-        Dog._use_gitignore_default = self._use_gitignore_default
+        Dog.use_gitignore_default = self._use_gitignore_default
 
     def _set_gitignore_path(self):
         Dog.gitignore_path = os.path.join(os.curdir, self._gitignore_path)

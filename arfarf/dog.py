@@ -3,7 +3,7 @@ import os
 
 class Dog(object):
 
-    _use_gitignore_default = False
+    use_gitignore_default = False
     _gitignore = None
     gitignore_path = os.path.join(os.curdir, '.gitignore')
 
@@ -63,7 +63,7 @@ class Dog(object):
 
     def create_handler(self, trick_cls):
         use = self._use_gitignore if self._use_gitignore is not None \
-              else type(self)._use_gitignore_default
+              else type(self).use_gitignore_default
         if use:
             if type(self)._gitignore is None:
                 type(self)._gitignore = type(self)._parse_gitignore()
