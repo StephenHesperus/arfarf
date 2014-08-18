@@ -23,10 +23,9 @@ class AutoRunTrickTestCase(unittest.TestCase):
         self.assertEqual('echo hello', handler.command)
 
     def test_command_default_cls_attr(self):
-        handler = AutoRunTrick()
         expected = ('${event_object} ${event_src_path} is '
                     '${event_type}${if_moved}')
-        self.assertEqual(expected, handler._command_default)
+        self.assertEqual(expected, AutoRunTrick.command_default)
 
     def test_command_default_file_event_substitution(self):
         from watchdog.events import FileCreatedEvent

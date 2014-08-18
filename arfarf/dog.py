@@ -43,7 +43,7 @@ class Dog(object):
         cls.gitignore_path = path
 
     @classmethod
-    def _parse_gitignore(cls):
+    def parse_gitignore(cls):
         gitignore = []
         with open(cls.gitignore_path) as f:
             for line in iter(f.readline, ''):
@@ -66,7 +66,7 @@ class Dog(object):
               else type(self).use_gitignore_default
         if use:
             if type(self).gitignore is None:
-                type(self).gitignore = type(self)._parse_gitignore()
+                type(self).gitignore = type(self).parse_gitignore()
         gip = type(self).gitignore if type(self).gitignore is not None \
               else []
         selfip = [] if self._ignore_patterns is None \

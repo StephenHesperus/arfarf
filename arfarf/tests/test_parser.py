@@ -73,10 +73,10 @@ class WDConfigParserTestCase(unittest.TestCase):
         patcher.stop()
 
     def test__parse_gitignore_called_at_most_once_in_create_handler(self):
-        with patch.object(Dog, '_parse_gitignore') as mg:
+        with patch.object(Dog, 'parse_gitignore') as mg:
             observer = Observer()
             self.parser.schedule_with(observer, self.HandlerClass)
-            self.assertIs(Dog._parse_gitignore, mg)
+            self.assertIs(Dog.parse_gitignore, mg)
         mg.assert_called_once_with()
 
     def test_construct_using_config_module(self):

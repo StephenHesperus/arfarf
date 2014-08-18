@@ -70,8 +70,7 @@ class DogTestCase(unittest.TestCase):
         self.assertEqual(winfo, ('/dummy/path', False))
 
     def test__parse_gitignore(self):
-        dog = Dog(command='echo hello')
-        result = dog._parse_gitignore()
+        result = Dog.parse_gitignore()
         self.gitignore_mock.assert_called_once_with(
             os.path.join(os.curdir, '.gitignore')
         )
