@@ -254,6 +254,17 @@
     [ ] change arfarfconfig_template to _arfarfconfig_template.py
         [ ] or add it as non package data file
 
+[ ] pylint
+    [*] too-few-public-methods
+        [*] parser: solution: use parser method to apply command line option
+        [*] let cmdline args override configm vars
+    [ ] protected-access
+        [ ] change underscore class attr to public
+    [ ] missing-docstring
+        [ ] add docstring
+[ ] check indentation once more
+[x] rename fixture_arfconfig.py to fixture_arfarfconfig.py
+
 
 [ ] project structure examples
 [ ] ipython

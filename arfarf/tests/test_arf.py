@@ -61,10 +61,10 @@ class ArfTestCase(unittest.TestCase):
 
     def test__apply_main_args_with_config_option(self):
         from ..arf import _apply_main_args
-        from . import fixture_arfconfig
+        from . import fixture_arfarfconfig
 
-        expected = fixture_arfconfig.dogs
-        arglist = ['--config-file', 'arfarf/tests/fixture_arfconfig.py']
+        expected = fixture_arfarfconfig.dogs
+        arglist = ['--config-file', 'arfarf/tests/fixture_arfarfconfig.py']
         args = self.parser.parse_args(arglist)
         wdm = _apply_main_args(args)
         self.assertEqual(expected, wdm.dogs)
@@ -79,7 +79,7 @@ class ArfTestCase(unittest.TestCase):
     def test__apply_main_args_with_gitignore_option(self):
         from ..arf import _apply_main_args
 
-        arglist = ['-c', 'arfarf/tests/fixture_arfconfig.py', # suppress sys.exit()
+        arglist = ['-c', 'arfarf/tests/fixture_arfarfconfig.py', # suppress sys.exit()
                    '--gitignore', 'arfarf/tests/fixture_gitignore']
         args = self.parser.parse_args(arglist)
         _apply_main_args(args)
@@ -87,7 +87,7 @@ class ArfTestCase(unittest.TestCase):
         self.assertEqual(Dog._gitignore_path, expected)
 
         # exit on nonexist gitignore file
-        arglist = ['-c', 'arfarf/tests/fixture_arfconfig.py', # suppress sys.exit()
+        arglist = ['-c', 'arfarf/tests/fixture_arfarfconfig.py', # suppress sys.exit()
                    '--gitignore', 'nonexist_gitignore']
         args = self.parser.parse_args(arglist)
         with patch('sys.exit', MagicMock()) as me:
@@ -135,8 +135,10 @@ class ArfTestCase(unittest.TestCase):
             me.assert_called_once_with("No module named 'arfarfconfig'")
 
             # copy a arfarfconfig.py and parse again
-            shutil.copy(os.path.join(oldwd, 'arfarf/tests/fixture_arfconfig.py'),
-                        './arfarfconfig.py')
+            shutil.copy(
+                os.path.join(oldwd, 'arfarf/tests/fixture_arfarfconfig.py'),
+                './arfarfconfig.py'
+            )
             _apply_main_args(args)
             expected = os.path.join(os.curdir, '.gitignore')
             self.assertEqual(Dog._gitignore_path, expected)
