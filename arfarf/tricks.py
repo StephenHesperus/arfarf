@@ -20,7 +20,7 @@ class AutoRunTrick(Trick):
     events.
     """
 
-    _command_default = ('${event_object} ${event_src_path} is '
+    command_default = ('${event_object} ${event_src_path} is '
                         '${event_type}${if_moved}')
 
     def __init__(self, command=None, patterns=None, ignore_patterns=None,
@@ -78,7 +78,7 @@ class AutoRunTrick(Trick):
             'event_dest_path': dest_path,
             'if_moved': if_moved,
         }
-        c = Template(type(self)._command_default).safe_substitute(**context)
+        c = Template(type(self).command_default).safe_substitute(**context)
         return c
 
     @property
