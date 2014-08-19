@@ -95,7 +95,3 @@ def main():
     observer.join()
     for handler in handlers:
         handler.stop()
-
-
-# if __name__ == '__main__':
-    # main()

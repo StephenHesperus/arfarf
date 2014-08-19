@@ -21,7 +21,7 @@ class AutoRunTrick(Trick):
     """
 
     command_default = ('${event_object} ${event_src_path} is '
-                        '${event_type}${if_moved}')
+                       '${event_type}${if_moved}')
 
     def __init__(self, command=None, patterns=None, ignore_patterns=None,
                  ignore_directories=False, stop_signal=signal.SIGINT,

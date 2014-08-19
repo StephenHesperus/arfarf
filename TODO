@@ -258,12 +258,13 @@
     [*] too-few-public-methods
         [x] let cmdline args override configm vars
         [-] write test to confirm command line option override configm vars
-    [*] protected-access
-        [*] change underscore class attr to public
-    [ ] missing-docstring
-        [ ] add docstring
+    [x] protected-access
+        [x] change underscore class attr to public
+    [*] missing-docstring
+        [*] add docstring
 [ ] check indentation once more
 [x] rename fixture_arfconfig.py to fixture_arfarfconfig.py
+[ ] rename WDConfigParser to AAConfigParser
 
 
 [ ] project structure examples
