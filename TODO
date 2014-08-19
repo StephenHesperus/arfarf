@@ -53,7 +53,7 @@
     [x] start() tests
     [x] stop() tests
 
-[x] ~~_parse_wdcofig(Observer, dogs):~~ WDConfigParser(Dogs)
+[x] ~~_parse_wdcofig(Observer, dogs):~~ AAConfigParser(Dogs)
     [x] sort out dogs
         [x] dict: key: (path, recursive), value: dogs
         [x] Dog.watch_info
@@ -63,7 +63,7 @@
     [-] add handler to the same ObservedWatch
     [x] refactor: remove unused _sort method
 
-[x] fix WDConfigParserTestCase class doc string
+[x] fix AAConfigParserTestCase class doc string
 
 [x] main
     [x] after schedule handlers, start the handler
@@ -72,7 +72,7 @@
 
 [x] change the list param to tuple when hashing, or
 
-[x] use defaultdict() to refactor WDConfigParser.schedule_with()
+[x] use defaultdict() to refactor AAConfigParser.schedule_with()
 
 [x] add event_src_path, dest path, event type environment variables
     [x] if command is '', use a default log command
@@ -153,7 +153,7 @@
     [x] _apply_main_args()
 
 [x] Refactor test_construct_using_wdconfig_module(), use mock module instead
-[x] separate WDConfigParser
+[x] separate AAConfigParser
 [x] separate AutoRunTrick
 
 [x] add use_gitignore default option to wdconfig.py so it can be set to True
@@ -166,7 +166,7 @@
                 use = self._use_gitignore if self._use_gitignore is not None \
                       else type(self)._use_gitignore_default
                 ```
-    [x] WDConfigParser use a wdconfig_module as argument
+    [x] AAConfigParser use a wdconfig_module as argument
         [x] parse dogs
         [x] parse Dog.use_gitignore_default
         [x] test dogs[0]._use_gitignore_default changed by
@@ -264,7 +264,7 @@
         [*] add docstring
 [ ] check indentation once more
 [x] rename fixture_arfconfig.py to fixture_arfarfconfig.py
-[ ] rename WDConfigParser to AAConfigParser
+[*] rename AAConfigParser to AAConfigParser
 
 
 [ ] project structure examples

@@ -58,7 +58,7 @@ def _apply_main_args(args):
     if args.gitignore is not None:
         gitignore_path = os.path.join(os.curdir, args.gitignore)
         if os.path.isfile(gitignore_path):
-            # Let WDConfigParser apply all args
+            # Let AAConfigParser apply all args
             configm.gitignore_path = gitignore_path
         else:
             sys.exit("File not found: '%s'" % gitignore_path)
@@ -69,7 +69,7 @@ def _apply_main_args(args):
 def main():
     """Script entry point."""
     from watchdog.observers.polling import PollingObserver
-    from .parser import WDConfigParser
+    from .parser import AAConfigParser
     from .tricks import AutoRunTrick
 
     parser = _create_main_argparser()
@@ -80,7 +80,7 @@ def main():
     # more reliable.
     observer = PollingObserver()
 
-    parser = WDConfigParser(configm)
+    parser = AAConfigParser(configm)
     handler_for_watch = parser.schedule_with(observer, AutoRunTrick)
     handlers = set.union(*tuple(handler_for_watch.values()))
 

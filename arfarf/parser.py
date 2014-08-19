@@ -5,7 +5,7 @@ from collections import defaultdict
 from .dog import Dog
 
 
-class WDConfigParser(object):
+class AAConfigParser(object):
     """
     Parser for arfarfconfig.py file.
     """
