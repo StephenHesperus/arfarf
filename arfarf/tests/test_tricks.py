@@ -48,17 +48,6 @@ class AutoRunTrickTestCase(unittest.TestCase):
         expected = 'directory /source/path/ is moved to /dest/path/'
         self.assertEqual(expected, command)
 
-    def test_command_shell_environment_variables_not_supported(self):
-        from watchdog.events import DirMovedEvent
-
-        command = 'echo ${event_dest_path}'
-        handler = AutoRunTrick(command)
-        path = '/source/path'
-        dest = '/dest/path'
-        event = DirMovedEvent(path, dest)
-        result = handler._substitute_command(event)
-        self.assertEqual(command, result)
-
     def test_equality(self):
         handler1 = AutoRunTrick(command='echo hello')
         handler2 = AutoRunTrick(command='echo hello')

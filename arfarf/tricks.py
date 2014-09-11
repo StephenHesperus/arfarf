@@ -72,14 +72,6 @@ class AutoRunTrick(Trick):
 
 
     def _substitute_command(self, event):
-        # Only default logging command supports substitution
-        # TODO UNNECESSARY remove those 4 lines below
-        if self._command is not None:
-            return self._command
-        if event is None:
-            return '' # do nothing
-
-        # dest = event.dest_path if hasattr(event, 'dest_path') else ''
         if hasattr(event, 'dest_path'):
             dest_path = self._add_dir_t_slash(event, event.dest_path)
         else:
@@ -112,18 +104,12 @@ class AutoRunTrick(Trick):
         Args:
             event: A file system event object.
         """
-        # if self._command is None:
-            # if event is not None:
-                # command = self._substitute_command(event)
-                # print(command)
-        # else:
-            # self._process = subprocess.Popen(command, shell=True,
-                                             # start_new_session=True)
-        command = self._substitute_command(event)
-        if self._command is None and command:
-            print(command) # logging only on events
+        if self._command is None:
+            if event is not None:
+                command = self._substitute_command(event)
+                print(command)
         else:
-            self._process = subprocess.Popen(command, shell=True,
+            self._process = subprocess.Popen(self._command, shell=True,
                                              start_new_session=True)
 
     def stop(self):

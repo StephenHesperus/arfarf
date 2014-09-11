@@ -271,7 +271,7 @@
 [x] rename AAConfigParser to AAConfigParser
 
 
-[ ] project structure examples
+[!] project structure examples
     [ ] ipython
         tests along inside the subpackage
         >ipython
@@ -405,11 +405,11 @@
 
 [ ] add copyright info, license header
 
-[ ] tricks.py AutoRunTrick: only default command support substitution, so only
+[x] tricks.py AutoRunTrick: only default command support substitution, so only
     do substitution when self._command is None, and print it only when not
     empty
 
-[ ] add docstring to key, property
+[x] add docstring to key, property
 
 [ ] remove key property, and use cache _key var to cache it
 
