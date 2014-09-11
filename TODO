@@ -262,9 +262,11 @@
         [x] change underscore class attr to public
     [*] missing-docstring
         [*] add docstring
+            [x] dog module
+            [*] parser module
 [ ] check indentation once more
 [x] rename fixture_arfconfig.py to fixture_arfarfconfig.py
-[*] rename AAConfigParser to AAConfigParser
+[x] rename AAConfigParser to AAConfigParser
 
 
 [ ] project structure examples
@@ -378,6 +380,26 @@
         [ ] handle empty dogs tuple error, exit gracefully
 
 [ ] expanduser when parsing main args
+
+[ ] use `cls = type(self)` to refactor all class references
+
+[ ] use '{!r}' to add quotes to strings
+    [ ] example:
+        `'file %r is modified' % 'dummy'` produces: "file 'dummy' is modified"
+        `'file {!r} is modified'.format('dummy')` produces:
+        "file 'dummy' is modified"
+
+[ ] follow Google Python Style Guide
+    [ ] format docstrings
+        [ ] module docstring
+
+[ ] rename add slash func to slash()
+
+[ ] move drop_chars out of for loop in dog.py parse_gitignore()
+
+[ ] use `from os.path import join` instead of `os.path.join`
+
+[ ] delete dog.py Dog.set_gitignore_path()
 
 ====
 

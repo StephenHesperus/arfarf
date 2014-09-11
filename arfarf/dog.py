@@ -1,7 +1,40 @@
+"""Define the command to run upon certain file system events.
+"""
+
+
 import os
 
 
 class Dog(object):
+    """Define a command to run upon certain file system events.
+
+    This class contains all the information needed to create a
+    PatternMatchingEventHandler, and schedule it to run. You usually define
+    instances of this class in your arfarfconfig.py file, but don't manipulate
+    its class attributes directly.
+
+    Constructor Args:
+        command: A string containing a shell command, it's written exactly the
+            same way you write it in a terminal. Example: "echo hello ; echo
+            world".
+        patterns:
+        ignore_patterns:
+        ignore_directories: The same as PatternMatchingEventHandler.
+        path: The path to monitor, it can be relative or absolute.
+        recursive: A boolean indicating if we handle subdirectories events or
+            not.
+        use_gitignore: A boolean indicating if we use gitignore file to
+            provide ignore_patterns or not.
+
+    Attributes:
+        use_gitignore_default: A boolean indicating if we use gitignore file
+            or not.
+        gitignore: A list containing wildcard patterns from gitignore file.
+        gitignore_path: A path string pointing to a gitignore file, it can be
+            absolute or relative to the current working directory.
+        watch_info: Readonly property, a tuple containing information to
+            schedule a ObservedWatch.
+    """
 
     use_gitignore_default = False
     gitignore = None
@@ -40,10 +73,19 @@ class Dog(object):
 
     @classmethod
     def set_gitignore_path(cls, path):
+        # TODO UNNECESSARY Deleted this method
         cls.gitignore_path = path
 
     @classmethod
     def parse_gitignore(cls):
+        """Parse wildcard patterns from the gitignore file.
+
+        All patterns supported by Git is supported also, except patterns
+        starting with a '!', but using '\!' to escape '!' is supported.
+
+        Returns:
+            A list containing all the supported patterns.
+        """
         gitignore = []
         with open(cls.gitignore_path) as f:
             for line in iter(f.readline, ''):
@@ -62,6 +104,15 @@ class Dog(object):
         return gitignore
 
     def create_handler(self, trick_cls):
+        """Create a file system event handler providing the handler class.
+
+        Args:
+            trick_cls: The handler class to be instantiated, it must be a
+                subclass of FileSystemEventHandler.
+
+        Returns:
+            The handler object of type of trick_cls.
+        """
         use = self._use_gitignore if self._use_gitignore is not None \
               else type(self).use_gitignore_default
         if use:
