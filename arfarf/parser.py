@@ -1,3 +1,5 @@
+"""Parse arfarfconfig module.
+"""
 import os
 
 from collections import defaultdict
@@ -6,8 +8,10 @@ from .dog import Dog
 
 
 class AAConfigParser(object):
-    """
-    Parser for arfarfconfig.py file.
+    """Parser for arfarfconfig module.
+
+    Constructor Args:
+        config_module: A module object, must be a valid arfarfconfig module.
     """
 
     def __init__(self, config_module):
@@ -23,6 +27,16 @@ class AAConfigParser(object):
         Dog.gitignore_path = os.path.join(os.curdir, self._gitignore_path)
 
     def schedule_with(self, observer, cls):
+        """Schedule handlers with observer.
+
+        Args:
+            observer: A Observer object.
+            cls: The class to create handler objects.
+
+        Returns:
+            A dict mapping ObservedWatch objects to the corresponding handler
+            set attached to them.
+        """
         self._set_use_gitignore_default()
         self._set_gitignore_path()
 

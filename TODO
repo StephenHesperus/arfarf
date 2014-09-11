@@ -263,83 +263,84 @@
     [*] missing-docstring
         [*] add docstring
             [x] dog module
-            [*] parser module
+            [x] parser module
+            [*] tricks module
 [ ] check indentation once more
 [x] rename fixture_arfconfig.py to fixture_arfarfconfig.py
 [x] rename AAConfigParser to AAConfigParser
 
 
 [ ] project structure examples
-[ ] ipython
-    tests along inside the subpackage
-    >ipython
-        -setup.py
-            """
-            entry_points['console_scripts'] = 'ipython = IPython:start_ipython'
-            """
-        -tox.ini
-        +docs
-        +examples
-        +tools
-        +IPython
-            -__init__.py
-            -__main__.py
-            +config
-                -__init__.py
-                +tests
-                    -__init__.py
-                    -test_blah.py
-            +core
-            +lib
-            +html
+    [ ] ipython
+        tests along inside the subpackage
+        >ipython
+            -setup.py
+                """
+                entry_points['console_scripts'] = 'ipython = IPython:start_ipython'
+                """
+            -tox.ini
+            +docs
+            +examples
+            +tools
+            +IPython
                 -__init__.py
                 -__main__.py
-                +tests
+                +config
                     -__init__.py
-                    -test_blah.py
-[ ] requests
-    single test_requests.py
-    >requests
-        -setup.py
-        -test_requests.py
-        +requests
+                    +tests
+                        -__init__.py
+                        -test_blah.py
+                +core
+                +lib
+                +html
+                    -__init__.py
+                    -__main__.py
+                    +tests
+                        -__init__.py
+                        -test_blah.py
+    [ ] requests
+        single test_requests.py
+        >requests
+            -setup.py
+            -test_requests.py
+            +requests
+                -__init__.py
+                +packages
+                    """third party packages"""
+    [ ] fabric
+        entry_points['console_scripts'] = ['fab = fabric.main:main']
+        >fabric
+            -setup.py
+            +tests
+                -test_main.py
+            +fabric
+                -__init__.py
+                -main.py
+                -version.py
+    [ ] pylint
+        executables under bin/
+        >pylint
+            -setup.py
+                """
+                entry_points    'pylint = pylint:run_pylint'
+                """
             -__init__.py
-            +packages
-                """third party packages"""
-[ ] fabric
-    entry_points['console_scripts'] = ['fab = fabric.main:main']
-    >fabric
-        -setup.py
-        +tests
-            -test_main.py
-        +fabric
-            -__init__.py
-            -main.py
-            -version.py
-[ ] pylint
-    executables under bin/
-    >pylint
-        -setup.py
-            """
-            entry_points    'pylint = pylint:run_pylint'
-            """
-        -__init__.py
-            """
-            define run_pylint
-            """
-        -__main__.py
-            """
-            import pylint
-            pylint.run_pylint()
-            """
-        -lint.py
-        +bin
-        +debian
-        +checkers (this is subpackage)
-        +pyreverse (this is subpackage)
-        +test (no __init__.py)
-            -test_regr.py
-            -unittest_lint.py
+                """
+                define run_pylint
+                """
+            -__main__.py
+                """
+                import pylint
+                pylint.run_pylint()
+                """
+            -lint.py
+            +bin
+            +debian
+            +checkers (this is subpackage)
+            +pyreverse (this is subpackage)
+            +test (no __init__.py)
+                -test_regr.py
+                -unittest_lint.py
 
 ====
 
@@ -400,6 +401,8 @@
 [ ] use `from os.path import join` instead of `os.path.join`
 
 [ ] delete dog.py Dog.set_gitignore_path()
+
+[ ] add copyright info, license header
 
 ====
 
