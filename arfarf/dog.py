@@ -62,6 +62,7 @@ class Dog(object):
 
     @property
     def key(self):
+        # TODO make it private
         patterns = tuple(self._patterns) if self._patterns is not None \
                        else None
         ignore_patterns = tuple(self._ignore_patterns) \
@@ -133,4 +134,6 @@ class Dog(object):
 
     @property
     def watch_info(self):
+        """Readonly, information needed to create the ObservedWatch.
+        """
         return (self._path, self._recursive)

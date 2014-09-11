@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+"""Define functions to use arfarf as a script.
+"""
 
 import argparse
 import os

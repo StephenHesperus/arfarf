@@ -216,6 +216,18 @@
         [x] just print()
     [x] when event is None, start() execute an empty command ''
 
+[x] pylint
+    [x] too-few-public-methods
+        [x] let cmdline args override configm vars
+        [-] write test to confirm command line option override configm vars
+    [x] protected-access
+        [x] change underscore class attr to public
+    [x] missing-docstring
+        [x] add docstring
+            [x] dog module
+            [x] parser module
+            [x] tricks module
+            [x] arf module
 ====
 
 [*] prepare package
@@ -254,17 +266,6 @@
     [ ] change arfarfconfig_template to _arfarfconfig_template.py
         [ ] or add it as non package data file
 
-[ ] pylint
-    [*] too-few-public-methods
-        [x] let cmdline args override configm vars
-        [-] write test to confirm command line option override configm vars
-    [x] protected-access
-        [x] change underscore class attr to public
-    [*] missing-docstring
-        [*] add docstring
-            [x] dog module
-            [x] parser module
-            [*] tricks module
 [ ] check indentation once more
 [x] rename fixture_arfconfig.py to fixture_arfarfconfig.py
 [x] rename AAConfigParser to AAConfigParser
@@ -409,6 +410,8 @@
     empty
 
 [ ] add docstring to key, property
+
+[ ] remove key property, and use cache _key var to cache it
 
 ====
 

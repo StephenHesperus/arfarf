@@ -100,6 +100,7 @@ class AutoRunTrick(Trick):
 
     @property
     def command(self):
+        """Readonly property, command string."""
         return self._command
 
     def start(self, event=None):
@@ -155,6 +156,7 @@ class AutoRunTrick(Trick):
 
     @property
     def key(self):
+        # TODO make it private, and not property
         if self.patterns is None:
             patterns = None
         else:
