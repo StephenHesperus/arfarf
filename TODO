@@ -345,6 +345,8 @@
 
 ====
 
+[ ] add copyright info, license header
+
 [ ] use print('\ron the same line', end='') to update a line
 
 [ ] display_session_info:
@@ -395,15 +397,13 @@
     [ ] format docstrings
         [ ] module docstring
 
-[ ] rename add slash func to slash()
+[x] rename add slash func to slash()
 
 [ ] move drop_chars out of for loop in dog.py parse_gitignore()
 
 [ ] use `from os.path import join` instead of `os.path.join`
 
 [x] delete dog.py Dog.set_gitignore_path()
-
-[ ] add copyright info, license header
 
 [x] tricks.py AutoRunTrick: only default command support substitution, so only
     do substitution when self._command is None, and print it only when not

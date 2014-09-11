@@ -64,8 +64,16 @@ class AutoRunTrick(Trick):
         return rstr
 
     @staticmethod
-    def _add_dir_t_slash(event, path):
-        """Add trailing slash if event is directory event."""
+    def _slash(event, path):
+        """Add trailing slash to path if event is directory event.
+
+        Args:
+            path: A path string, it's event.src_path or event.dest_path if
+                exists.
+
+        Returns:
+            A path string with a trailing slash when necessary.
+        """
         if event.is_directory:
             path = os.path.join(path, '')
         return path
@@ -73,11 +81,11 @@ class AutoRunTrick(Trick):
 
     def _substitute_command(self, event):
         if hasattr(event, 'dest_path'):
-            dest_path = self._add_dir_t_slash(event, event.dest_path)
+            dest_path = self._slash(event, event.dest_path)
         else:
             dest_path = ''
         if event.src_path:
-            src_path = self._add_dir_t_slash(event, event.src_path)
+            src_path = self._slash(event, event.src_path)
         event_obj = 'directory' if event.is_directory else 'file'
         if_moved = ' to %s' % dest_path if dest_path else ''
         context = {
@@ -169,10 +177,10 @@ class AutoRunTrick(Trick):
 
         paths = []
         if hasattr(event, 'dest_path'):
-            dest_path = self._add_dir_t_slash(event, event.dest_path)
+            dest_path = self._slash(event, event.dest_path)
             paths.append(unicode_paths.decode(dest_path))
         if event.src_path:
-            src_path = self._add_dir_t_slash(event, event.src_path)
+            src_path = self._slash(event, event.src_path)
             paths.append(unicode_paths.decode(src_path))
 
         if match_any_paths(paths,
