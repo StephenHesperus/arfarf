@@ -88,13 +88,13 @@ class Dog(object):
         """
         gitignore = []
         with open(cls.gitignore_path) as f:
+            drop_chars = (
+                '#', # drop comment lines
+                '\n', # drop blank lines
+                '!' # patterns starting with a '!' is not supported
+                    # but "\!" to escape '!' is supported
+            )
             for line in iter(f.readline, ''):
-                drop_chars = (
-                    '#', # drop comment lines
-                    '\n', # drop blank lines
-                    '!' # patterns starting with a '!' is not supported
-                        # but "\!" to escape '!' is supported
-                )
                 if not line.startswith(drop_chars):
                     p = line.strip()
                     # support escape trailing space with a backslash
