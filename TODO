@@ -385,8 +385,6 @@
 
 [ ] expanduser when parsing main args
 
-[ ] use `cls = type(self)` to refactor all class references
-
 [ ] use '{!r}' to add quotes to strings
     [ ] example:
         `'file %r is modified' % 'dummy'` produces: "file 'dummy' is modified"
@@ -400,6 +398,8 @@
 [x] rename add slash func to slash()
 
 [x] move drop_chars out of for loop in dog.py parse_gitignore()
+
+[x] use `cls = type(self)` to refactor all class references
 
 [ ] use `from os.path import join` instead of `os.path.join`
 

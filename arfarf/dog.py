@@ -113,12 +113,13 @@ class Dog(object):
         Returns:
             The handler object of type of trick_cls.
         """
+        cls = type(self)
         use = self._use_gitignore if self._use_gitignore is not None \
-              else type(self).use_gitignore_default
+              else cls.use_gitignore_default
         if use:
-            if type(self).gitignore is None:
-                type(self).gitignore = type(self).parse_gitignore()
-        gip = type(self).gitignore if type(self).gitignore is not None \
+            if cls.gitignore is None:
+                cls.gitignore = cls.parse_gitignore()
+        gip = cls.gitignore if cls.gitignore is not None \
               else []
         selfip = [] if self._ignore_patterns is None \
                  else self._ignore_patterns
