@@ -228,7 +228,34 @@
             [x] parser module
             [x] tricks module
             [x] arf module
-====
+
+[x] follow Google Python Style Guide
+    [x] format docstrings
+        [x] module docstring
+
+[x] rename add slash func to slash()
+
+[x] move drop_chars out of for loop in dog.py parse_gitignore()
+
+[x] use `cls = type(self)` to refactor all class references
+
+[x] delete dog.py Dog.set_gitignore_path()
+
+[x] tricks.py AutoRunTrick: only default command support substitution, so only
+    do substitution when self._command is None, and print it only when not
+    empty
+
+[x] add docstring to key, property
+
+[x] use '{!r}' to add quotes to strings
+    [ ] example:
+        `'file %r is modified' % 'dummy'` produces: "file 'dummy' is modified"
+        `'file {!r} is modified'.format('dummy')` produces:
+        "file 'dummy' is modified"
+
+DONE
+=====
+DOING
 
 [*] prepare package
 
@@ -343,7 +370,9 @@
                 -test_regr.py
                 -unittest_lint.py
 
-====
+DOING
+=======
+PENDING
 
 [ ] add copyright info, license header
 
@@ -377,41 +406,17 @@
 [ ] use a config dict to collect all needed config options
     [ ] config['dogs'] or config.dogs
 
-[ ] add double quotes to default command output
-
 [ ] when _apply_main_args(), test
     [ ] dogs is a tuple of wdog.Dog
         [ ] handle empty dogs tuple error, exit gracefully
 
 [ ] expanduser when parsing main args
 
-[ ] use '{!r}' to add quotes to strings
-    [ ] example:
-        `'file %r is modified' % 'dummy'` produces: "file 'dummy' is modified"
-        `'file {!r} is modified'.format('dummy')` produces:
-        "file 'dummy' is modified"
-
-[ ] follow Google Python Style Guide
-    [ ] format docstrings
-        [ ] module docstring
-
-[x] rename add slash func to slash()
-
-[x] move drop_chars out of for loop in dog.py parse_gitignore()
-
-[x] use `cls = type(self)` to refactor all class references
-
 [ ] use `from os.path import join` instead of `os.path.join`
 
-[x] delete dog.py Dog.set_gitignore_path()
-
-[x] tricks.py AutoRunTrick: only default command support substitution, so only
-    do substitution when self._command is None, and print it only when not
-    empty
-
-[x] add docstring to key, property
-
-====
+PENDING
+=======
+OTHER
 
 [ ] about watchdog package:
     [ ] should document Observer.remove_handler_for_watch() and

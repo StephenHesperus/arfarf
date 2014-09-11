@@ -34,7 +34,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         path = '/source/path'
         event = FileCreatedEvent(path)
         command = handler._substitute_command(event)
-        expected = 'file /source/path is created'
+        expected = "file '/source/path' is created"
         self.assertEqual(expected, command)
 
     def test_command_default_dir_event_substitution(self):
@@ -45,7 +45,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         handler = AutoRunTrick()
         event = DirMovedEvent(path, dest)
         command = handler._substitute_command(event)
-        expected = 'directory /source/path/ is moved to /dest/path/'
+        expected = "directory '/source/path/' is moved to '/dest/path/'"
         self.assertEqual(expected, command)
 
     def test_equality(self):
@@ -98,7 +98,7 @@ class AutoRunTrickTestCase(unittest.TestCase):
         handler = AutoRunTrick()
         event = DirMovedEvent('/source/path', '/dest/path')
         handler.start(event=event)
-        expected = 'directory /source/path/ is moved to /dest/path/\n'
+        expected = "directory '/source/path/' is moved to '/dest/path/'\n"
         self.assertEqual(expected, self.mock_out.getvalue())
 
     def test_start_with_command_default_and_no_event(self):
@@ -116,8 +116,8 @@ class AutoRunTrickTestCase(unittest.TestCase):
         dir_e = DirModifiedEvent('/source/path')
         handler.dispatch(file_e)
         handler.dispatch(dir_e)
-        expected = ('file /source/path/file is created\n'
-                    'directory /source/path/ is modified\n')
+        expected = ("file '/source/path/file' is created\n"
+                    "directory '/source/path/' is modified\n")
         self.assertEqual(expected, self.mock_out.getvalue())
 
     def test_stop(self):

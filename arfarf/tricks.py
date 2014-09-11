@@ -85,14 +85,14 @@ class AutoRunTrick(Trick):
         else:
             dest_path = ''
         if event.src_path:
-            src_path = self._slash(event, event.src_path)
+            src_path = '%r' % self._slash(event, event.src_path)
         event_obj = 'directory' if event.is_directory else 'file'
-        if_moved = ' to %s' % dest_path if dest_path else ''
+        if_moved = ' to %r' % dest_path if dest_path else ''
         context = {
             'event_object': event_obj,
             'event_src_path': src_path,
             'event_type': event.event_type,
-            'event_dest_path': dest_path,
+            # 'event_dest_path': dest_path,
             'if_moved': if_moved,
         }
         c = Template(type(self).command_default).safe_substitute(**context)
