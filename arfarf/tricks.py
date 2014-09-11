@@ -1,3 +1,6 @@
+"""Define tricks.
+"""
+
 import os
 import signal
 import subprocess
@@ -14,10 +17,23 @@ from watchdog.events import EVENT_TYPE_MOVED, EVENT_TYPE_DELETED
 
 
 class AutoRunTrick(Trick):
-    """
-    A variant of AutoRestartTrick.
-    When called without arguments, it's the same as a logger of file system
-    events.
+    """A variant of watchdog trick AutoRestartTrick.
+
+    When instantiated without arguments, it's the same as a logger of file
+    system events.
+    It is intended to be used as the handler class with Dog.create_handler().
+
+    Constructor Args:
+        command:
+        patterns:
+        ignore_patterns:
+        ignore_directories: The same as Dog class.
+        stop_signal:
+        kill_after: The same as Trick class.
+
+    Attributes:
+        command_default: A template string representing the default command.
+        command: Readonly property, the shell command string.
     """
 
     command_default = ('${event_object} ${event_src_path} is '
@@ -57,6 +73,7 @@ class AutoRunTrick(Trick):
 
     def _substitute_command(self, event):
         # Only default logging command supports substitution
+        # TODO UNNECESSARY remove those 4 lines below
         if self._command is not None:
             return self._command
         if event is None:
@@ -86,6 +103,21 @@ class AutoRunTrick(Trick):
         return self._command
 
     def start(self, event=None):
+        """Execute a command according to context.
+
+        It logs all file system events when self._command is None, or execute
+        the command otherwise.
+
+        Args:
+            event: A file system event object.
+        """
+        # if self._command is None:
+            # if event is not None:
+                # command = self._substitute_command(event)
+                # print(command)
+        # else:
+            # self._process = subprocess.Popen(command, shell=True,
+                                             # start_new_session=True)
         command = self._substitute_command(event)
         if self._command is None and command:
             print(command) # logging only on events
@@ -94,6 +126,8 @@ class AutoRunTrick(Trick):
                                              start_new_session=True)
 
     def stop(self):
+        """Try to kill the shell command process at its best.
+        """
         if self._process is None:
             return
         try:
@@ -115,6 +149,7 @@ class AutoRunTrick(Trick):
         self._process = None
 
     def on_any_event(self, event):
+        """Override superclass on_any_event, pass event to start()."""
         self.stop()
         self.start(event=event)
 
@@ -133,6 +168,14 @@ class AutoRunTrick(Trick):
                 self.ignore_directories)
 
     def dispatch(self, event):
+        """Override superclass method.
+
+        Append trailing slash to event src_path if it is a directory event and
+        its dest_path if exists before matching using fnmatch.
+
+        Args:
+            event: The event object to dispatch.
+        """
         if event.is_directory and self._ignore_directories:
             return
 
