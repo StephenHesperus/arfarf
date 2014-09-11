@@ -73,11 +73,6 @@ class Dog(object):
                 self._use_gitignore)
 
     @classmethod
-    def set_gitignore_path(cls, path):
-        # TODO UNNECESSARY Deleted this method
-        cls.gitignore_path = path
-
-    @classmethod
     def parse_gitignore(cls):
         """Parse wildcard patterns from the gitignore file.
 
