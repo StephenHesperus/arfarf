@@ -142,17 +142,17 @@ class AutoRunTrick(Trick):
 
     @property
     def key(self):
-        # TODO make it private, and not property
-        if self.patterns is None:
-            patterns = None
-        else:
-            patterns = tuple(self.patterns)
-        if self.ignore_patterns is None:
-            ignore_patterns = None
-        else:
-            ignore_patterns = tuple(self.ignore_patterns)
-        return (self.command,
-                patterns, ignore_patterns,
+        """Get the tuple to calculate object hash value.
+
+        Returns:
+            A tuple containing object attributes.
+        """
+        patterns = tuple(self.patterns) if self.patterns is not None \
+                   else None
+        ignore_patterns = tuple(self._ignore_patterns) \
+                       if self._ignore_patterns is not None \
+                       else None
+        return (self.command, patterns, ignore_patterns,
                 self.ignore_directories)
 
     def dispatch(self, event):

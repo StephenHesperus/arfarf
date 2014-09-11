@@ -62,7 +62,11 @@ class Dog(object):
 
     @property
     def key(self):
-        # TODO make it private
+        """Get the tuple to calculate object hash value.
+
+        Returns:
+            A tuple containing object attributes.
+        """
         patterns = tuple(self._patterns) if self._patterns is not None \
                        else None
         ignore_patterns = tuple(self._ignore_patterns) \
